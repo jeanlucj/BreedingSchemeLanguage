@@ -19,7 +19,7 @@ calcGenotypicValue <- function(geno, mapData){
 
   nInd <- nrow(geno) / 2
   genoVal <- numeric(nInd)
-  for(i in 1:nQTL){
+  for(i in 1:max(mapData$effectID)){
     posThisQ <- mapData$effectivePos[mapData$effectID == i]
     actType <- mapData$actionType[mapData$effectID == i]
     effect <- mapData$effects[i, 1]
