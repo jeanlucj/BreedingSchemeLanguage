@@ -5,7 +5,6 @@
 #'
 # Calculate genotypic value one QTL at a time for all individuals
 calcGenotypicValue <- function(geno, mapData){
-  nInd <- nrow(geno) / 2
   # Calculate the contribution to genotypic value of one indiviudal of one QTL
   gv1indThisQ <- function(ind){ # ind is zero base
     geno1pos <- geno[ind*2 + 1:2, posThisQ, drop=F]
@@ -18,6 +17,7 @@ calcGenotypicValue <- function(geno, mapData){
     return(effect * prod(coef))
   }
 
+  nInd <- nrow(geno) / 2
   genoVal <- numeric(nInd)
   for(i in 1:nQTL){
     posThisQ <- mapData$effectivePos[mapData$effectID == i]
