@@ -11,7 +11,7 @@ outputResults <- function(simEnv, summarize = T, directory = NULL, saveDataFileN
   if(summarize){
     breedingData <- simEnv$sims[[1]]$breedingData
     popID <- sort(unique(breedingData$popIDsel))
-    phenotype(popID = 0:max(breedingData$popID))
+    phenotype(simEnv, popID = 0:max(breedingData$popID))
     muSim <- matrix(NA, length(popID), simEnv$nSim)
     varSim <- matrix(NA, length(popID), simEnv$nSim)
     for(sim in 1:simEnv$nSim){

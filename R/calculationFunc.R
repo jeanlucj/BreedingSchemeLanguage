@@ -11,11 +11,11 @@ calcGenotypicValue <- function(geno, mapData){
     if (!is.null(mapData$domModel)){ # 1 dominant over -1; degree in actType
       minMaxGeno <- apply(geno1pos, 2, range)
       coef <- sapply(1:length(actType), function(i) c(1-actType[i], actType[i]) %*% minMaxGeno[,i])
-    } else{ # Standard model
+    } else{ # Standard model (-1,-1 same as 1,1 and opposite to -1,1 or 1,-1)
       coef <- ifelse(actType == 0, (geno1pos[1, ] + geno1pos[2, ])/2, -(geno1pos[1, ] * geno1pos[2, ]))
     }
     return(effect * prod(coef))
-  }
+  }#END gv1indThisQ
 
   nInd <- nrow(geno) / 2
   genoVal <- numeric(nInd)
@@ -34,17 +34,15 @@ calcGenotypicValue <- function(geno, mapData){
 #'@param errorVar error variance
 #'@param H2 a broad heritability
 #'
+# If both errorVar and H2 are given, the former is used
 calcPhenotypicValue <- function(gv, errorVar = NULL, H2 = NULL){
-  if((!is.null(errorVar) & !is.null(H2)) | (is.null(errorVar) & is.null(H2))){
-    stop("I cannot make phenotypic value!")
+  if (is.null(errorVar) & is.null(H2)){
+    stop("Need a measure of error variance to make phenotypic value!")
   }else{
-    if(!is.null(errorVar)){
-      pv <- gv + rnorm(length(gv), 0, sqrt(errorVar))
-    }else{
-      varG <- var(gv)
-      errorVar <- varG * (1 - H2) / H2
-      pv <- gv + rnorm(length(gv), 0, sqrt(errorVar))
+    if(is.null(errorVar)){
+      errorVar <- var(gv) * (1 - H2) / H2
     }
+    pv <- gv + rnorm(length(gv), 0, sqrt(errorVar))
   }
   return(pv)
 }
