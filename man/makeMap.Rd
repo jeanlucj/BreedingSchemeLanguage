@@ -4,7 +4,8 @@
 \alias{makeMap}
 \title{create map and QTL effects}
 \usage{
-makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1)
+makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1,
+  qtlInfo = NULL)
 }
 \arguments{
 \item{map}{map information (Chromosome and Position)}
@@ -20,6 +21,8 @@ makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, varEffects = 1)
 \item{interactionMean}{the expected number of epistatic loci for each effect}
 
 \item{varEffects}{variance of QTL effects}
+
+\item{qtlInfo}{possible to give the function all of the qtl information}
 }
 \value{
 map data including which loci are primary QTL and which are modifying loci, which have dominance effects, the effect sizes

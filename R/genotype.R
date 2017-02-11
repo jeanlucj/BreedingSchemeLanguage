@@ -11,8 +11,7 @@ genotype <- function(simEnv){
     selCriterion <- data$selCriterion
     geno <- breedingData$geno
     nPop <- nrow(geno) / 2
-    score <- geno[1:nPop * 2 - 1, ] + geno[1:nPop * 2,]
-    score <- score / 2
+    score <- (geno[1:nPop * 2 - 1, ] + geno[1:nPop * 2,]) / 2
     score <- score[, mapData$markerPos]
     rownames(score) <- breedingData$GID
     return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))

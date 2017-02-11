@@ -5,7 +5,8 @@
 \title{Generate a data.frame with a hapmap data in it to test phasedHapMap2mat}
 \usage{
 simHapMap(nInd = 200, nMrk = 1050, nChr = 7, lenChr = 150,
-  maf = runif(nMrk), nCharCode = 2)
+  maf = runif(nMrk), nCharCode = 2, nQTL = NULL, propDomi = NULL,
+  interactionMean = NULL, varEffects = NULL)
 }
 \arguments{
 \item{nInd}{The number of individuals with marker data}
@@ -19,6 +20,14 @@ simHapMap(nInd = 200, nMrk = 1050, nChr = 7, lenChr = 150,
 \item{maf}{The desired minor allele frequency of each marker}
 
 \item{nCharCode}{Whether the genotype codes should be one or two characters}
+
+\item{nQTL}{If you want to put QTL information in the hapmap}
+
+\item{propDomi}{proportion of QTL that act dominantly}
+
+\item{interactionMean}{average number of loci interacting with QTL: Poisson}
+
+\item{varEffects}{variance of the QTL effects}
 }
 \value{
 A data.frame with hapmap data in it

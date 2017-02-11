@@ -4,14 +4,10 @@
 \alias{phasedHapMap2mat}
 \title{Transform a data.frame with a hapmap data in it into a marker dosage and map list}
 \usage{
-phasedHapMap2mat(hm, firstCol = 12, lastCol = ncol(hm))
+phasedHapMap2mat(hm)
 }
 \arguments{
 \item{hm}{The data.frame}
-
-\item{firstCol}{Number of the first column you want in the marker dosage file}
-
-\item{lastCol}{Number of the last column you want in the marker dosage file}
 }
 \value{
 list with markers and map objects

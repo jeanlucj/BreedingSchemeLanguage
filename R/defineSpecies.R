@@ -34,8 +34,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
       markers <- founderHaps$markers
       map <- founderHaps$map
       if (nrow(map) < nLoci) stop("Not enough loci in imported founder haplotypes for both markers and QTL")
-      # No missing data
-      markers[is.na(markers)] <- 1
+      markers[is.na(markers)] <- 1 # No missing data
       mapData <- makeMap(map=map, nLoci=nLoci, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, interactionMean=nEpiLoci, qtlInfo=founderHaps$qtlInfo)
     }
     if (domModel == "Partial") mapData$domModel <- "Partial"

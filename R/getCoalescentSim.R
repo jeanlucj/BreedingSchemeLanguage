@@ -7,7 +7,7 @@
 #'@param nChr -c (GENOME)
 #'@param nPiecesPerChr -pieces (GENOME)
 #'@param recBTpieces -rec (GENOME)
-#'@param nMrkOrMut parameter tocalculate -s (GENOME)
+#'@param nMrkOrMut parameter to calculate -s (GENOME)
 #'@param minMAF -maf (GENOME)
 #'@param seed -seed (GENOME)
 #'@param tree -tree (GENOME)

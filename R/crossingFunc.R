@@ -4,17 +4,13 @@
 #'@param pos position of markers/QTLs
 #'
 makeGamete <- function(geno, pos){
-  diff <- diff(pos)
-  rec <- (1 - exp(-2 * diff / 100)) / 2
+  btwLocDist <- diff(pos)
+  rec <- (1 - exp(-2 * btwLocDist / 100)) / 2
   rec[rec < 0] <- 0.5
   rec <- c(0.5, rec)
-  sample <- runif(length(rec))
-  crossOver <- ((rec - sample) >= 0)
+  crossOver <- rec >= runif(length(rec))
   selectHaplo <- cumsum(crossOver) %% 2
-  selectHaplo <- selectHaplo + 1
-  gamete <- geno[1, ]
-  gamete[selectHaplo == 2] <- geno[2, selectHaplo == 2]
-  return(gamete)
+  return(ifelse(selectHaplo, geno[1,], geno[2,]))
 }
 
 #'makeProgeny
@@ -24,8 +20,7 @@ makeGamete <- function(geno, pos){
 #'@param pos position of markers/QTLs
 #'
 makeProgeny <- function(genoMat, genoPat, pos){
-  progeny <- rbind(makeGamete(genoMat, pos), makeGamete(genoPat, pos))
-  return(progeny)
+  return(rbind(makeGamete(genoMat, pos), makeGamete(genoPat, pos)))
 }
 
 #'makeProgenies
@@ -35,13 +30,10 @@ makeProgeny <- function(genoMat, genoPat, pos){
 #'@param pos position of markers/QTLs
 #'
 makeProgenies <- function(parents, geno, pos){
-  progenies <- matrix(NA, 2 * nrow(parents), ncol(geno))
-  for(par in 1:nrow(parents)){
-    genoMat <- geno[c(parents[par, 1] * 2 - 1, parents[par, 1] * 2), ]
-    genoPat <- geno[c(parents[par, 2] * 2 - 1, parents[par, 2] * 2), ]
-    progenies[c(par * 2 - 1, par * 2), ] <- makeProgeny(genoMat, genoPat, pos)
+  gameteOnePar <- function(par){
+    makeGamete(geno[par * 2 + 0:1, ], pos)
   }
-  return(progenies)
+  return(t(sapply(c(t(parents)), gameteOnePar)))
 }
 
 #'DH
