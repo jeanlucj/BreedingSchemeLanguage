@@ -4,10 +4,12 @@
 \alias{initializePopulation}
 \title{Create a founder population}
 \usage{
-initializePopulation(simEnv, nPop = 100, gVariance = 1)
+initializePopulation(simEnv, nInd = 100, gVariance = 1)
 }
 \arguments{
-\item{nPop}{population size}
+\item{simEnv}{an environment that BSL statements operate on}
+
+\item{nInd}{population size}
 
 \item{gVariance}{genetic variance in the initial population}
 }

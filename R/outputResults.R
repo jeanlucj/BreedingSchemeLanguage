@@ -1,12 +1,13 @@
 #' Save the results
 #'
-#' @param summarize if T a result averaged over all the replications is saved, if F each replication's result is saved
-#' @param directory the directory to which the output will be saved (Enclose the phrase in double quotation!) (default: the current directory)
-#' @param saveDataFileName the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")
+#'@param simEnv an environment that BSL statements operate on
+#'@param summarize if T a result averaged over all the replications is saved, if F each replication's result is saved
+#'@param directory the directory to which the output will be saved (Enclose the phrase in double quotation!) (default: the current directory)
+#'@param saveDataFileName the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")
 #'
-#' @return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+#'@return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
 #'
-#' @export
+#'@export
 outputResults <- function(simEnv, summarize = T, directory = NULL, saveDataFileName = "BSLoutput"){
   if(summarize){
     breedingData <- simEnv$sims[[1]]$breedingData

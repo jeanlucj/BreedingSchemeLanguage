@@ -8,6 +8,8 @@ plotData(simEnv, ymax = NULL, add = F, addDataFileName = "plotData",
   popIDplot = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{ymax}{the maximum value of y-axis (default: the maximun value in the data)}
 
 \item{add}{if T a new result will be added to an existing plot, if F a new plot will be drawn (default)}

@@ -8,6 +8,8 @@ outputResults(simEnv, summarize = T, directory = NULL,
   saveDataFileName = "BSLoutput")
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{summarize}{if T a result averaged over all the replications is saved, if F each replication's result is saved}
 
 \item{directory}{the directory to which the output will be saved (Enclose the phrase in double quotation!) (default: the current directory)}

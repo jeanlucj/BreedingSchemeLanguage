@@ -4,7 +4,12 @@
 \alias{genotype}
 \title{Genotype markers}
 \usage{
-genotype(simEnv)
+genotype(simEnv, popID = NULL)
+}
+\arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
+\item{popID}{population ID to be genotyped (default: the latest population)}
 }
 \value{
 marker genotype and the all information created before (list)

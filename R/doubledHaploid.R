@@ -1,5 +1,6 @@
 #'Doubled haploids
 #'
+#'@param simEnv an environment that BSL statements operate on
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
 #'
@@ -9,33 +10,33 @@
 doubledHaploid <- function(simEnv, nProgeny = 100, popID = NULL){
   parent.env(simEnv) <- environment()
   doubledHaploid.func <- function(data, nProgeny, popID){
-    mapData <- data$mapData
+    locPos <- data$mapData$map$Pos
     breedingData <- data$breedingData
-    score <- data$score
-    selCriterion <- data$selCriterion
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }
     tf <- breedingData$popID %in% popID
     GID.now <- breedingData$GID[tf]
     geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
-    geno.progeny <- makeDHs(popSize = nProgeny, geno = geno.now, pos = mapData$map$Pos)$progenies
-    gValue <- calcGenotypicValue(geno = geno.progeny, mapData = mapData)
+    geno.progeny <- makeDHs(popSize = nProgeny, geno = geno.now, pos = locPos)$progenies
+    gValue <- calcGenotypicValue(geno = geno.progeny, mapData = data$mapData)
     GID.progeny <- max(breedingData$GID) + 1:nProgeny
-    popID.progeny <- rep(max(breedingData$popID) + 1, nProgeny)
-    breedingData$geno <- rbind(breedingData$geno, geno.progeny)
     breedingData$GID <- c(breedingData$GID, GID.progeny)
+    popID.progeny <- rep(max(breedingData$popID) + 1, nProgeny)
     breedingData$popID <- c(breedingData$popID, popID.progeny)
     breedingData$popIDsel <- c(breedingData$popIDsel, popID.progeny)
+    breedingData$geno <- rbind(breedingData$geno, geno.progeny)
+    breedingData$hasGeno <- c(breedingData$hasGeno, rep(FALSE, nProgeny))
     breedingData$gValue <- c(breedingData$gValue, gValue)
-    return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
+    data$breedingData <- breedingData
+    return(data)
   }
   with(simEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
       sims <- sfLapply(sims, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
       sfStop()
-    }else{
+    } else{
       sims <- lapply(sims, doubledHaploid.func, nProgeny = nProgeny, popID = popID)
     }
   })

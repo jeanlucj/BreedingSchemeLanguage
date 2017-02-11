@@ -7,7 +7,7 @@
 phasedHapMap2mat(hm)
 }
 \arguments{
-\item{hm}{The data.frame}
+\item{hm}{The data.frame that has HapMap data in it}
 }
 \value{
 list with markers and map objects

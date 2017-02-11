@@ -19,7 +19,7 @@ getCoalescentSim(nPopsSamples = NULL, effPopSize = 100, nChr = 7,
 
 \item{recBTpieces}{-rec (GENOME)}
 
-\item{nMrkOrMut}{parameter tocalculate -s (GENOME)}
+\item{nMrkOrMut}{parameter to calculate -s (GENOME)}
 
 \item{minMAF}{-maf (GENOME)}
 

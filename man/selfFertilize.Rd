@@ -7,6 +7,8 @@
 selfFertilize(simEnv, nProgenyPerInd = 1, popID = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{popID}{population ID to be self-fertilized (default: the latest population)}
 
 \item{nProgeny}{the number of progeny}

@@ -1,6 +1,6 @@
 #' Transform a data.frame with a hapmap data in it into a marker dosage and map list
 #' 
-#' @param hm The data.frame
+#' @param hm The data.frame that has HapMap data in it
 #' 
 #' @return list with markers and map objects
 #' 

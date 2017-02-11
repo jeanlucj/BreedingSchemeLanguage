@@ -31,7 +31,7 @@ makeProgeny <- function(genoMat, genoPat, pos){
 #'
 makeProgenies <- function(parents, geno, pos){
   gameteOnePar <- function(par){
-    makeGamete(geno[par * 2 + 0:1, ], pos)
+    makeGamete(geno[par * 2 + -1:0, ], pos)
   }
   return(t(sapply(c(t(parents)), gameteOnePar)))
 }
@@ -57,10 +57,10 @@ makeDHs <- function(popSize, geno, pos){
   nPar <- nrow(geno) / 2
   nRep <- popSize %/% nPar
   rem <- popSize %% nPar
-  parent <- rep(1:nPar, nRep)
-  parent <- c(parent, sample(1:nPar, rem))
-  progenies <- t(sapply(parent, function(par) DH(geno[c(parent[par] * 2 - 1, parent[par] * 2), ], pos)))
-  return(list(progenies = progenies, pedigree = cbind(parent, parent)))
+  parents <- c(rep(1:nPar, nRep), sample(1:nPar, rem))
+  progenies <- t(sapply(parents, function(par) makeGamete(geno[par*2 + -1:0, ], pos)))
+  progenies <- rbind(progenies, progenies)[rep(c(0, popSize), popSize) + rep(1:popSize, each=2), ]
+  return(list(progenies = progenies, pedigree = cbind(parents, parents)))
 }
 
 #'makeSelfs
@@ -72,10 +72,9 @@ makeSelfs <- function(popSize, geno, pos){
   nPar <- nrow(geno) / 2
   nRep <- popSize %/% nPar
   rem <- popSize %% nPar
-  parent <- rep(1:nPar, nRep)
-  parent <- c(parent, sample(1:nPar, rem))
-  progenies <- makeProgenies(cbind(parent, parent), geno, pos)
-  return(list(progenies = progenies, pedigree = cbind(parent, parent)))
+  parents <- c(rep(1:nPar, nRep), sample(1:nPar, rem))
+  progenies <- makeProgenies(cbind(parents, parents), geno, pos)
+  return(list(progenies = progenies, pedigree = cbind(parents, parents)))
 }
 
 #'randomMate
@@ -90,6 +89,8 @@ randomMate <- function(popSize, geno, pos){
   return(list(progenies = progenies, pedigree = parents))
 }
 
+# Randomly mate but all parents have to be used equally.
+# It's trickier than it seems
 #'randomMateAll
 #'
 #'@param popSize population size
@@ -97,10 +98,23 @@ randomMate <- function(popSize, geno, pos){
 #'@param pos position of markers/QTLs
 #'
 randomMateAll <- function(popSize, geno, pos){
-  nInd <- nrow(geno) / 2
-  parent1 <- rep(1:nInd, length.out=popSize)
-  parent2 <- sapply(parent1, function(par) sample((1:nInd)[-parent1[par]], size = 1))
-  parents <- cbind(parent1, parent2)
+  equalAndRand <- function(popSize, nPar){
+    parents <- matrix(sample(c(rep(1:nPar, 2*popSize %/% nPar), sample(nPar, 2*popSize %% nPar))), popSize)
+    noSelfs <- function(parRow){
+      if (parents[parRow, 1] == parents[parRow, 2]){
+        par <- parents[parRow, 1]
+        swapCan <- apply(parents, 1, function(can) sum(can == par))
+        swapRow <- sample(which(swapCan == 0), 1)
+        parents[parRow, 1] <<- parents[swapRow, 1]
+        parents[swapRow, 1] <<- par 
+      }
+    }
+    dummy <- sapply(1:popSize, noSelfs)
+    return(parents)
+  }
+  
+  nPar <- nrow(geno) / 2
+  parents <- equalAndRand(popSize, nPar)
   progenies <- makeProgenies(parents, geno, pos)
   return(list(progenies = progenies, pedigree = parents))
 }

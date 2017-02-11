@@ -7,6 +7,8 @@
 phenotype(simEnv, errorVar = 1, popID = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{errorVar}{error variance}
 
 \item{popID}{population ID to be evaluated (default: the latest population)}

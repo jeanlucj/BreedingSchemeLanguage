@@ -1,5 +1,6 @@
 #'Genomic prediction
 #'
+#'@param simEnv an environment that BSL statements operate on
 #'@param popID population ID to be predicted (default: the latest population)
 #'@param trainingPopID population ID to be used for training a prediction model (default: all populations with phenotype data)
 #'
@@ -9,45 +10,67 @@
 predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
   parent.env(simEnv) <- environment()
   predict.func <- function(data, popID, trainingPopID){
-    mapData <- data$mapData
     breedingData <- data$breedingData
-    score <- data$score
-    if (is.null(popID)) popID <- max(breedingData$popID)
+    trainCandidates <- breedingData$hasGeno & breedingData$GID %in% breedingData$phenoGID
     if(is.null(trainingPopID)){
-      GID.train <- sort(unique(breedingData$phenoGID))
+      GID.train <- sort(breedingData$GID[trainCandidates])
     }else{
       tf <- breedingData$popID %in% trainingPopID
-      GID.train <- breedingData$GID[tf]
+      GID.train <- breedingData$GID[tf & trainCandidates]
     }
-    GID.not.train <- breedingData$GID[-GID.train]
-    GID <- breedingData$phenoGID
-    y <- breedingData$pValue
+    M <- (breedingData$geno[GID.train*2 - 1,] + breedingData$geno[GID.train*2,]) / 2
     R <- breedingData$error
-    # Put a cell in y for GID that do not have a phenotype
-    GIDnoPheno <- setdiff(breedingData$GID, GID)
-    nNoPheno <- length(GIDnoPheno)
-    GID <- c(GID, GIDnoPheno)
-    y <- c(y, rep(NA, nNoPheno))
-    R <- c(R, rep(NA, nNoPheno))
-    y[GID %in% GID.not.train] <- NA
-    data <- data.frame(GID = GID, y = y)
-    K <- A.mat(score)
-    reduce <- (length(GID) > length(unique(GID)))
-    model <- kin.blup(data = data, geno = "GID", pheno = "y", K = K, R = R, reduce = reduce)
-    predict <- as.numeric(model$g)
-    predGID <- rownames(K)
+    phenoGID <- breedingData$phenoGID
+    y <- breedingData$pValue
+    hetErr <- any(R != R[1])
+    if (hetErr) sqrt.R <- sqrt(R)
+    mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
+    if (mt1ObsPerGID) factPhenGID <- as.factor(phenoGID)
+    switch(
+      hetErr + 2*mt1ObsPerGID + 1, 
+      { # Homogeneous error, one obs per GID
+        Z <- M
+        X <- rep(1, length(y))
+      },
+      { # Heterogeneous error, one obs per GID
+        y <- y / sqrt.R
+        Z <- M / sqrt.R
+        X <- 1 / sqrt.R # OK if X is a vector
+      },
+      { # Homogeneous error, more than one obs per GID
+        w <- c(sqrt(table(phenoGID)))
+        y <- c(tapply(y, factPhenGID, sum)) / w
+        Z <- w * M
+        X <- w
+      },
+      { # Heterogeneous error, more than one obs per GID
+        w <- c(sqrt(tapply(1 / R, factPhenGID, sum)))
+        y <- c(tapply(y / R, factPhenGID, sum)) / w
+        Z <- w * M
+        X <- c(tapply(1 / R, factPhenGID, sum)) / w
+      }
+    )
+    mso <- mixed.solve(y, Z, X=X)
+    # Figure out who to predict
+    if (is.null(popID)) popID <- max(breedingData$popID)
+    tf <- breedingData$popID %in% popID
+    GID.pred <- setdiff(breedingData$GID[tf], GID.train)
+    M <- rbind(M, (breedingData$geno[GID.pred*2 - 1,] + breedingData$geno[GID.pred*2,]) / 2)
+    predict <- M %*% mso$u
+    predGID <- c(GID.train, GID.pred)
     if(is.null(breedingData$predict)){
-      breedingData$predict <- predict
-      breedingData$predGID <- predGID
-      breedingData$predNo <- rep(1, length(predGID))
-    }else{
-      breedingData$predict <- c(breedingData$predict, predict)
-      breedingData$predGID <- c(breedingData$predGID, predGID)
-      breedingData$predNo <- c(breedingData$predNo, rep(max(breedingData$predNo) + 1, length(predGID)))
+      predNo <- 1
+    } else{
+      predNo <- max(breedingData$predNo) + 1
     }
+    breedingData$predict <- c(breedingData$predict, predict)
+    breedingData$predGID <- c(breedingData$predGID, predGID)
+    breedingData$predNo <- c(breedingData$predNo, rep(predNo, length(predGID)))
     selCriterion <- list(popID = popID, criterion = "pred")
-    return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
+    data$breedingData <- breedingData
+    data$selCriterion <- selCriterion
+    return(data)
+  }#END predict.func
   with(simEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)

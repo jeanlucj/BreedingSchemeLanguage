@@ -7,6 +7,8 @@
 doubledHaploid(simEnv, nProgeny = 100, popID = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{nProgeny}{the number of progeny}
 
 \item{popID}{population ID to be devided by meiosis and doubled (default: the latest population)}
