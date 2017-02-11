@@ -18,7 +18,8 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
       tf <- breedingData$popID %in% trainingPopID
       GID.train <- breedingData$GID[tf & trainCandidates]
     }
-    M <- (breedingData$geno[GID.train*2 - 1,] + breedingData$geno[GID.train*2,]) / 2
+    mrkPos <- data$mapData$markerPos
+    M <- (breedingData$geno[GID.train*2 - 1, mrkPos] + breedingData$geno[GID.train*2, mrkPos]) / 2
     R <- breedingData$error
     phenoGID <- breedingData$phenoGID
     y <- breedingData$pValue
@@ -55,7 +56,7 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     if (is.null(popID)) popID <- max(breedingData$popID)
     tf <- breedingData$popID %in% popID
     GID.pred <- setdiff(breedingData$GID[tf], GID.train)
-    M <- rbind(M, (breedingData$geno[GID.pred*2 - 1,] + breedingData$geno[GID.pred*2,]) / 2)
+    M <- rbind(M, (breedingData$geno[GID.pred*2 - 1, mrkPos] + breedingData$geno[GID.pred*2, mrkPos]) / 2)
     predict <- M %*% mso$u
     predGID <- c(GID.train, GID.pred)
     if(is.null(breedingData$predict)){
