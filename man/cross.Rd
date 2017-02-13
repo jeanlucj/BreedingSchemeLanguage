@@ -4,14 +4,19 @@
 \alias{cross}
 \title{Random mate}
 \usage{
-cross(nProgeny = 100, equalContribution = F, popID = NULL)
+cross(simEnv, nProgeny = 100, equalContribution = F, popID = NULL,
+  popID2 = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{nProgeny}{the number of progenies}
 
 \item{equalContribution}{if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents}
 
 \item{popID}{population ID to be crossed (default: the latest population)}
+
+\item{popID2}{population ID to be crossed with popID to make hybrids}
 }
 \value{
 sequence information of progenies and the all information created before (list)

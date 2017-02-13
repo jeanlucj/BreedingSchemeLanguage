@@ -4,12 +4,15 @@
 \alias{defineSpecies}
 \title{Define and create species}
 \usage{
-defineSpecies(loadData = NULL, saveDataFileName = "previousData",
-  nSim = 1, nCore = 1, nChr = 7, lengthChr = 150, effPopSize = 100,
-  nMarkers = 1000, nQTL = 50, propDomi = 0, nEpiLoci = 0)
+defineSpecies(loadData = NULL, importFounderHap = NULL,
+  saveDataFileName = "previousData", nSim = 1, nCore = 1, nChr = 7,
+  lengthChr = 150, effPopSize = 100, nMarkers = 1000, nQTL = 50,
+  propDomi = 0, nEpiLoci = 0, domModel = "HetHom")
 }
 \arguments{
-\item{loadData}{if null create a new species (default), else the file name of previously created species like "fileName.RData".}
+\item{loadData}{if null create a new species (default), else the file name of previously created species like "fileName" (Do not put "RData" extension).}
+
+\item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally generated founder haplotypes in hapmap format.}
 
 \item{saveDataFileName}{the name to save the species data with double-quotation, like "species1_1". (default: "previousData")}
 
@@ -30,6 +33,8 @@ defineSpecies(loadData = NULL, saveDataFileName = "previousData",
 \item{propDomi}{the probability of dominant QTL among the all QTL}
 
 \item{nEpiLoci}{the expected number of epistatic loci for each effect}
+
+\item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance.}
 }
 \value{
 Species information and input values for the simulation (list)

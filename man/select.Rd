@@ -4,9 +4,11 @@
 \alias{select}
 \title{Select individuals}
 \usage{
-select(nSelect = 40, popID = NULL, random = F)
+select(simEnv, nSelect = 40, popID = NULL, random = F)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{nSelect}{the number of selected individuals}
 
 \item{popID}{population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)}

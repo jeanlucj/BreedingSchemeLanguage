@@ -4,14 +4,19 @@
 \alias{plotData}
 \title{Plot the results}
 \usage{
-plotData(ymax = NULL, add = F, addDataFileName = "plotData")
+plotData(simEnv, ymax = NULL, add = F, addDataFileName = "plotData",
+  popIDplot = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{ymax}{the maximum value of y-axis (default: the maximun value in the data)}
 
 \item{add}{if T a new result will be added to an existing plot, if F a new plot will be drawn (default)}
 
 \item{addDataFileName}{the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")}
+
+\item{popID}{vector of the population IDs you want plotted}
 }
 \value{
 A ggplot object of the simulation results

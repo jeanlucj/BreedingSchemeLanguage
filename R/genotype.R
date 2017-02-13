@@ -1,26 +1,23 @@
 #'Genotype markers
 #'
+#'@param simEnv an environment that BSL statements operate on
+#'@param popID population ID to be genotyped (default: the latest population)
 #'@return marker genotype and the all information created before (list)
 #'
 #'@export
-genotype <- function(){
+genotype <- function(simEnv, popID=NULL){
+  parent.env(simEnv) <- environment()
   genotype.func <- function(data){
-    mapData <- data$mapData
-    breedingData <- data$breedingData
-    selCriterion <- data$selCriterion
-    geno <- breedingData$geno
-    nPop <- nrow(geno) / 2
-    score <- geno[1:nPop * 2 - 1, ] + geno[1:nPop * 2,]
-    score <- score / 2
-    score <- score[, mapData$markerPos]
-    rownames(score) <- breedingData$GID
-    return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
+    if (is.null(popID)){
+      data$breedingData$hasGeno <- rep(TRUE, length(data$breedingData$GID))
+    } else{
+      tf <- data$breedingData$popID %in% popID
+      data$breedingData$hasGeno <- data$breedingData$hasGeno | tf
+    }
+    return(data)
   }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, genotype.func)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, genotype.func)
-  }
+  with(simEnv, {
+    # This is too fast to want to parallelize
+    sims <- lapply(sims, genotype.func)
+  })
 }

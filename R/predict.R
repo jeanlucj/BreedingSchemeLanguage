@@ -1,70 +1,102 @@
 #'Genomic prediction
 #'
+#'@param simEnv an environment that BSL statements operate on
 #'@param popID population ID to be predicted (default: the latest population)
 #'@param trainingPopID population ID to be used for training a prediction model (default: all populations with phenotype data)
 #'
 #'@return predicted values and the all information created before (list)
 #'
 #'@export
-predictBreedVal <- function(popID = NULL, trainingPopID = NULL){
+predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
+  parent.env(simEnv) <- environment()
   predict.func <- function(data, popID, trainingPopID){
-    mapData <- data$mapData
     breedingData <- data$breedingData
-    score <- data$score
-    if(is.null(popID)){
-      predictedPopID <- max(breedingData$popID)
-    }else{
-      predictedPopID <- popID
-    }
+    trainCandidates <- breedingData$hasGeno & breedingData$GID %in% breedingData$phenoGID
     if(is.null(trainingPopID)){
-      GID.train <- sort(unique(breedingData$phenoGID))
+      GID.train <- sort(breedingData$GID[trainCandidates])
     }else{
-      tf <- rep(F, length(breedingData$GID))
-      for(i in trainingPopID){
-        tf[breedingData$popID == i] <- T
-      } # i
-      GID.train <- breedingData$GID[tf]
+      tf <- breedingData$popID %in% trainingPopID
+      GID.train <- breedingData$GID[tf & trainCandidates]
     }
-    GID.not.train <- breedingData$GID[-GID.train]
-    GID <- breedingData$phenoGID
-    y <- breedingData$pValue
+    mrkPos <- data$mapData$markerPos
+
+    # Test for polymorphism
+    nPoly <- sum(apply(breedingData$geno[c(GID.train*2-1, GID.train*2), mrkPos], 2, function(vec) any(vec != vec[1])))
+    cat("Number of polymorphic markers for prediction", nPoly, "\n")
+    
+    M <- (breedingData$geno[GID.train*2 - 1, mrkPos] + breedingData$geno[GID.train*2, mrkPos]) / 2
     R <- breedingData$error
-    if(max(breedingData$GID) > max(GID)){
-      no.pheno <- max(breedingData$GID) - max(GID)
-      GID <- c(GID, max(GID) + 1:no.pheno)
-      y <- c(y, rep(NA, no.pheno))
-      R <- c(R, rep(NA, no.pheno))
+    phenoGID <- breedingData$phenoGID
+    y <- breedingData$pValue
+    hetErr <- any(R != R[1])
+    if (hetErr) sqrt.R <- sqrt(R)
+    mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
+    if (mt1ObsPerGID) factPhenGID <- as.factor(phenoGID)
+    
+    if (FALSE){
+    switch(
+      hetErr + 2*mt1ObsPerGID + 1, 
+      { # Homogeneous error, one obs per GID
+        Z <- M
+        X <- rep(1, length(y))
+      },
+      { # Heterogeneous error, one obs per GID
+        y <- y / sqrt.R
+        Z <- M / sqrt.R
+        X <- 1 / sqrt.R # OK if X is a vector
+      },
+      { # Homogeneous error, more than one obs per GID
+        w <- c(sqrt(table(phenoGID)))
+        y <- c(tapply(y, factPhenGID, sum)) / w
+        Z <- w * M
+        X <- w
+      },
+      { # Heterogeneous error, more than one obs per GID
+        w <- c(sqrt(tapply(1 / R, factPhenGID, sum)))
+        y <- c(tapply(y / R, factPhenGID, sum)) / w
+        Z <- w * M
+        X <- c(tapply(1 / R, factPhenGID, sum)) / w
+      }
+    )
+    mso <- mixed.solve(y, Z, X=X)
     }
-    for(i in GID.not.train){
-      y[GID == i] <- NA
-    }
-    data <- data.frame(GID = GID, y = y)
-    K <- A.mat(score)
-    if(length(GID) > length(unique(GID))){
-      reduce <- T
-    }else{
-      reduce <- F
-    }
-    model <- kin.blup(data = data, geno = "GID", pheno = "y", K = K, R = R, reduce = reduce)
-    predict <- as.numeric(model$g)
-    predGID <- rownames(K)
+    # Figure out who to predict
+    if (is.null(popID)) popID <- max(breedingData$popID)
+    tf <- breedingData$popID %in% popID
+    GID.pred <- setdiff(breedingData$GID[tf], GID.train)
+    M <- rbind(M, (breedingData$geno[GID.pred*2 - 1, mrkPos] + breedingData$geno[GID.pred*2, mrkPos]) / 2)
+    # predict <- M %*% mso$u
+    predGID <- c(GID.train, GID.pred)
+    
+    # Now use the other version with (Z^T Rinv Z) Z^T R^{-1/2}
+    K <- A.mat(M)
+    rownames(K) <- colnames(K) <- predGID
+    keep <- breedingData$phenoGID %in% predGID
+    kbDat <- data.frame(breedingData$pValue[keep], breedingData$phenoGID[keep])
+    colnames(kbDat) <- c("pheno", "GID")
+    kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", K=K, reduce=mt1ObsPerGID, R=R)
+    predict <- kbo$g[as.character(predGID)]
+    
     if(is.null(breedingData$predict)){
-      breedingData$predict <- predict
-      breedingData$predGID <- predGID
-      breedingData$predNo <- rep(1, length(predGID))
-    }else{
-      breedingData$predict <- c(breedingData$predict, predict)
-      breedingData$predGID <- c(breedingData$predGID, predGID)
-      breedingData$predNo <- c(breedingData$predNo, rep(max(breedingData$predNo) + 1, length(predGID)))
+      predNo <- 1
+    } else{
+      predNo <- max(breedingData$predNo) + 1
     }
-    selCriterion <- list(popID = predictedPopID, criterion = "pred")
-    return(list(mapData = mapData, breedingData = breedingData, score = score, selCriterion = selCriterion))
-  }
-  if(nCore > 1){
-    sfInit(parallel=T, cpus=nCore)
-    lists <<- sfLapply(lists, predict.func, popID = popID, trainingPopID = trainingPopID)
-    sfStop()
-  }else{
-    lists <<- lapply(lists, predict.func, popID = popID, trainingPopID = trainingPopID)
-  }
+    breedingData$predict <- c(breedingData$predict, predict)
+    breedingData$predGID <- c(breedingData$predGID, predGID)
+    breedingData$predNo <- c(breedingData$predNo, rep(predNo, length(predGID)))
+    selCriterion <- list(popID = popID, criterion = "pred")
+    data$breedingData <- breedingData
+    data$selCriterion <- selCriterion
+    return(data)
+  }#END predict.func
+  with(simEnv, {
+    if(nCore > 1){
+      sfInit(parallel=T, cpus=nCore)
+      sims <- sfLapply(sims, predict.func, popID = popID, trainingPopID = trainingPopID)
+      sfStop()
+    }else{
+      sims <- lapply(sims, predict.func, popID = popID, trainingPopID = trainingPopID)
+    }
+  })
 }

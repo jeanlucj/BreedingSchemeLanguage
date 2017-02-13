@@ -4,9 +4,11 @@
 \alias{predictBreedVal}
 \title{Genomic prediction}
 \usage{
-predictBreedVal(popID = NULL, trainingPopID = NULL)
+predictBreedVal(simEnv, popID = NULL, trainingPopID = NULL)
 }
 \arguments{
+\item{simEnv}{an environment that BSL statements operate on}
+
 \item{popID}{population ID to be predicted (default: the latest population)}
 
 \item{trainingPopID}{population ID to be used for training a prediction model (default: all populations with phenotype data)}
