@@ -19,6 +19,11 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
       GID.train <- breedingData$GID[tf & trainCandidates]
     }
     mrkPos <- data$mapData$markerPos
+
+    # Test for polymorphism
+    nPoly <- sum(apply(breedingData$geno[c(GID.train*2-1, GID.train*2), mrkPos], 2, function(vec) any(vec != vec[1])))
+    cat("Number of polymorphic markers for prediction", nPoly, "\n")
+    
     M <- (breedingData$geno[GID.train*2 - 1, mrkPos] + breedingData$geno[GID.train*2, mrkPos]) / 2
     R <- breedingData$error
     phenoGID <- breedingData$phenoGID
