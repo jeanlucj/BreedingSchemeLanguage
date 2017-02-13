@@ -14,7 +14,6 @@ cross <- function(simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=
   cross.func <- function(data, nProgeny, equalContribution, popID, popID2){
     locPos <- data$mapData$map$Pos
     breedingData <- data$breedingData
-    selCriterion <- data$selCriterion
     if(is.null(popID)){
       popID <- max(breedingData$popID)
     }

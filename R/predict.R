@@ -27,6 +27,8 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     if (hetErr) sqrt.R <- sqrt(R)
     mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
     if (mt1ObsPerGID) factPhenGID <- as.factor(phenoGID)
+    
+    if (FALSE){
     switch(
       hetErr + 2*mt1ObsPerGID + 1, 
       { # Homogeneous error, one obs per GID
@@ -52,13 +54,24 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
       }
     )
     mso <- mixed.solve(y, Z, X=X)
+    }
     # Figure out who to predict
     if (is.null(popID)) popID <- max(breedingData$popID)
     tf <- breedingData$popID %in% popID
     GID.pred <- setdiff(breedingData$GID[tf], GID.train)
     M <- rbind(M, (breedingData$geno[GID.pred*2 - 1, mrkPos] + breedingData$geno[GID.pred*2, mrkPos]) / 2)
-    predict <- M %*% mso$u
+    # predict <- M %*% mso$u
     predGID <- c(GID.train, GID.pred)
+    
+    # Now use the other version with (Z^T Rinv Z) Z^T R^{-1/2}
+    K <- A.mat(M)
+    rownames(K) <- colnames(K) <- predGID
+    keep <- breedingData$phenoGID %in% predGID
+    kbDat <- data.frame(breedingData$pValue[keep], breedingData$phenoGID[keep])
+    colnames(kbDat) <- c("pheno", "GID")
+    kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", K=K, reduce=mt1ObsPerGID, R=R)
+    predict <- kbo$g[as.character(predGID)]
+    
     if(is.null(breedingData$predict)){
       predNo <- 1
     } else{
