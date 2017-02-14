@@ -24,10 +24,7 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     R <- breedingData$error
     phenoGID <- breedingData$phenoGID
     y <- breedingData$pValue
-    hetErr <- any(R != R[1])
-    if (hetErr) sqrt.R <- sqrt(R)
     mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
-    if (mt1ObsPerGID) factPhenGID <- as.factor(phenoGID)
 
     # Figure out who to predict
     if (is.null(popID)) popID <- max(breedingData$popID)
