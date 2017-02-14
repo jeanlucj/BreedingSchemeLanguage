@@ -5,7 +5,7 @@
 \title{Plot the results}
 \usage{
 plotData(simEnv, ymax = NULL, add = F, addDataFileName = "plotData",
-  popIDplot = NULL)
+  popID = NULL)
 }
 \arguments{
 \item{simEnv}{an environment that BSL statements operate on}

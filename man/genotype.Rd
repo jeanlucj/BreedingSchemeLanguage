@@ -9,7 +9,7 @@ genotype(simEnv, popID = NULL)
 \arguments{
 \item{simEnv}{an environment that BSL statements operate on}
 
-\item{popID}{population ID to be genotyped (default: the latest population)}
+\item{popID}{population ID to be genotyped (default: all populations)}
 }
 \value{
 marker genotype and the all information created before (list)

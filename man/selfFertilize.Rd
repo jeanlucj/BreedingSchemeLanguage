@@ -4,14 +4,14 @@
 \alias{selfFertilize}
 \title{Self-fertilize}
 \usage{
-selfFertilize(simEnv, nProgenyPerInd = 1, popID = NULL)
+selfFertilize(simEnv, nProgeny = 100, popID = NULL)
 }
 \arguments{
 \item{simEnv}{an environment that BSL statements operate on}
 
-\item{popID}{population ID to be self-fertilized (default: the latest population)}
-
 \item{nProgeny}{the number of progeny}
+
+\item{popID}{population ID to be self-fertilized (default: the latest population)}
 }
 \value{
 sequence information of progenies and the all information created before (list)

@@ -1,7 +1,7 @@
 #'Genotype markers
 #'
 #'@param simEnv an environment that BSL statements operate on
-#'@param popID population ID to be genotyped (default: the latest population)
+#'@param popID population ID to be genotyped (default: all populations)
 #'@return marker genotype and the all information created before (list)
 #'
 #'@export

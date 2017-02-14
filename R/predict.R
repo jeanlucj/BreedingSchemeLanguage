@@ -20,10 +20,6 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     }
     mrkPos <- data$mapData$markerPos
 
-    # Test for polymorphism
-    nPoly <- sum(apply(breedingData$geno[c(GID.train*2-1, GID.train*2), mrkPos], 2, function(vec) any(vec != vec[1])))
-    cat("Number of polymorphic markers for prediction", nPoly, "\n")
-    
     M <- (breedingData$geno[GID.train*2 - 1, mrkPos] + breedingData$geno[GID.train*2, mrkPos]) / 2
     R <- breedingData$error
     phenoGID <- breedingData$phenoGID
@@ -32,43 +28,14 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     if (hetErr) sqrt.R <- sqrt(R)
     mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
     if (mt1ObsPerGID) factPhenGID <- as.factor(phenoGID)
-    
-    if (FALSE){
-    switch(
-      hetErr + 2*mt1ObsPerGID + 1, 
-      { # Homogeneous error, one obs per GID
-        Z <- M
-        X <- rep(1, length(y))
-      },
-      { # Heterogeneous error, one obs per GID
-        y <- y / sqrt.R
-        Z <- M / sqrt.R
-        X <- 1 / sqrt.R # OK if X is a vector
-      },
-      { # Homogeneous error, more than one obs per GID
-        w <- c(sqrt(table(phenoGID)))
-        y <- c(tapply(y, factPhenGID, sum)) / w
-        Z <- w * M
-        X <- w
-      },
-      { # Heterogeneous error, more than one obs per GID
-        w <- c(sqrt(tapply(1 / R, factPhenGID, sum)))
-        y <- c(tapply(y / R, factPhenGID, sum)) / w
-        Z <- w * M
-        X <- c(tapply(1 / R, factPhenGID, sum)) / w
-      }
-    )
-    mso <- mixed.solve(y, Z, X=X)
-    }
+
     # Figure out who to predict
     if (is.null(popID)) popID <- max(breedingData$popID)
     tf <- breedingData$popID %in% popID
     GID.pred <- setdiff(breedingData$GID[tf], GID.train)
     M <- rbind(M, (breedingData$geno[GID.pred*2 - 1, mrkPos] + breedingData$geno[GID.pred*2, mrkPos]) / 2)
-    # predict <- M %*% mso$u
     predGID <- c(GID.train, GID.pred)
     
-    # Now use the other version with (Z^T Rinv Z) Z^T R^{-1/2}
     K <- A.mat(M)
     rownames(K) <- colnames(K) <- predGID
     keep <- breedingData$phenoGID %in% predGID

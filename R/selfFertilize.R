@@ -7,9 +7,9 @@
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-selfFertilize <- function(simEnv, nProgenyPerInd=1, popID=NULL){
+selfFertilize <- function(simEnv, nProgeny=100, popID=NULL){
   parent.env(simEnv) <- environment()
-  selfFertilize.func <- function(data, nProgenyPerInd, popID){
+  selfFertilize.func <- function(data, nProgeny, popID){
     locPos <- data$mapData$map$Pos
     breedingData <- data$breedingData
     if(is.null(popID)){
@@ -34,10 +34,10 @@ selfFertilize <- function(simEnv, nProgenyPerInd=1, popID=NULL){
   with(simEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, selfFertilize.func, nProgenyPerInd=nProgenyPerInd, popID=popID)
+      sims <- sfLapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
       sfStop()
     }else{
-      sims <- lapply(sims, selfFertilize.func, nProgenyPerInd=nProgenyPerInd, popID=popID)
+      sims <- lapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
     }
   })
 }

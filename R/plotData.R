@@ -9,16 +9,15 @@
 #'@return A ggplot object of the simulation results
 #'
 #'@export
-plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popIDplot=NULL){
-  plotBase <- is.null(popIDplot)
-  if (plotBase) popIDplot <- sort(unique(simEnv$sims[[1]]$breedingData$popIDsel))
+plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL){
+  plotBase <- is.null(popID)
+  if (plotBase) popID <- sort(unique(simEnv$sims[[1]]$breedingData$popIDsel))
   
   getMeans <- function(sim){
-    breedingData <- sim$breedingData
-    if (plotBase) popID <- breedingData$popIDsel
-    else popID <- breedingData$popID
-    mu <- tapply(breedingData$gValue, as.factor(popID), mean)
-    mu <- mu[as.character(popIDplot)]
+    if (plotBase) pID <- sim$breedingData$popIDsel
+    else pID <- sim$breedingData$popID
+    mu <- tapply(sim$breedingData$gValue, as.factor(pID), mean)
+    mu <- mu[as.character(popID)]
   }
   muSim <- t(sapply(simEnv$sims, getMeans))
   
@@ -27,7 +26,7 @@ plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID
   group <- NULL
   col <- NULL
   size <- NULL
-  nGenPlot <- length(popIDplot)
+  nGenPlot <- length(popID)
   for(sim in 1:simEnv$nSim){
     g <- c(g, muSim[sim, ])
     group <- c(group, rep(sim, nGenPlot))
