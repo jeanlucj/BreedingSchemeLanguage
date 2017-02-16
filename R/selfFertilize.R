@@ -11,24 +11,24 @@ selfFertilize <- function(simEnv, nProgeny=100, popID=NULL){
   parent.env(simEnv) <- environment()
   selfFertilize.func <- function(data, nProgeny, popID){
     locPos <- data$mapData$map$Pos
-    breedingData <- data$breedingData
     if(is.null(popID)){
-      popID <- max(breedingData$popID)
+      popID <- max(data$genoRec$popID)
     }
-    tf <- breedingData$popID %in% popID
-    GID.now <- breedingData$GID[tf]
-    geno.now <- breedingData$geno[sort(c(GID.now * 2 - 1, GID.now * 2)), ]
-    geno.progeny <- makeSelfs(popSize=nProgeny, geno=geno.now, pos=locPos)$progenies
-    gValue <- calcGenotypicValue(geno=geno.progeny, mapData=data$mapData)
-    GID.progeny <- max(breedingData$GID) + 1:(nrow(geno.progeny) / 2)
-    breedingData$GID <- c(breedingData$GID, GID.progeny)
-    popID.progeny <- rep(max(breedingData$popID) + 1, nrow(geno.progeny) / 2)
-    breedingData$popID <- c(breedingData$popID, popID.progeny)
-    breedingData$popIDsel <- c(breedingData$popIDsel, popID.progeny)
-    breedingData$geno <- rbind(breedingData$geno, geno.progeny)
-    breedingData$hasGeno <- c(breedingData$hasGeno, rep(FALSE, nProgeny))
-    breedingData$gValue <- c(breedingData$gValue, gValue)
-    data$breedingData <- breedingData
+    tf <- data$genoRec$popID %in% popID
+    GIDpar <- data$genoRec$GID[tf]
+    nPar <- length(GIDpar)
+    geno <- data$geno[rep(GIDpar*2, each=2) + rep(-1:0, nPar),]
+    geno <- makeSelfs(popSize=nProgeny, geno=geno.now, pos=locPos)
+    pedigree <- geno$pedigree
+    geno <- geno$progenies
+    gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
+    GID <- max(data$genoRec$GID) + 1:nProgeny
+    popID <- rep(max(data$genoRec$popID) + 1, nProgeny)
+    hasGeno <- rep(FALSE, nProgeny)
+    gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
+    addRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno, gValue=gValue)
+    data$genoRec <- rbind(data$genoRec, addRec)
+    data$geno <- rbind(data$geno, geno)
     return(data)
   }
   with(simEnv, {

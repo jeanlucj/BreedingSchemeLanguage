@@ -11,12 +11,12 @@
 #'@export
 plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL){
   plotBase <- is.null(popID)
-  if (plotBase) popID <- sort(unique(simEnv$sims[[1]]$breedingData$popIDsel))
+  if (plotBase) popID <- sort(unique(simEnv$sims[[1]]$genoRec$basePopID))
   
   getMeans <- function(sim){
-    if (plotBase) pID <- sim$breedingData$popIDsel
-    else pID <- sim$breedingData$popID
-    mu <- tapply(sim$breedingData$gValue, as.factor(pID), mean)
+    if (plotBase) pID <- sim$genoRec$basePopID
+    else pID <- sim$genoRec$popID
+    mu <- tapply(sim$genoRec$gValue, pID, mean)
     mu <- mu[as.character(popID)]
   }
   muSim <- t(sapply(simEnv$sims, getMeans))

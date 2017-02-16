@@ -11,38 +11,30 @@
 select <- function(simEnv, nSelect=40, popID=NULL, random=F){
   parent.env(simEnv) <- environment()
   select.func <- function(data, nSelect, popID, random=FALSE){
-    breedingData <- data$breedingData
     criterion <- data$selCriterion$criterion
     if(is.null(popID)){
       popID <- data$selCriterion$popID
       if(is.null(popID)) popID <- 0
     }
-    tf <- breedingData$popID %in% popID
-    GID.now <- breedingData$GID[tf]
+    tf <- data$genoRec$popID %in% popID
+    GIDcan <- data$genoRec$GID[tf]
     if (random){
-      selectedGID <- sample(GID.now, nSelect)
+      selectedGID <- sample(GIDcan, nSelect)
     } else{
-      candValue <- NULL
       if(substr(criterion, 1, 5) == "pheno"){
-        for(i in GID.now){
-          error.now <- min(breedingData$error[breedingData$phenoGID == i])
-          candValue <- c(candValue, mean(breedingData$pValue[(breedingData$phenoGID == i) & (breedingData$error == error.now)]))
-        }
+        usePheno <- data$phenoRec[phenoRec$phenoGID %in% GIDcan,]
+        candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }else{
         if(substr(criterion, 1, 4) == "pred"){
-          for(i in GID.now){
-            candValue <- c(candValue, breedingData$predict[(breedingData$predGID == i) & (breedingData$predNo == max(breedingData$predNo))])
-          }
+          candValue <- data$predRec$predict[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo)]
         }else{
           stop("Please define selection criterion in correct way!")
         }
       }
-      order <- order(candValue, decreasing=T)
-      selectedGID <- GID.now[order[1:nSelect]]
+      selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
     }#END not random selection
-    popID.new <- max(breedingData$popID) + 1
-    breedingData$popID[breedingData$GID %in% selectedGID] <- popID.new
-    data$breedingData <- breedingData
+    popID.new <- max(data$genoRec$popID) + 1
+    data$genoRec$popID[data$genoRec$GID %in% selectedGID] <- popID.new
     return(data)
   } #END select.func
   with(simEnv, {

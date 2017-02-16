@@ -10,18 +10,13 @@
 initializePopulation <- function(simEnv, nInd=100, gVariance=1){
   parent.env(simEnv) <- environment()
   initializePopulation.func <- function(data, nInd, gVariance){
-    mapData <- data$mapData
-    founderHaps <- data$founderHaps
     seed <- round(runif(1, 0, 1e9))
-    doubleGametes <- function(gametes){
-      genotypes <- matrix(NA, 2 * nrow(gametes), ncol(gametes))
-      genotypes[1:nrow(gametes) * 2, ] <- gametes
-      genotypes[1:nrow(gametes) * 2 - 1, ] <- gametes
-    }
-    geno <- doubleGametes(founderHaps)
-    geno <- randomMate(popSize=nrow(geno) / 2, geno=geno, pos=mapData$map$Pos)$progenies
-    geno <- randomMate(popSize=nInd, geno=geno, pos=mapData$map$Pos)$progenies
-    geno <- geno * 2 - 1
+    mapData <- data$mapData
+    geno <- data$founderHaps * 2 - 1
+    geno <- geno[sample(nrow(geno), nInd*2, replace=T),]
+    geno <- randomMate(popSize=nInd, geno=geno, pos=mapData$map$Pos)
+    pedigree <- -geno$pedigree # For founders, parents will be negative
+    geno <- geno$progenies
     gValue <- calcGenotypicValue(geno=geno, mapData=mapData)
     coef <- sqrt(gVariance / var(gValue))
     mapData$effects <- as.matrix(mapData$effects * coef, ncol=1)
@@ -29,8 +24,8 @@ initializePopulation <- function(simEnv, nInd=100, gVariance=1){
     GID <- 1:nInd
     popID <- rep(0, nInd)
     hasGeno <- rep(FALSE, nInd)
-    breedingData <- list(geno=geno, GID=GID, popID=popID, popIDsel=popID, hasGeno=hasGeno, gValue=gValue)
-    return(list(mapData=mapData, breedingData=breedingData))
+    genoRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno, gValue=gValue)
+    return(list(mapData=mapData, geno=geno, genoRec=genoRec))
   }
   with(simEnv, {
     if(nCore > 1){

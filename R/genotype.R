@@ -9,10 +9,10 @@ genotype <- function(simEnv, popID=NULL){
   parent.env(simEnv) <- environment()
   genotype.func <- function(data){
     if (is.null(popID)){
-      data$breedingData$hasGeno <- rep(TRUE, length(data$breedingData$GID))
+      data$genoRec$hasGeno <- TRUE
     } else{
-      tf <- data$breedingData$popID %in% popID
-      data$breedingData$hasGeno <- data$breedingData$hasGeno | tf
+      tf <- data$genoRec$popID %in% popID
+      data$genoRec$hasGeno <- data$genoRec$hasGeno | tf
     }
     return(data)
   }

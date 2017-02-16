@@ -10,48 +10,44 @@
 predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
   parent.env(simEnv) <- environment()
   predict.func <- function(data, popID, trainingPopID){
-    breedingData <- data$breedingData
-    trainCandidates <- breedingData$hasGeno & breedingData$GID %in% breedingData$phenoGID
+    trainCandidates <- data$genoRec$hasGeno & data$genoRec$GID %in% data$phenoRec$phenoGID
     if(is.null(trainingPopID)){
-      GID.train <- sort(breedingData$GID[trainCandidates])
+      GID.train <- data$genoRec$GID[trainCandidates]
     }else{
-      tf <- breedingData$popID %in% trainingPopID
-      GID.train <- breedingData$GID[tf & trainCandidates]
+      tf <- data$genoRec$popID %in% trainingPopID
+      GID.train <- data$genoRec$GID[tf & trainCandidates]
     }
     mrkPos <- data$mapData$markerPos
 
-    M <- (breedingData$geno[GID.train*2 - 1, mrkPos] + breedingData$geno[GID.train*2, mrkPos]) / 2
-    R <- breedingData$error
-    phenoGID <- breedingData$phenoGID
-    y <- breedingData$pValue
+    M <- (data$geno[GID.train*2 - 1, mrkPos] + data$geno[GID.train*2, mrkPos]) / 2
+    R <- data$phenoRec$error
+    phenoGID <- data$phenoRec$phenoGID
+    y <- data$phenoRec$pValue
     mt1ObsPerGID <- sum(phenoGID %in% GID.train) > length(GID.train)
 
     # Figure out who to predict
-    if (is.null(popID)) popID <- max(breedingData$popID)
-    tf <- breedingData$popID %in% popID
-    GID.pred <- setdiff(breedingData$GID[tf], GID.train)
-    M <- rbind(M, (breedingData$geno[GID.pred*2 - 1, mrkPos] + breedingData$geno[GID.pred*2, mrkPos]) / 2)
+    if (is.null(popID)) popID <- max(data$genoRec$popID)
+    tf <- data$genoRec$popID %in% popID
+    GID.pred <- setdiff(data$genoRec$GID[tf], GID.train)
+    M <- rbind(M, (data$geno[GID.pred*2 - 1, mrkPos] + data$geno[GID.pred*2, mrkPos]) / 2)
     predGID <- c(GID.train, GID.pred)
     
     K <- A.mat(M)
     rownames(K) <- colnames(K) <- predGID
-    keep <- breedingData$phenoGID %in% predGID
-    kbDat <- data.frame(breedingData$pValue[keep], breedingData$phenoGID[keep])
-    colnames(kbDat) <- c("pheno", "GID")
+    keep <- data$phenoRec$phenoGID %in% predGID
+    kbDat <- data.frame(pheno=data$phenoRec$pValue[keep], GID=data$phenoRec$phenoGID[keep])
     kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", K=K, reduce=mt1ObsPerGID, R=R)
     predict <- kbo$g[as.character(predGID)]
     
-    if(is.null(breedingData$predict)){
+    if(is.null(data$predRec)){
       predNo <- 1
     } else{
-      predNo <- max(breedingData$predNo) + 1
+      predNo <- max(data$predRec$predNo) + 1
     }
-    breedingData$predict <- c(breedingData$predict, predict)
-    breedingData$predGID <- c(breedingData$predGID, predGID)
-    breedingData$predNo <- c(breedingData$predNo, rep(predNo, length(predGID)))
-    selCriterion <- list(popID = popID, criterion = "pred")
-    data$breedingData <- breedingData
-    data$selCriterion <- selCriterion
+    toAdd <- data.frame(predGID=predGID, predNo=predNo, predict=predict)
+    data$predRec <- rbind(data$predRec, toAdd)
+
+    data$selCriterion <- list(popID = popID, criterion = "pred")
     return(data)
   }#END predict.func
   with(simEnv, {

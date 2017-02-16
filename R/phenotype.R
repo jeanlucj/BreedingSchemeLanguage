@@ -9,19 +9,17 @@
 phenotype <- function(simEnv, errorVar=1, popID=NULL){
   parent.env(simEnv) <- environment()
   phenotype.func <- function(data, errorVar, popID){
-    breedingData <- data$breedingData
 
     if(is.null(popID)){
-      popID <- max(breedingData$popID)
+      popID <- max(data$genoRec$popID)
     }
-    tf <- breedingData$popID %in% popID
+    tf <- data$genoRec$popID %in% popID
     
-    pValue <- calcPhenotypicValue(gv=breedingData$gValue[tf], errorVar=errorVar)
-    breedingData$pValue <- c(breedingData$pValue, pValue)
-    breedingData$error <- c(breedingData$error, rep(errorVar, length(pValue)))
-    breedingData$phenoGID <- c(breedingData$phenoGID, breedingData$GID[tf])
+    pValue <- calcPhenotypicValue(gv=data$genoRec$gValue[tf], errorVar=errorVar)
     
-    data$breedingData <- breedingData
+    toAdd <- data.frame(phenoGID=data$genoRec$GID[tf], pValue=pValue, error=errorVar)
+    data$phenoRec <- rbind(data$phenoRec, toAdd)
+
     data$selCriterion <- list(popID=popID, criterion="pheno")
     return(data)
   }
