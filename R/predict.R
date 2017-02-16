@@ -38,7 +38,7 @@ predictBreedVal <- function(simEnv, popID = NULL, trainingPopID = NULL){
     keep <- breedingData$phenoGID %in% predGID
     kbDat <- data.frame(breedingData$pValue[keep], breedingData$phenoGID[keep])
     colnames(kbDat) <- c("pheno", "GID")
-    kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", K=K, reduce=mt1ObsPerGID, R=R)
+    kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", K=K, reduce=mt1ObsPerGID, R=R[keep])
     predict <- kbo$g[as.character(predGID)]
     
     if(is.null(breedingData$predict)){
