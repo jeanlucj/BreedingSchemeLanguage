@@ -26,7 +26,8 @@ select <- function(simEnv, nSelect=40, popID=NULL, random=F){
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }else{
         if(substr(criterion, 1, 4) == "pred"){
-          candValue <- data$predRec$predict[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo)]
+          usePred <- data$predRec[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo),]
+          candValue <- usePred$predict[order(usePred$predGID)]
         }else{
           stop("Please define selection criterion in correct way!")
         }
