@@ -41,6 +41,6 @@ outputResults <- function(simEnv, summarize = T, directory = NULL, saveDataFileN
   if(is.null(directory)){
     saveRDS(BSLoutput, file = "BSLoutput.rds")
   }else{
-    saveRDS(BSLoutput, file = paste(directory, "/", saveDataFileName, ".RData", sep = ""))
+    saveRDS(BSLoutput, file = paste(directory, "/", saveDataFileName, ".rds", sep = ""))
   }
 }
