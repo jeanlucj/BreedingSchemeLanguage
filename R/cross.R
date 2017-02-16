@@ -32,7 +32,7 @@ cross <- function(simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=
       tf <- data$genoRec$popID %in% popID2
       GID.2 <- data$genoRec$GID[tf]
       nPar2 <- length(GID.2)
-      geno <- rbind(geno, data$genoRec$geno[rep(GID.2*2, each=2) + rep(-1:0, nPar2), ])
+      geno <- rbind(geno, data$geno[rep(GID.2*2, each=2) + rep(-1:0, nPar2), ])
       par1 <- c(rep(1:nPar1, nProgeny %/% nPar1), sample(nPar1, nProgeny %% nPar1))
       par2 <- nPar1 + c(rep(1:nPar2, nProgeny %/% nPar2), sample(nPar2, nProgeny %% nPar2))
       parents <- cbind(sample(par1), sample(par2))
