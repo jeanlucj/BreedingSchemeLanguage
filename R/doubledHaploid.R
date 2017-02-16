@@ -23,10 +23,10 @@ doubledHaploid <- function(simEnv, nProgeny=100, popID=NULL){
     geno <- geno$progenies
     gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
     GID <- max(data$genoRec$GID) + 1:nProgeny
-    popID <- rep(max(data$genoRec$popID) + 1, nProgeny)
-    hasGeno <- rep(FALSE, nProgeny)
+    popID <- max(data$genoRec$popID) + 1
     gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
-    addRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno, gValue=gValue)
+    addRec <- data.frame(GID, pedigree, popID, basePopID=popID, hasGeno=FALSE, gValue)
+    colnames(addRec) <- colnames(data$genoRec)
     data$genoRec <- rbind(data$genoRec, addRec)
     data$geno <- rbind(data$geno, geno)
     return(data)
