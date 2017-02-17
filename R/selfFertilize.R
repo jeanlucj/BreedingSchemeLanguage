@@ -19,7 +19,7 @@ selfFertilize <- function(simEnv, nProgeny=100, popID=NULL){
     nPar <- length(GIDpar)
     geno <- data$geno[rep(GIDpar*2, each=2) + rep(-1:0, nPar),]
     geno <- makeSelfs(popSize=nProgeny, geno=geno, pos=locPos)
-    pedigree <- geno$pedigree
+    pedigree <- matrix(GIDpar[geno$pedigree], nPar)
     geno <- geno$progenies
     gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
     GID <- max(data$genoRec$GID) + 1:nProgeny

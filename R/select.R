@@ -4,11 +4,12 @@
 #'@param nSelect the number of selected individuals
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)
+#'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) the the highest nSelect within families are taken.
 #'
 #'@return information of the selected individuals and the all information created before (list)
 #'
 #'@export
-select <- function(simEnv, nSelect=40, popID=NULL, random=F){
+select <- function(simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
   parent.env(simEnv) <- environment()
   select.func <- function(data, nSelect, popID, random=FALSE){
     criterion <- data$selCriterion$criterion
@@ -22,17 +23,28 @@ select <- function(simEnv, nSelect=40, popID=NULL, random=F){
       selectedGID <- sample(GIDcan, nSelect)
     } else{
       if(substr(criterion, 1, 5) == "pheno"){
-        usePheno <- data$phenoRec[phenoRec$phenoGID %in% GIDcan,]
+        GIDcan <- intersect(GIDcan, data$phenoRec$phenoGID)
+        usePheno <- data$phenoRec[data$phenoRec$phenoGID %in% GIDcan,]
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }else{
         if(substr(criterion, 1, 4) == "pred"){
+          GIDcan <- intersect(GIDcan, data$predRec$predGID)
           usePred <- data$predRec[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo),]
           candValue <- usePred$predict[order(usePred$predGID)]
         }else{
           stop("Please define selection criterion in correct way!")
         }
       }
-      selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
+      if (type == "WithinFamily"){
+        canVal <- data.frame(GID=GIDcan, val=candValue)
+        raggedSel <- function(canVal){
+          nSel <- min(nrow(canVal), nSelect)
+          return(canVal$GID[order(canVal$val, decreasing=T)[1:nSel]])
+        }
+        selectedGID <- unlist(by(canVal, as.factor(data$genoRec$pedigree.1), raggedSel))
+      } else{
+        selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
+      }
     }#END not random selection
     popID.new <- max(data$genoRec$popID) + 1
     data$genoRec$popID[data$genoRec$GID %in% selectedGID] <- popID.new
