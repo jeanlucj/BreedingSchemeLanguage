@@ -36,12 +36,12 @@ select <- function(simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
         }
       }
       if (type == "WithinFamily"){
-        canVal <- data.frame(GID=GIDcan, val=candValue)
+        canVal <- data.frame(GID=GIDcan, val=as.numeric(candValue))
         raggedSel <- function(canVal){
           nSel <- min(nrow(canVal), nSelect)
           return(canVal$GID[order(canVal$val, decreasing=T)[1:nSel]])
         }
-        selectedGID <- unlist(by(canVal, as.factor(data$genoRec$pedigree.1), raggedSel))
+        selectedGID <- unlist(by(canVal, as.factor(data$genoRec$pedigree.1[GIDcan]), raggedSel))
       } else{
         selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
       }
