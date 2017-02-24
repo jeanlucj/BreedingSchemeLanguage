@@ -62,7 +62,7 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=1)
 
     data$selCriterion <- list(popID=popID, criterion="pheno")
     # Take care of costs
-    if (exists("totalCost", data){
+    if (exists("totalCost", data)){
       perPlotCost <- abs(data$costs$phenoCost$error - errorVar)
       perPlotCost <- which(perPlotCost == min(perPlotCost))
       perPlotCost <- data$costs$phenoCost$cost[perPlotCost]

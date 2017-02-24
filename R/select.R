@@ -45,7 +45,7 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     }#END not random selection
     popID.new <- max(data$genoRec$popID) + 1
     data$genoRec$popID[data$genoRec$GID %in% selectedGID] <- popID.new
-    if (exists("totalCost", data) data$totalCost <- data$totalCost + data$costs$selectCost
+    if (exists("totalCost", data)) data$totalCost <- data$totalCost + data$costs$selectCost
     return(data)
   } #END select.func
   with(sEnv, {

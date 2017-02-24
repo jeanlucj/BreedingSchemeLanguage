@@ -22,7 +22,7 @@ doubledHaploid <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
     pedigree <- cbind(matrix(GIDpar[geno$pedigree], nProgeny), -1)
     geno <- geno$progenies
     data <- addProgenyData(data, geno, pedigree)
-    if (exists("totalCost", data) data$totalCost <- data$totalCost + nProgeny * data$costs$doubHapCost
+    if (exists("totalCost", data)) data$totalCost <- data$totalCost + nProgeny * data$costs$doubHapCost
     return(data)
   }
   with(sEnv, {

@@ -42,7 +42,7 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
     }
   }
   data <- addProgenyData(data, geno, pedigree)
-  if (exists("totalCost", data) data$totalCost <- data$totalCost + nProgeny * data$costs$crossCost
+  if (exists("totalCost", data)) data$totalCost <- data$totalCost + nProgeny * data$costs$crossCost
   return(data)
   with(sEnv, {
     if(nCore > 1){
