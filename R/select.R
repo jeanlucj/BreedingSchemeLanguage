@@ -1,6 +1,6 @@
 #'Select individuals
 #'
-#'@param simEnv an environment that BSL statements operate on
+#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nSelect the number of selected individuals
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)
@@ -9,8 +9,8 @@
 #'@return information of the selected individuals and the all information created before (list)
 #'
 #'@export
-select <- function(simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
-  parent.env(simEnv) <- environment()
+select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
+  parent.env(sEnv) <- environment()
   select.func <- function(data, nSelect, popID, random=FALSE){
     criterion <- data$selCriterion$criterion
     if(is.null(popID)){
@@ -24,16 +24,13 @@ select <- function(simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     } else{
       if(substr(criterion, 1, 5) == "pheno"){
         GIDcan <- intersect(GIDcan, data$phenoRec$phenoGID)
-        usePheno <- data$phenoRec[data$phenoRec$phenoGID %in% GIDcan,]
+        usePheno <- subset(data$phenoRec, phenoGID %in% GIDcan)
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
-      }else{
-        if(substr(criterion, 1, 4) == "pred"){
-          GIDcan <- intersect(GIDcan, data$predRec$predGID)
-          usePred <- data$predRec[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo),]
-          candValue <- usePred$predict[order(usePred$predGID)]
-        }else{
-          stop("Please define selection criterion in correct way!")
-        }
+      }
+      if(substr(criterion, 1, 4) == "pred"){
+        GIDcan <- intersect(GIDcan, data$predRec$predGID)
+        usePred <- data$predRec[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo),]
+        candValue <- usePred$predict[order(usePred$predGID)]
       }
       if (type == "WithinFamily"){
         canVal <- data.frame(GID=GIDcan, val=as.numeric(candValue))
@@ -48,9 +45,10 @@ select <- function(simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     }#END not random selection
     popID.new <- max(data$genoRec$popID) + 1
     data$genoRec$popID[data$genoRec$GID %in% selectedGID] <- popID.new
+    if (exists("totalCost", data) data$totalCost <- data$totalCost + data$costs$selectCost
     return(data)
   } #END select.func
-  with(simEnv, {
+  with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
       sims <- sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random)

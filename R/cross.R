@@ -1,6 +1,7 @@
-#'Random mate
+#' Cross with random mating, or equal contributions,
+#'or randomly between two populations
 #'
-#'@param simEnv an environment that BSL statements operate on
+#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nProgeny the number of progenies
 #'@param equalContribution if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents
 #'@param popID population ID to be crossed (default: the latest population)
@@ -9,8 +10,8 @@
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-cross <- function(simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL){
-  parent.env(simEnv) <- environment()
+cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL){
+  parent.env(sEnv) <- environment()
   cross.func <- function(data, nProgeny, equalContribution, popID, popID2){
     locPos <- data$mapData$map$Pos
     if(is.null(popID)){
@@ -26,29 +27,24 @@ cross <- function(simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=
       }else{
         geno <- randomMate(popSize=nProgeny, geno=geno, pos=locPos)
       }
-      pedigree <- matrix(GID.1[geno$pedigree], nrow=nProgeny)
+      pedigree <- cbind(matrix(GID.1[geno$pedigree], nrow=nProgeny), 0)
       geno <- geno$progenies
     } else{ # Make pedigrees to mate two populations with each other
       tf <- data$genoRec$popID %in% popID2
       GID.2 <- data$genoRec$GID[tf]
       nPar2 <- length(GID.2)
       geno <- rbind(geno, data$geno[rep(GID.2*2, each=2) + rep(-1:0, nPar2), ])
-      par1 <- c(rep(1:nPar1, nProgeny %/% nPar1), sample(nPar1, nProgeny %% nPar1))
-      par2 <- nPar1 + c(rep(1:nPar2, nProgeny %/% nPar2), sample(nPar2, nProgeny %% nPar2))
+      par1 <- sample(c(rep(1:nPar1, nProgeny %/% nPar1), sample(nPar1, nProgeny %% nPar1)))
+      par2 <- nPar1 + sample(c(rep(1:nPar2, nProgeny %/% nPar2), sample(nPar2, nProgeny %% nPar2)))
       parents <- cbind(sample(par1), sample(par2))
       geno <- makeProgenies(parents, geno, locPos)
-      pedigree <- cbind(GID.1[parents[,1]], GID.2[parents[,2]-nPar1])
+      pedigree <- cbind(GID.1[parents[,1]], GID.2[parents[,2]-nPar1], 0)
     }
-    GID <- max(data$genoRec$GID) + 1:nProgeny
-    popID <- rep(max(data$genoRec$popID) + 1, nProgeny)
-    hasGeno <- rep(FALSE, nProgeny)
-    gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
-    addRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno, gValue=gValue)
-    data$genoRec <- rbind(data$genoRec, addRec)
-    data$geno <- rbind(data$geno, geno)
-    return(data)
   }
-  with(simEnv, {
+  data <- addProgenyData(data, geno, pedigree)
+  if (exists("totalCost", data) data$totalCost <- data$totalCost + nProgeny * data$costs$crossCost
+  return(data)
+  with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
       sims <- sfLapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
@@ -57,4 +53,61 @@ cross <- function(simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=
       sims <- lapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
     }
   })
+}
+
+#' Add progeny information to data after cross, doubledHaploid, or selfFertilize
+#'
+#'@param data the list that has all the objects for one simulation
+#'@param geno the genotypes of the progeny
+#'@param pedigree the three-column pedigree of the progeny (last col: DH, outbred, self)
+#'
+#'@return data with progeny information added
+#'
+addProgenyData <- function(data, geno, pedigree){
+  # Add on to genetic values
+  gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
+  data$gValue <- rbind(data$gValue, gValue)
+  # Add on to the QTL relationship matrix
+  nPrev <- max(data$genoRec$GID)
+  nProgeny <- nrow(geno) / 2
+  Mp <- (data$geno[1:nPrev*2 - 1, data$mapData$effectivePos] + data$geno[1:nPrev*2, data$mapData$effectivePos]) / 2
+  Mp <- Mp - rep(data$mrkCenter, each=nPrev)
+  Mn <- (geno[1:nProgeny*2 - 1, data$mapData$effectivePos] + geno[1:nProgeny*2, data$mapData$effectivePos]) / 2
+  Mn <- Mn - rep(data$mrkCenter, each=nProgeny)
+  Mp <- crossprod(Mn, Mp) / data$mrkConst
+  Mn <- tcrossprod(Mn) / data$mrkConst
+  # Use that to add on to locEffects and yearEffects
+  MppInv <- Mp %*% solve(data$qtlRelMat)
+  varEff <- Mn - MppInv %*% t(Mp)
+  nAdd <- ncol(data$yearEffects)
+  if (nAdd > 0){
+    vp <- data$varParms$gByYearVar * data$varParms$fracGxEAdd
+    toAdd <- rmvnorm(nAdd, MppInv %*% data$yearEffects, varEff) * sqrt(vp)
+    data$yearEffects <- rbind(data$yearEffects, t(toAdd))
+    vp <- data$varParms$gByYearVar * (1 - data$varParms$fracGxEAdd)
+    toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
+    data$yearEffectsI <- rbind(data$yearEffectsI, toAdd)
+  }
+  if (data$randLoc){
+    nAdd <- ncol(data$locEffects)
+    if (nAdd > 0){
+      vp <- data$varParms$gByLocVar * data$varParms$fracGxEAdd
+      toAdd <- rmvnorm(nAdd, MppInv %*% data$locEffects, varEff) * sqrt(vp)
+      data$locEffects <- rbind(data$locEffects, t(toAdd))
+      vp <- data$varParms$gByLocVar * (1 - data$varParms$fracGxEAdd)
+      toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
+      data$locEffectsI <- rbind(data$locEffectsI, toAdd)
+    }
+  }
+  data$qtlRelMat <- cbind(rbind(data$qtlRelMat, Mp), rbind(t(Mp), Mn))
+  # Add on to the genotypic records
+  GID <- max(data$genoRec$GID) + 1:nProgeny
+  popID <- rep(max(data$genoRec$popID) + 1, nProgeny)
+  hasGeno <- rep(FALSE, nProgeny)
+  addRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno)
+  colnames(addRec) <- colnames(genoRec)
+  data$genoRec <- rbind(data$genoRec, addRec)
+  # Add on to the genotypes
+  data$geno <- rbind(data$geno, geno)
+  return(data)
 }

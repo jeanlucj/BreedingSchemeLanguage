@@ -4,5 +4,5 @@
 #' 
 #' @name BreedingSchemeLanguage
 #' @docType package
-#' @import snowfall Rcpp rrBLUP ggplot2
+#' @import snowfall Rcpp rrBLUP ggplot2 lme4
 NULL

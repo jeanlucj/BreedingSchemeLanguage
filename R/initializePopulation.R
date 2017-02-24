@@ -1,39 +1,55 @@
 #'Create a founder population
 #'
-#'@param simEnv an environment that BSL statements operate on
+#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nInd population size
-#'@param gVariance genetic variance in the initial population
 #'
 #'@return initial population informationand the all information created before (list)
 #'
 #'@export
-initializePopulation <- function(simEnv, nInd=100, gVariance=1){
-  parent.env(simEnv) <- environment()
-  initializePopulation.func <- function(data, nInd, gVariance){
+initializePopulation <- function(sEnv=simEnv, nInd=100){
+  parent.env(sEnv) <- environment()
+  initializePopulation.func <- function(data, nInd){
     seed <- round(runif(1, 0, 1e9))
-    mapData <- data$mapData
+    md <- data$mapData
+    
     geno <- data$founderHaps * 2 - 1
+    data$founderHaps <- NULL
     geno <- geno[sample(nrow(geno), nInd*2, replace=T),]
-    geno <- randomMate(popSize=nInd, geno=geno, pos=mapData$map$Pos)
+    geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
     pedigree <- -geno$pedigree # For founders, parents will be negative
     geno <- geno$progenies
-    gValue <- calcGenotypicValue(geno=geno, mapData=mapData)
-    coef <- sqrt(gVariance / var(gValue))
-    mapData$effects <- as.matrix(mapData$effects * coef, ncol=1)
-    gValue <- coef*gValue
+    
+    M <- (geno[1:nInd*2 - 1, md$effectivePos] + geno[1:nInd*2, md$effectivePos]) / 2
+    M <- scale(M, center=T, scale=F)
+    mrkCenter <- attr(M, "scaled:center")
+    mrkConst <- mrkCenter / 2 + 0.5; mrkConst <- 2 * crossprod(mrkConst, 1 - mrkConst)
+    qtlRelMat <- tcrossprod(scale(M, center=T, scale=F)) / mrkConst
+    # Genetic effects. This works even if locCov is scalar
+    gValue <- calcGenotypicValue(geno=geno, mapData=md)
+    coef <- solve(chol(var(gValue))) %*% chol(data$varParms$locCov)
+    md$effects <- md$effects %*% coef
+    gValue <- gValue %*% coef
+    # Year and location effects: create matrices with zero columns until phenotyped
+    locEffects <- matrix(0, nrow=nInd, ncol=0)
+    locEffectsI <- matrix(0, nrow=nInd, ncol=0)
+    yearEffects <- matrix(0, nrow=nInd, ncol=0)
+    yearEffectsI <- matrix(0, nrow=nInd, ncol=0)
+    
     GID <- 1:nInd
     popID <- rep(0, nInd)
     hasGeno <- rep(FALSE, nInd)
-    genoRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno, gValue=gValue)
-    return(list(mapData=mapData, geno=geno, genoRec=genoRec))
+    genoRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno)
+    data$mapData <- md
+    data <- c(data, geno=geno, genoRec=genoRec, gValue=gValue, locEffects=locEffects, locEffectsI=locEffectsI, yearEffects=yearEffects, yearEffectsI=yearEffectsI, mrkCenter=mrkCenter, mrkConst=mrkConst, qtlRelMat=qtlRelMat)
+    return(data)
   }
-  with(simEnv, {
+  with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, initializePopulation.func, nInd=nInd, gVariance=gVariance)
+      sims <- sfLapply(sims, initializePopulation.func, nInd=nInd)
       sfStop()
     }else{
-      sims <- lapply(sims, initializePopulation.func, nInd=nInd, gVariance=gVariance)
+      sims <- lapply(sims, initializePopulation.func, nInd=nInd)
     }
   })
 }

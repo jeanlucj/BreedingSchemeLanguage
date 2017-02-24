@@ -1,6 +1,6 @@
 #'Plot the results
 #'
-#'@param simEnv an environment that BSL statements operate on
+#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param ymax the maximum value of y-axis (default: the maximun value in the data)
 #'@param add if T a new result will be added to an existing plot, if F a new plot will be drawn (default)
 #'@param addDataFileName the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")
@@ -9,9 +9,9 @@
 #'@return A ggplot object of the simulation results
 #'
 #'@export
-plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL){
+plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL){
   plotBase <- is.null(popID)
-  if (plotBase) popID <- sort(unique(simEnv$sims[[1]]$genoRec$basePopID))
+  if (plotBase) popID <- sort(unique(sEnv$sims[[1]]$genoRec$basePopID))
   
   getMeans <- function(sim){
     if (plotBase) pID <- sim$genoRec$basePopID
@@ -19,7 +19,7 @@ plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID
     mu <- tapply(sim$genoRec$gValue, pID, mean)
     mu <- mu[as.character(popID)]
   }
-  muSim <- t(sapply(simEnv$sims, getMeans))
+  muSim <- t(sapply(sEnv$sims, getMeans))
   
   muSim <- muSim - muSim[, 1]
   g <- NULL
@@ -27,15 +27,15 @@ plotData <- function(simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID
   col <- NULL
   size <- NULL
   nGenPlot <- length(popID)
-  for(sim in 1:simEnv$nSim){
+  for(sim in 1:sEnv$nSim){
     g <- c(g, muSim[sim, ])
     group <- c(group, rep(sim, nGenPlot))
     size <- c(size, rep(1, nGenPlot))
   }
   g <- c(g, apply(muSim, 2, mean))
-  group <- c(group, rep(simEnv$nSim + 1, nGenPlot))
+  group <- c(group, rep(sEnv$nSim + 1, nGenPlot))
   size <- c(size, rep(2, nGenPlot))
-  data <- data.frame(g=g, popID=rep(0:(nGenPlot - 1), simEnv$nSim + 1), size=size, group=group, scheme=rep(1, length(g)))
+  data <- data.frame(g=g, popID=rep(0:(nGenPlot - 1), sEnv$nSim + 1), size=size, group=group, scheme=rep(1, length(g)))
   if (add){
     load(file=paste(addDataFileName, ".RData", sep=""))
     data$scheme <- data$scheme + max(data.previous$scheme)

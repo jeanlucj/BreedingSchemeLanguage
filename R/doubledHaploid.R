@@ -1,14 +1,14 @@
 #'Doubled haploids
 #'
-#'@param simEnv an environment that BSL statements operate on
+#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
 #'
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-doubledHaploid <- function(simEnv, nProgeny=100, popID=NULL){
-  parent.env(simEnv) <- environment()
+doubledHaploid <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
+  parent.env(sEnv) <- environment()
   doubledHaploid.func <- function(data, nProgeny, popID){
     locPos <- data$mapData$map$Pos
     if(is.null(popID)){
@@ -19,19 +19,13 @@ doubledHaploid <- function(simEnv, nProgeny=100, popID=NULL){
     nPar <- length(GIDpar)
     geno <- data$geno[rep(GIDpar*2, each=2) + rep(-1:0, nPar),]
     geno <- makeDHs(popSize=nProgeny, geno=geno, pos=locPos)
-    pedigree <- matrix(GIDpar[geno$pedigree], nProgeny)
+    pedigree <- cbind(matrix(GIDpar[geno$pedigree], nProgeny), -1)
     geno <- geno$progenies
-    gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
-    GID <- max(data$genoRec$GID) + 1:nProgeny
-    popID <- max(data$genoRec$popID) + 1
-    gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
-    addRec <- data.frame(GID, pedigree, popID, basePopID=popID, hasGeno=FALSE, gValue)
-    colnames(addRec) <- colnames(data$genoRec)
-    data$genoRec <- rbind(data$genoRec, addRec)
-    data$geno <- rbind(data$geno, geno)
+    data <- addProgenyData(data, geno, pedigree)
+    if (exists("totalCost", data) data$totalCost <- data$totalCost + nProgeny * data$costs$doubHapCost
     return(data)
   }
-  with(simEnv, {
+  with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
       sims <- sfLapply(sims, doubledHaploid.func, nProgeny=nProgeny, popID=popID)

@@ -14,7 +14,7 @@
 #'@param nEpiLoci the expected number of epistatic loci for each effect
 #'@param domModel the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance.
 #'
-#'@return Species information and input values for the simulation (list)
+#'@return An environment that contains objects for the number of simulations specified
 #'
 #'@export
 defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName="previousData", nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom"){
