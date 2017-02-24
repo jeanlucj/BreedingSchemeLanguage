@@ -4,10 +4,11 @@
 \alias{select}
 \title{Select individuals}
 \usage{
-select(simEnv, nSelect = 40, popID = NULL, random = F, type = "Mass")
+select(sEnv = simEnv, nSelect = 40, popID = NULL, random = F,
+  type = "Mass")
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nSelect}{the number of selected individuals}
 

@@ -4,11 +4,11 @@
 \alias{plotData}
 \title{Plot the results}
 \usage{
-plotData(simEnv, ymax = NULL, add = F, addDataFileName = "plotData",
-  popID = NULL)
+plotData(sEnv = simEnv, ymax = NULL, add = F,
+  addDataFileName = "plotData", popID = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{ymax}{the maximum value of y-axis (default: the maximun value in the data)}
 

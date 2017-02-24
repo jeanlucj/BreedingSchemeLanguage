@@ -4,14 +4,12 @@
 \alias{calcPhenotypicValue}
 \title{calcPhenotypicValue}
 \usage{
-calcPhenotypicValue(gv, errorVar = NULL, H2 = NULL)
+calcPhenotypicValue(gv, errorVar)
 }
 \arguments{
 \item{gv}{genotypic values}
 
 \item{errorVar}{error variance}
-
-\item{H2}{a broad heritability}
 }
 \description{
 calcPhenotypicValue

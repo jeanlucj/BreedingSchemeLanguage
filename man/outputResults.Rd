@@ -4,11 +4,11 @@
 \alias{outputResults}
 \title{Save the results}
 \usage{
-outputResults(simEnv, summarize = T, directory = ".",
+outputResults(sEnv = simEnv, summarize = T, directory = ".",
   saveDataFileName = "BSLoutput")
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{summarize}{if T a result averaged over all the replications is saved, if F each replication's result is saved}
 

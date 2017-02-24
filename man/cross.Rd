@@ -2,13 +2,14 @@
 % Please edit documentation in R/cross.R
 \name{cross}
 \alias{cross}
-\title{Random mate}
+\title{Cross with random mating, or equal contributions,
+or randomly between two populations}
 \usage{
-cross(simEnv, nProgeny = 100, equalContribution = F, popID = NULL,
-  popID2 = NULL)
+cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
+  popID = NULL, popID2 = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nProgeny}{the number of progenies}
 
@@ -22,6 +23,7 @@ cross(simEnv, nProgeny = 100, equalContribution = F, popID = NULL,
 sequence information of progenies and the all information created before (list)
 }
 \description{
-Random mate
+Cross with random mating, or equal contributions,
+or randomly between two populations
 }
 

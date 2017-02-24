@@ -4,10 +4,10 @@
 \alias{genotype}
 \title{Genotype markers}
 \usage{
-genotype(simEnv, popID = NULL)
+genotype(sEnv = simEnv, popID = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{popID}{population ID to be genotyped (default: all populations)}
 }
