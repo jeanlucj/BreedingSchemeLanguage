@@ -25,7 +25,7 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=1)
     nAdd <- max(years) - ncol(data$yearEffects)
     if (nAdd > 0){
       vp <- data$varParms$gByYearVar * data$varParms$fracGxEAdd
-      toAdd <- rmvnorm(nAdd, mu=rep(0, nInd), Sigma=data$qtlRelMat) * sqrt(vp)
+      toAdd <- rmvnorm(nAdd, sigma=data$qtlRelMat) * sqrt(vp)
       data$yearEffects <- cbind(data$yearEffects, toAdd)
       vp <- data$varParms$gByYearVar * (1 - data$varParms$fracGxEAdd)
       toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
@@ -35,7 +35,7 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=1)
       nAdd <- max(locations) - ncol(data$locEffects)
       if (nAdd > 0){
         vp <- data$varParms$gByLocVar * data$varParms$fracGxEAdd
-        toAdd <- rmvnorm(nAdd, mu=rep(0, nInd), Sigma=data$qtlRelMat) * sqrt(vp)
+        toAdd <- rmvnorm(nAdd, sigma=data$qtlRelMat) * sqrt(vp)
         data$locEffects <- cbind(data$locEffects, toAdd)
         vp <- data$varParms$gByLocVar * (1 - data$varParms$fracGxEAdd)
         toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
@@ -73,10 +73,10 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=1)
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, phenotype.func, errorVar=errorVar, popID=popID)
+      sims <- sfLapply(sims, phenotype.func, errorVar=errorVar, popID=popID, locations=locations, years=years)
       sfStop()
     }else{
-      sims <- lapply(sims, phenotype.func, errorVar=errorVar, popID=popID)
+      sims <- lapply(sims, phenotype.func, errorVar=errorVar, popID=popID, locations=locations, years=years)
     }
   })
 }

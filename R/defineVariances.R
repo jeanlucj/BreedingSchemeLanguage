@@ -13,12 +13,12 @@
 #'@return Species information and input values for the simulation (list)
 #'
 #'@export
-defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, nLoc=2, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8){
+defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, nLoc=1, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8){
   parent.env(sEnv) <- environment()
-  loc.func <- function(data){
+  variances.func <- function(data){
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly
-      locCov <- gVariance
+      locCov <- matrix(gVariance)
     } else{ 
       nLoc <- nrow(locCorrelations)
       locCov <- gVariance * locCorrelations
@@ -31,10 +31,10 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, nLoc
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, loc.func)
+      sims <- sfLapply(sims, variances.func)
       sfStop()
     }else{
-      sims <- lapply(sims, loc.func)
+      sims <- lapply(sims, variances.func)
     }
   })
 }

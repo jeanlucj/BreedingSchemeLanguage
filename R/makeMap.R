@@ -20,7 +20,7 @@ makeMap <- function(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, qtlIn
     effectivePos <- sample(1:nLoci, sum(nEffectiveLoci))
     actionType <- rbinom(sum(nEffectiveLoci), 1, propDomi)
     effectID <- rep(1:nQTL, times=nEffectiveLoci)
-    effects <- rnorm(nQTL) # Will be modified by defineVariances if called
+    effects <- matrix(rnorm(nQTL), nQTL) # Will be modified by defineVariances if called
     if (nLoci - length(effectivePos) < nMarkers) stop("Number of markers is not enough!")
   }
   

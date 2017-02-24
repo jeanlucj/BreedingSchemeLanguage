@@ -7,7 +7,7 @@ NOTE: if this function is not called, genotype by location and genotype by year 
 are not used in the simulation}
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
-  nLoc = 2, gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
+  nLoc = 1, gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

@@ -23,7 +23,7 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     M <- scale(M, center=T, scale=F)
     mrkCenter <- attr(M, "scaled:center")
     mrkConst <- mrkCenter / 2 + 0.5; mrkConst <- 2 * crossprod(mrkConst, 1 - mrkConst)
-    qtlRelMat <- tcrossprod(scale(M, center=T, scale=F)) / mrkConst
+    qtlRelMat <- tcrossprod(scale(M, center=T, scale=F)) / c(mrkConst)
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
     coef <- solve(chol(var(gValue))) %*% chol(data$varParms$locCov)
@@ -35,12 +35,12 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     yearEffects <- matrix(0, nrow=nInd, ncol=0)
     yearEffectsI <- matrix(0, nrow=nInd, ncol=0)
     
-    GID <- 1:nInd
-    popID <- rep(0, nInd)
-    hasGeno <- rep(FALSE, nInd)
-    genoRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno)
+    genoRec <- data.frame(GID=1:nInd, pedigree=pedigree, popID=0, basePopID=0, hasGeno=FALSE)
     data$mapData <- md
-    data <- c(data, geno=geno, genoRec=genoRec, gValue=gValue, locEffects=locEffects, locEffectsI=locEffectsI, yearEffects=yearEffects, yearEffectsI=yearEffectsI, mrkCenter=mrkCenter, mrkConst=mrkConst, qtlRelMat=qtlRelMat)
+    data$geno <- geno; data$genoRec <- genoRec; data$gValue <- gValue
+    data$locEffects <- locEffects; data$locEffectsI <- locEffectsI
+    data$yearEffects <- yearEffects; data$yearEffectsI <- yearEffectsI
+    data$mrkCenter <- mrkCenter; data$mrkConst <- mrkConst; data$qtlRelMat <- qtlRelMat
     return(data)
   }
   with(sEnv, {
