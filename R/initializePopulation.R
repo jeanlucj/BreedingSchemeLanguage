@@ -16,14 +16,10 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     data$founderHaps <- NULL
     geno <- geno[sample(nrow(geno), nInd*2, replace=T),]
     geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
-    pedigree <- -geno$pedigree # For founders, parents will be negative
+    pedigree <- cbind(-geno$pedigree, 0) # For founders, parents will be negative
+    colnames(pedigree) <- paste("pedigree", 1:3, sep="")
     geno <- geno$progenies
     
-    M <- (geno[1:nInd*2 - 1, md$effectivePos] + geno[1:nInd*2, md$effectivePos]) / 2
-    M <- scale(M, center=T, scale=F)
-    mrkCenter <- attr(M, "scaled:center")
-    mrkConst <- mrkCenter / 2 + 0.5; mrkConst <- 2 * crossprod(mrkConst, 1 - mrkConst)
-    qtlRelMat <- tcrossprod(scale(M, center=T, scale=F)) / c(mrkConst)
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
     coef <- solve(chol(var(gValue))) %*% chol(data$varParms$locCov)
@@ -37,10 +33,10 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     
     genoRec <- data.frame(GID=1:nInd, pedigree=pedigree, popID=0, basePopID=0, hasGeno=FALSE)
     data$mapData <- md
+    data$nFounders <- nInd
     data$geno <- geno; data$genoRec <- genoRec; data$gValue <- gValue
     data$locEffects <- locEffects; data$locEffectsI <- locEffectsI
     data$yearEffects <- yearEffects; data$yearEffectsI <- yearEffectsI
-    data$mrkCenter <- mrkCenter; data$mrkConst <- mrkConst; data$qtlRelMat <- qtlRelMat
     return(data)
   }
   with(sEnv, {

@@ -4,10 +4,12 @@
 \alias{calcPhenotypicValue}
 \title{calcPhenotypicValue}
 \usage{
-calcPhenotypicValue(gv, errorVar)
+calcPhenotypicValue(gv, nRep, errorVar)
 }
 \arguments{
 \item{gv}{genotypic values}
+
+\item{nRep}{how many replications of phenotypic values: used for multiple locations and/or years}
 
 \item{errorVar}{error variance}
 }

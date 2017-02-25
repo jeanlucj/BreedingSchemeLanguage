@@ -12,85 +12,101 @@
 #'@export
 predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo="none"){
   parent.env(sEnv) <- environment()
-  predict.func <- function(data, popID, trainingPopID, locations, years, sharingInfo){
-    if (is.null(locations)) locations <- unique(data$phenoRec$loc)
-    if (is.null(years)) years <- unique(data$phenoRec$year)
-    phenoRec <- subset(data$phenoRec, subset=loc %in% locations & year %in% years)
-    
+  predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
+    if (is.null(locations)) locations <- unique(bsl$phenoRec$loc)
+    if (is.null(years)) years <- unique(bsl$phenoRec$year)
+    phenoRec <- subset(bsl$phenoRec, subset=loc %in% locations & year %in% years)
+    ########################################################
+    # Consider all individuals to be IID
     if (sharingInfo == "none"){
-      fitIID <- lmer(formula=pValue ~ year*loc + (1|phenoGID) + (1|phenoGID:year) + (1|phenoGID:loc), data=phenoRec, weights=1/phenoRec$error)
-      predict <- ranef(fitIID)$phenoGID
-      predGID <- as.numeric(rownames(predict))
-    }
-    
-    if (sharingInfo == "markers"){
-      trainCandidates <- data$genoRec$hasGeno & data$genoRec$GID %in% phenoRec$phenoGID
-      if(is.null(trainingPopID)){
-        GID.train <- data$genoRec$GID[trainCandidates]
-      }else{
-        tf <- data$genoRec$popID %in% trainingPopID
-        GID.train <- data$genoRec$GID[tf & trainCandidates]
+      mt1ObsPerGID <- length(unique(phenoRec$phenoGID)) < nrow(phenoRec)
+      if (mt1ObsPerGID){ # More than one observation per GID: run a model
+        fmla <- "pValue ~ (1|phenoGID)"
+        if (length(unique(phenoRec$year))) fmla <- paste(fmla, "+ year + (1|phenoGID:year)")
+        if (length(unique(phenoRec$loc))) fmla <- paste(fmla, "+ loc + (1|phenoGID:loc)")
+        phenoRec$phenoGID <- factor(phenoRec$phenoGID)
+        phenoRec$loc <- factor(phenoRec$loc)
+        phenoRec$year <- factor(phenoRec$year)
+        fitIID <- lmer(formula=as.formula(fmla), data=phenoRec, weights=1/phenoRec$error)
+        predict <- ranef(fitIID)$phenoGID
+        predGID <- as.numeric(rownames(predict))
+      } else{ # Only one observation per GID
+        predict <- phenoRec$pValue
+        predGID <- as.numeric(phenoRec$phenoGID)
       }
-      mrkPos <- data$mapData$markerPos
-      M <- (data$geno[GID.train*2 - 1, mrkPos] + data$geno[GID.train*2, mrkPos]) / 2
+    }
+    ########################################################
+    # Use markers to determine individual relatedness
+    if (sharingInfo == "markers"){
+      trainCandidates <- bsl$genoRec$hasGeno & bsl$genoRec$GID %in% phenoRec$phenoGID
+      if(is.null(trainingPopID)){
+        GID.train <- bsl$genoRec$GID[trainCandidates]
+      }else{
+        tf <- bsl$genoRec$popID %in% trainingPopID
+        GID.train <- bsl$genoRec$GID[tf & trainCandidates]
+      }
+      mrkPos <- bsl$mapData$markerPos
+      M <- (bsl$geno[GID.train*2 - 1, mrkPos] + bsl$geno[GID.train*2, mrkPos]) / 2
       
       # Figure out who to predict
-      if (is.null(popID)) popID <- max(data$genoRec$popID)
-      tf <- data$genoRec$popID %in% popID
-      GID.pred <- setdiff(data$genoRec$GID[tf], GID.train)
-      M <- rbind(M, (data$geno[GID.pred*2 - 1, mrkPos] + data$geno[GID.pred*2, mrkPos]) / 2)
+      if (is.null(popID)) popID <- max(bsl$genoRec$popID)
+      tf <- bsl$genoRec$popID %in% popID
+      GID.pred <- setdiff(bsl$genoRec$GID[tf], GID.train)
+      M <- rbind(M, (bsl$geno[GID.pred*2 - 1, mrkPos] + bsl$geno[GID.pred*2, mrkPos]) / 2)
       predGID <- c(GID.train, GID.pred)
       mt1ObsPerGID <- sum(phenoRec$phenoGID %in% predGID) > length(predGID)
       
       K <- A.mat(M)
       rownames(K) <- colnames(K) <- predGID
       kbDat <- subset(phenoRec, phenoRec$phenoGID %in% predGID)
-      kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
+      kbo <- kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
       predict <- kbo$g
     }
-    
+    ########################################################
+    # Use pedigree to determine individual relatedness
     if (sharingInfo == "pedigree"){
-      data$aMat <- calcAmatrix(data$genoRec[, 1:3], "Outbred", data$aMat)
+      bsl$aMat <- calcAmatrix(bsl$genoRec[, 1:4], bsl$aMat)
       
-      trainCandidates <- data$genoRec$GID %in% phenoRec$phenoGID
+      trainCandidates <- bsl$genoRec$GID %in% phenoRec$phenoGID
       if(is.null(trainingPopID)){
-        GID.train <- data$genoRec$GID[trainCandidates]
+        GID.train <- bsl$genoRec$GID[trainCandidates]
       }else{
-        tf <- data$genoRec$popID %in% trainingPopID
-        GID.train <- data$genoRec$GID[tf & trainCandidates]
+        tf <- bsl$genoRec$popID %in% trainingPopID
+        GID.train <- bsl$genoRec$GID[tf & trainCandidates]
       }
-      if (is.null(popID)) popID <- max(data$genoRec$popID)
-      tf <- data$genoRec$popID %in% popID
-      GID.pred <- setdiff(data$genoRec$GID[tf], GID.train)
+      if (is.null(popID)) popID <- max(bsl$genoRec$popID)
+      tf <- bsl$genoRec$popID %in% popID
+      GID.pred <- setdiff(bsl$genoRec$GID[tf], GID.train)
       predGID <- c(GID.train, GID.pred)
       mt1ObsPerGID <- sum(phenoRec$phenoGID %in% predGID) > length(predGID)
       
-      K <- data$aMat[predGID, predGID]
+      K <- bsl$aMat[predGID, predGID]
       rownames(K) <- colnames(K) <- predGID
       kbDat <- subset(phenoRec, phenoRec$phenoGID %in% predGID)
-      kbo <- kin.blup(kbDat, geno="GID", pheno="pheno", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
+      kbo <- kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
       predict <- kbo$g
     }
         
-    if(is.null(data$predRec)){
+    if(is.null(bsl$predRec)){
       predNo <- 1
     } else{
-      predNo <- max(data$predRec$predNo) + 1
+      predNo <- max(bsl$predRec$predNo) + 1
     }
-    toAdd <- data.frame(predGID=predGID, predNo=predNo, predict=predict)
-    data$predRec <- rbind(data$predRec, toAdd)
+    toAdd <- data.frame(predGID, predNo, predict)
+    colnames(toAdd) <- c("predGID", "predNo", "predict")
+    bsl$predRec <- rbind(bsl$predRec, toAdd)
 
-    data$selCriterion <- list(popID=popID, criterion="pred")
-    if (exists("totalCost", data)) data$totalCost <- data$totalCost + data$costs$predCost
-    return(data)
+    bsl$selCriterion <- list(popID=popID, criterion="pred")
+    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + bsl$costs$predCost
+    return(bsl)
   }#END predict.func
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, predict.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+      sims <- sfLapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
       sfStop()
     }else{
-      sims <- lapply(sims, predict.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+      sims <- lapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
     }
   })
 }

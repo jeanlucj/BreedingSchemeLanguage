@@ -12,15 +12,15 @@
 #'@export
 cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL){
   parent.env(sEnv) <- environment()
-  cross.func <- function(data, nProgeny, equalContribution, popID, popID2){
-    locPos <- data$mapData$map$Pos
+  cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2){
+    locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){
-      popID <- max(data$genoRec$popID)
+      popID <- max(bsl$genoRec$popID)
     }
-    tf <- data$genoRec$popID %in% popID
-    GID.1 <- data$genoRec$GID[tf]
+    tf <- bsl$genoRec$popID %in% popID
+    GID.1 <- bsl$genoRec$GID[tf]
     nPar1 <- length(GID.1)
-    geno <- data$geno[rep(GID.1*2, each=2) + rep(-1:0, nPar1), ]
+    geno <- bsl$geno[rep(GID.1*2, each=2) + rep(-1:0, nPar1), ]
     if (is.null(popID2)){
       if(equalContribution){
         geno <- randomMateAll(popSize=nProgeny, geno=geno, pos=locPos)
@@ -30,20 +30,21 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
       pedigree <- cbind(matrix(GID.1[geno$pedigree], nrow=nProgeny), 0)
       geno <- geno$progenies
     } else{ # Make pedigrees to mate two populations with each other
-      tf <- data$genoRec$popID %in% popID2
-      GID.2 <- data$genoRec$GID[tf]
+      tf <- bsl$genoRec$popID %in% popID2
+      GID.2 <- bsl$genoRec$GID[tf]
       nPar2 <- length(GID.2)
-      geno <- rbind(geno, data$geno[rep(GID.2*2, each=2) + rep(-1:0, nPar2), ])
+      geno <- rbind(geno, bsl$geno[rep(GID.2*2, each=2) + rep(-1:0, nPar2), ])
       par1 <- sample(c(rep(1:nPar1, nProgeny %/% nPar1), sample(nPar1, nProgeny %% nPar1)))
       par2 <- nPar1 + sample(c(rep(1:nPar2, nProgeny %/% nPar2), sample(nPar2, nProgeny %% nPar2)))
       parents <- cbind(sample(par1), sample(par2))
       geno <- makeProgenies(parents, geno, locPos)
       pedigree <- cbind(GID.1[parents[,1]], GID.2[parents[,2]-nPar1], 0)
     }
-  }
-  data <- addProgenyData(data, geno, pedigree)
-  if (exists("totalCost", data)) data$totalCost <- data$totalCost + nProgeny * data$costs$crossCost
-  return(data)
+    bsl <- addProgenyData(bsl, geno, pedigree)
+    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + nProgeny * bsl$costs$crossCost
+    return(bsl)
+  }#END cross.func
+
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
@@ -57,57 +58,45 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
 
 #' Add progeny information to data after cross, doubledHaploid, or selfFertilize
 #'
-#'@param data the list that has all the objects for one simulation
+#'@param bsl the list that has all the objects for one simulation
 #'@param geno the genotypes of the progeny
 #'@param pedigree the three-column pedigree of the progeny (last col: DH, outbred, self)
 #'
 #'@return data with progeny information added
 #'
-addProgenyData <- function(data, geno, pedigree){
+addProgenyData <- function(bsl, geno, pedigree){
   # Add on to genetic values
-  gValue <- calcGenotypicValue(geno=geno, mapData=data$mapData)
-  data$gValue <- rbind(data$gValue, gValue)
+  gValue <- calcGenotypicValue(geno=geno, mapData=bsl$mapData)
+  bsl$gValue <- rbind(bsl$gValue, gValue)
   # Add on to the QTL relationship matrix
-  nPrev <- max(data$genoRec$GID)
   nProgeny <- nrow(geno) / 2
-  Mp <- (data$geno[1:nPrev*2 - 1, data$mapData$effectivePos] + data$geno[1:nPrev*2, data$mapData$effectivePos]) / 2
-  Mp <- Mp - rep(data$mrkCenter, each=nPrev)
-  Mn <- (geno[1:nProgeny*2 - 1, data$mapData$effectivePos] + geno[1:nProgeny*2, data$mapData$effectivePos]) / 2
-  Mn <- Mn - rep(data$mrkCenter, each=nProgeny)
-  Mp <- crossprod(Mn, Mp) / data$mrkConst
-  Mn <- tcrossprod(Mn) / data$mrkConst
-  # Use that to add on to locEffects and yearEffects
-  MppInv <- Mp %*% solve(data$qtlRelMat)
-  varEff <- Mn - MppInv %*% t(Mp)
-  nAdd <- ncol(data$yearEffects)
+  M <- geno[1:nProgeny*2 - 1, bsl$mapData$effectivePos] + geno[1:nProgeny*2, bsl$mapData$effectivePos]
+  nAdd <- ncol(bsl$yearEffects)
   if (nAdd > 0){
-    vp <- data$varParms$gByYearVar * data$varParms$fracGxEAdd
-    toAdd <- rmvnorm(nAdd, MppInv %*% data$yearEffects, varEff) * sqrt(vp)
-    data$yearEffects <- rbind(data$yearEffects, t(toAdd))
-    vp <- data$varParms$gByYearVar * (1 - data$varParms$fracGxEAdd)
+    vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
+    toAdd <- M %*% bsl$gByYqtl %*% diag(bsl$yearScale)
+    bsl$yearEffects <- rbind(bsl$yearEffects, toAdd)
+    vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
     toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
-    data$yearEffectsI <- rbind(data$yearEffectsI, toAdd)
+    bsl$yearEffectsI <- rbind(bsl$yearEffectsI, toAdd)
   }
-  if (data$randLoc){
-    nAdd <- ncol(data$locEffects)
-    if (nAdd > 0){
-      vp <- data$varParms$gByLocVar * data$varParms$fracGxEAdd
-      toAdd <- rmvnorm(nAdd, MppInv %*% data$locEffects, varEff) * sqrt(vp)
-      data$locEffects <- rbind(data$locEffects, t(toAdd))
-      vp <- data$varParms$gByLocVar * (1 - data$varParms$fracGxEAdd)
-      toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
-      data$locEffectsI <- rbind(data$locEffectsI, toAdd)
-    }
+  nAdd <- ncol(bsl$locEffects)
+  if (bsl$varParms$randLoc & nAdd > 0){
+    vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
+    toAdd <- M %*% bsl$gByLqtl %*% diag(bsl$locScale)
+    bsl$locEffects <- rbind(bsl$locEffects, toAdd)
+    vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
+    toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
+    bsl$locEffectsI <- rbind(bsl$locEffectsI, toAdd)
   }
-  data$qtlRelMat <- cbind(rbind(data$qtlRelMat, Mp), rbind(t(Mp), Mn))
   # Add on to the genotypic records
-  GID <- max(data$genoRec$GID) + 1:nProgeny
-  popID <- rep(max(data$genoRec$popID) + 1, nProgeny)
+  GID <- max(bsl$genoRec$GID) + 1:nProgeny
+  popID <- rep(max(bsl$genoRec$popID) + 1, nProgeny)
   hasGeno <- rep(FALSE, nProgeny)
   addRec <- data.frame(GID=GID, pedigree=pedigree, popID=popID, basePopID=popID, hasGeno=hasGeno)
-  colnames(addRec) <- colnames(genoRec)
-  data$genoRec <- rbind(data$genoRec, addRec)
+  colnames(addRec) <- colnames(bsl$genoRec)
+  bsl$genoRec <- rbind(bsl$genoRec, addRec)
   # Add on to the genotypes
-  data$geno <- rbind(data$geno, geno)
-  return(data)
+  bsl$geno <- rbind(bsl$geno, geno)
+  return(bsl)
 }

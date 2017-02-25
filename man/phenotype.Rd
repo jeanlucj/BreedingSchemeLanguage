@@ -5,7 +5,7 @@
 \title{Evaluate the phenotypic value}
 \usage{
 phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
-  years = 1)
+  years = ncol(sEnv$sims[[1]]$yearEffects) + 1)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -16,7 +16,7 @@ phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
 
 \item{locations}{integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)}
 
-\item{years}{integer vector of the years when phenotypin occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: 1, phenotype the first year)}
+\item{years}{integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the year following any previous phenotyping. NOTE: thus, calling phenotype automatically increments the number of years the scheme takes)}
 }
 \value{
 phenotypic values and the all information created before (list)

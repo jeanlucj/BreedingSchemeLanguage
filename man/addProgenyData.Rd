@@ -4,10 +4,10 @@
 \alias{addProgenyData}
 \title{Add progeny information to data after cross, doubledHaploid, or selfFertilize}
 \usage{
-addProgenyData(data, geno, pedigree)
+addProgenyData(bsl, geno, pedigree)
 }
 \arguments{
-\item{data}{the list that has all the objects for one simulation}
+\item{bsl}{the list that has all the objects for one simulation}
 
 \item{geno}{the genotypes of the progeny}
 

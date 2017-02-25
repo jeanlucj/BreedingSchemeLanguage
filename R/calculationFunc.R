@@ -31,10 +31,11 @@ calcGenotypicValue <- function(geno, mapData){
 #'calcPhenotypicValue
 #'
 #'@param gv genotypic values
+#'@param nRep how many replications of phenotypic values: used for multiple locations and/or years
 #'@param errorVar error variance
 #'
 # If gv is a multitrait matrix, errorVar is equal across all traits
-calcPhenotypicValue <- function(gv, errorVar){
-  pv <- gv + rnorm(length(gv), 0, sqrt(errorVar))
+calcPhenotypicValue <- function(gv, nRep, errorVar){
+  pv <- c(gv) + rnorm(length(gv)*nRep, 0, sqrt(errorVar))
   return(pv)
 }

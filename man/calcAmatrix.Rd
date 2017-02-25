@@ -4,7 +4,7 @@
 \alias{calcAmatrix}
 \title{Calculate an additive relationship matrix}
 \usage{
-calcAmatrix(pedColumns, progType = "Outbred", aMatIn = NULL)
+calcAmatrix(pedColumns, aMatIn = NULL)
 }
 \arguments{
 \item{pedColumns}{A data.frame with four columns. The first column
@@ -16,12 +16,6 @@ parent to 0. The fourth column indicates: If negative, the individual is
 a DH: the F1 is created, generates a gamete, which is then doubled.
 If positive, the number of generations an individual was self-pollinated
 after it's F1 ancestor was created (can be 0 if the individual is the F1).}
-
-\item{progType}{A string indicating the type of progeny. The only type that
-matters is "DH" in which case all progeny are assumed to be doubled haploids
-created from the F1 between the two parents in the sire and dam columns
-Note: the function doesn't know how to calculate A inverse if there is
-selfing}
 
 \item{aMatIn}{A square matrix that contains the additive relationship
 matrix between individuals at the beginning of the pedigree. If given,

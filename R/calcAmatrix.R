@@ -18,11 +18,6 @@
 #'  If positive, the number of generations an individual was self-pollinated
 #'  after it's F1 ancestor was created (can be 0 if the individual is the F1).
 #'  
-#' @param progType A string indicating the type of progeny. The only type that
-#'  matters is "DH" in which case all progeny are assumed to be doubled haploids
-#'  created from the F1 between the two parents in the sire and dam columns
-#'  Note: the function doesn't know how to calculate A inverse if there is
-#'  selfing
 #' @param aMatIn A square matrix that contains the additive relationship
 #'  matrix between individuals at the beginning of the pedigree. If given,
 #'  the function saves time by starting calculations after those individuals
@@ -30,7 +25,7 @@
 #'
 #' @return A matrix, \code{aMat}, the additive relationship matrix 
 #'
-calcAmatrix <- function(pedColumns, progType="Outbred", aMatIn=NULL){
+calcAmatrix <- function(pedColumns, aMatIn=NULL){
   calcAmatRow <- function(pedRec){ # Function to process one row of pedColumns
     prog <- pedRec[1]
     sire <- max(pedRec[2], 0) # Founder population has negative parents

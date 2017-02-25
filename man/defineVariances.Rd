@@ -7,22 +7,20 @@ NOTE: if this function is not called, genotype by location and genotype by year 
 are not used in the simulation}
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
-  nLoc = 1, gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
+  gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
-\item{gVariance}{genetic variance in the initial population}
+\item{gVariance}{genetic variance in the initial population Default is 1}
 
-\item{locCorrelations}{matrix: genetic correlation in performance between locations default: NULL will cause locCorrelations to be gVariance / (gVariance + gByLocVar). If given, the genetic variance-covariance across locations is gVariance * locCorrelations}
+\item{locCorrelations}{matrix: genetic correlation in performance between locations default: NULL will cause locCorrelations to be gVariance / (gVariance + gByLocVar). If given, the genetic co-variance across locations is gVariance * locCorrelations. Default is NULL}
 
-\item{nLoc}{scalar: number of locations default: if locCorrelations given, nrow(locCorrelations), else 2}
+\item{gByLocVar}{scalar: the genotype by location variance Default is 1, BUT if locCorrelations given, this parameter is not used)}
 
-\item{gByLocVar}{scalar: the genotype by location variance (default: 1 BUT if locCorrelations given, this parameter is not used)}
+\item{gByYearVar}{scalar: the genotype by year variance Default is 1}
 
-\item{gByYearVar}{scalar: the genotype by year variance (default: 1)}
-
-\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive}
+\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8}
 }
 \value{
 Species information and input values for the simulation (list)
