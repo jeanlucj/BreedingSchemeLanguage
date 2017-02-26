@@ -68,7 +68,6 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   }
   # The palette with black:
   cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-  # p <- p + ggtitle(paste("Cost per year", sEnv$sims[[1]]$totalCost / ncol(sEnv$sims[[1]]$yearEffects)))
   # To use for line and point colors, add
   p <- p + scale_colour_manual(values=cbPalette)
   p <- p + scale_size_manual(name="", values=c(0.3, 2), labels=c("Repl", "Mean"))
@@ -77,7 +76,7 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   p <- p + guides(size=guide_legend("Lines"))
   p <- p + guides(linetype=guide_legend("Scheme"))
   if (exists("totalCost", sEnv$sims[[1]])){
-    p <- p + ggtitle(paste("Cost per year =", round(sEnv$sims[[1]]$totalCost / ncol(sEnv$sims[[1]]$yearEffects))))
+    p <- p + ggtitle(paste("Total scheme cost", round(sEnv$sims[[1]]$totalCost)))
   }
   print(p)
 }

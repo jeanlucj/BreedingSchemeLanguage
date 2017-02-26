@@ -15,9 +15,9 @@ cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
 
 \item{equalContribution}{if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents}
 
-\item{popID}{population ID to be crossed (default: the latest population)}
+\item{popID}{population ID to be crossed. Default: the last population}
 
-\item{popID2}{population ID to be crossed with popID to make hybrids}
+\item{popID2}{population ID to be crossed with popID to make hybrids. Default: second population not used.}
 }
 \value{
 sequence information of progenies and the all information created before (list)

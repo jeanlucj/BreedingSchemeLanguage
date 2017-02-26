@@ -4,8 +4,8 @@
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nProgeny the number of progenies
 #'@param equalContribution if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents
-#'@param popID population ID to be crossed (default: the latest population)
-#'@param popID2 population ID to be crossed with popID to make hybrids
+#'@param popID population ID to be crossed. Default: the last population
+#'@param popID2 population ID to be crossed with popID to make hybrids. Default: second population not used.
 #'
 #'@return sequence information of progenies and the all information created before (list)
 #'
@@ -74,7 +74,8 @@ addProgenyData <- function(bsl, geno, pedigree){
   nAdd <- ncol(bsl$yearEffects)
   if (nAdd > 0){
     vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
-    toAdd <- M %*% bsl$gByYqtl %*% diag(bsl$yearScale)
+    toAdd <- M %*% bsl$gByYqtl
+    toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$yearScale[i])
     bsl$yearEffects <- rbind(bsl$yearEffects, toAdd)
     vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
     toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
@@ -83,7 +84,8 @@ addProgenyData <- function(bsl, geno, pedigree){
   nAdd <- ncol(bsl$locEffects)
   if (bsl$varParms$randLoc & nAdd > 0){
     vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
-    toAdd <- M %*% bsl$gByLqtl %*% diag(bsl$locScale)
+    toAdd <- M %*% bsl$gByLqtl
+    toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$locScale[i])
     bsl$locEffects <- rbind(bsl$locEffects, toAdd)
     vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
     toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
