@@ -17,15 +17,15 @@
 #'@export
 defineCosts <- function(sEnv=simEnv, phenoCost=data.frame(1,1), genoCost=0.25, crossCost=1, selfCost=1, doubHapCost=5, predCost=0, selectCost=0, locCost=0, yearCost=0){
   parent.env(sEnv) <- environment()
-  cost.func <- function(data){
+  cost.func <- function(bsl, phenoCost, genoCost, crossCost, selfCost, doubHapCost, predCost, selectCost, locCost, yearCost){
     colnames(phenoCost) <- c("error", "cost")
-    data$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
-    data$totalCost <- 0
-    return(data)
+    bsl$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
+    bsl$totalCost <- 0
+    return(bsl)
   }
   with(sEnv, {
     # This is too fast to want to parallelize
-    sims <- lapply(sims, cost.func)
+    sims <- lapply(sims, cost.func, phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
   })
 }
   

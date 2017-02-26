@@ -5,7 +5,7 @@
 \title{Evaluate the phenotypic value}
 \usage{
 phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
-  years = ncol(sEnv$sims[[1]]$yearEffects) + 1)
+  years = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

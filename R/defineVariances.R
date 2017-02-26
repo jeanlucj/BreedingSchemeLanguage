@@ -14,7 +14,7 @@
 #'@export
 defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8){
   parent.env(sEnv) <- environment()
-  variances.func <- function(data){
+  variances.func <- function(data, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd){
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly
       locCov <- matrix(gVariance)
@@ -29,10 +29,10 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, variances.func)
+      sims <- sfLapply(sims, variances.func, gVariance=gVariance, locCorrelations=locCorrelations, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd)
       sfStop()
     }else{
-      sims <- lapply(sims, variances.func)
+      sims <- lapply(sims, variances.func, gVariance=gVariance, locCorrelations=locCorrelations, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd)
     }
   })
 }

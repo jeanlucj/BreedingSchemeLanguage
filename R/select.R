@@ -11,7 +11,7 @@
 #'@export
 select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
   parent.env(sEnv) <- environment()
-  select.func <- function(data, nSelect, popID, random=FALSE){
+  select.func <- function(data, nSelect, popID, random, type){
     criterion <- data$selCriterion$criterion
     if(is.null(popID)){
       popID <- data$selCriterion$popID
@@ -51,10 +51,10 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random)
+      sims <- sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random, type=type)
       sfStop()
     }else{
-      sims <- lapply(sims, select.func, nSelect=nSelect, popID=popID, random=random)
+      sims <- lapply(sims, select.func, nSelect=nSelect, popID=popID, random=random, type=type)
     }
   })
 }

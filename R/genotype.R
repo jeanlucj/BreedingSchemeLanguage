@@ -7,7 +7,7 @@
 #'@export
 genotype <- function(sEnv=simEnv, popID=NULL){
   parent.env(sEnv) <- environment()
-  genotype.func <- function(data){
+  genotype.func <- function(data, popID){
     nHasGeno <- sum(data$genoRec$hasGeno)
     if (is.null(popID)){
       data$genoRec$hasGeno <- TRUE
@@ -20,6 +20,6 @@ genotype <- function(sEnv=simEnv, popID=NULL){
   }
   with(sEnv, {
     # This is too fast to want to parallelize
-    sims <- lapply(sims, genotype.func)
+    sims <- lapply(sims, genotype.func, popID=popID)
   })
 }
