@@ -20,7 +20,7 @@ defineCosts <- function(sEnv=simEnv, phenoCost=data.frame(1,1), genoCost=0.25, c
   cost.func <- function(bsl, phenoCost, genoCost, crossCost, selfCost, doubHapCost, predCost, selectCost, locCost, yearCost){
     colnames(phenoCost) <- c("error", "cost")
     bsl$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
-    bsl$totalCost <- 0
+    if (bsl$varParms$randLoc) bsl$totalCost <- 0 else bsl$totalCost <- locCost * ncol(bsl$varParms$locCov)
     return(bsl)
   }
   with(sEnv, {

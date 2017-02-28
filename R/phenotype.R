@@ -52,6 +52,9 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=NU
       vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$yearEffectsI <- cbind(bsl$yearEffectsI, toAdd)
+      if (exists("totalCost", bsl)){
+        bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$yearCost
+      }
     }
     nAdd <- max(locations) - ncol(bsl$locEffects)
     if (bsl$varParms$randLoc & nAdd > 0){
@@ -66,6 +69,9 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=NU
       vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$locEffectsI <- cbind(bsl$locEffectsI, toAdd)
+      if (exists("totalCost", bsl)){
+        bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$locCost
+      }
     }
     if (bsl$varParms$randLoc){
       pValue <- pValue + c(bsl$locEffects[tf, locations] + bsl$locEffectsI[tf, locations])

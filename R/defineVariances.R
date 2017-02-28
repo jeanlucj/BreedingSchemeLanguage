@@ -1,6 +1,5 @@
 #' Define the relationships among locations
-#' NOTE: if this function is not called, genotype by location and genotype by year effects
-#' are not used in the simulation
+#' NOTE: this function needs to be called after defineSpecies
 #' 
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param gVariance genetic variance in the initial population Default is 1
@@ -14,17 +13,17 @@
 #'@export
 defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8){
   parent.env(sEnv) <- environment()
-  variances.func <- function(data, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd){
+  variances.func <- function(bsl, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd){
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly
       locCov <- matrix(gVariance)
     } else{ 
       locCov <- gVariance * locCorrelations
     }
-    nQTL <- max(data$mapData$effectID)
-    data$mapData$effects <- matrix(rnorm(nQTL * nrow(locCov)), nQTL) %*% chol(locCov)
-    data$varParms <- list(gVariance=gVariance, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, randLoc=randLoc, locCov=locCov)
-    return(data)
+    nQTL <- max(bsl$mapData$effectID)
+    bsl$mapData$effects <- matrix(rnorm(nQTL * nrow(locCov)), nQTL) %*% chol(locCov)
+    bsl$varParms <- list(gVariance=gVariance, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, randLoc=randLoc, locCov=locCov)
+    return(bsl)
   }
   with(sEnv, {
     if(nCore > 1){

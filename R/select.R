@@ -11,25 +11,25 @@
 #'@export
 select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
   parent.env(sEnv) <- environment()
-  select.func <- function(data, nSelect, popID, random, type){
-    criterion <- data$selCriterion$criterion
+  select.func <- function(bsl, nSelect, popID, random, type){
+    criterion <- bsl$selCriterion$criterion
     if(is.null(popID)){
-      popID <- data$selCriterion$popID
+      popID <- bsl$selCriterion$popID
       if(is.null(popID)) popID <- 0
     }
-    tf <- data$genoRec$popID %in% popID
-    GIDcan <- data$genoRec$GID[tf]
+    tf <- bsl$genoRec$popID %in% popID
+    GIDcan <- bsl$genoRec$GID[tf]
     if (random){
       selectedGID <- sample(GIDcan, nSelect)
     } else{
       if(substr(criterion, 1, 5) == "pheno"){
-        GIDcan <- intersect(GIDcan, data$phenoRec$phenoGID)
-        usePheno <- subset(data$phenoRec, phenoGID %in% GIDcan)
+        GIDcan <- intersect(GIDcan, bsl$phenoRec$phenoGID)
+        usePheno <- subset(bsl$phenoRec, phenoGID %in% GIDcan)
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }
       if(substr(criterion, 1, 4) == "pred"){
-        GIDcan <- intersect(GIDcan, data$predRec$predGID)
-        usePred <- data$predRec[data$predRec$predGID %in% GIDcan & data$predRec$predNo == max(data$predRec$predNo),]
+        GIDcan <- intersect(GIDcan, bsl$predRec$predGID)
+        usePred <- bsl$predRec[bsl$predRec$predGID %in% GIDcan & bsl$predRec$predNo == max(bsl$predRec$predNo),]
         candValue <- usePred$predict[order(usePred$predGID)]
       }
       if (type == "WithinFamily"){
@@ -38,15 +38,15 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
           nSel <- min(nrow(canVal), nSelect)
           return(canVal$GID[order(canVal$val, decreasing=T)[1:nSel]])
         }
-        selectedGID <- unlist(by(canVal, as.factor(data$genoRec$pedigree.1[GIDcan]), raggedSel))
+        selectedGID <- unlist(by(canVal, as.factor(bsl$genoRec$pedigree.1[GIDcan]), raggedSel))
       } else{
         selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
       }
     }#END not random selection
-    popID.new <- max(data$genoRec$popID) + 1
-    data$genoRec$popID[data$genoRec$GID %in% selectedGID] <- popID.new
-    if (exists("totalCost", data)) data$totalCost <- data$totalCost + data$costs$selectCost
-    return(data)
+    popID.new <- max(bsl$genoRec$popID) + 1
+    bsl$genoRec$popID[bsl$genoRec$GID %in% selectedGID] <- popID.new
+    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + bsl$costs$selectCost
+    return(bsl)
   } #END select.func
   with(sEnv, {
     if(nCore > 1){
