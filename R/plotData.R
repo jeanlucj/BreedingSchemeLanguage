@@ -17,11 +17,26 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   getMeans <- function(bsl, loc){
     if (plotBase) pID <- bsl$genoRec$basePopID
     else pID <- bsl$genoRec$popID
-    mu <- tapply(bsl$gValue[,loc], pID, mean)
-    mu <- mu[as.character(popID)]
+    return(tapply(bsl$gValue[,loc], pID, mean))
   }
   muSimByLoc <- lapply(1:nLoc, function(loc) list(muSim=t(sapply(sEnv$sims, getMeans, loc=loc)), loc=loc))
-
+  
+  if (class(popID) == "list"){
+    pID <- sEnv$sims[[1]]$genoRec$popID
+    popSizes <- tapply(pID, pID, length)
+    modifyMSBL <- function(muSim){
+      ms <- muSim$muSim
+      muSim$muSim <- sapply(popID, function(popVec) apply(ms, 1, function(vec) weighted.mean(vec[as.character(popVec)], popSizes[as.character(popVec)])))
+      return(muSim)
+    }
+  } else{
+    modifyMSBL <- function(muSim){
+      muSim$muSim <- muSim$muSim[, as.character(popID)]
+      return(muSim)
+    }
+  }
+  muSimByLoc <- lapply(muSimByLoc, modifyMSBL)
+  
   makeDF <- function(muSim){
     loc <- muSim$loc
     muSim <- muSim$muSim

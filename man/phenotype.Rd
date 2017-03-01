@@ -16,7 +16,7 @@ phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
 
 \item{locations}{integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)}
 
-\item{years}{integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the year following any previous phenotyping. NOTE: thus, calling phenotype automatically increments the number of years the scheme takes)}
+\item{years}{integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).}
 }
 \value{
 phenotypic values and the all information created before (list)

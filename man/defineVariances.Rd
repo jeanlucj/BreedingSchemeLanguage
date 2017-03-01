@@ -3,8 +3,7 @@
 \name{defineVariances}
 \alias{defineVariances}
 \title{Define the relationships among locations
-NOTE: if this function is not called, genotype by location and genotype by year effects
-are not used in the simulation}
+NOTE: this function needs to be called after defineSpecies}
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
   gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
@@ -27,7 +26,6 @@ Species information and input values for the simulation (list)
 }
 \description{
 Define the relationships among locations
-NOTE: if this function is not called, genotype by location and genotype by year effects
-are not used in the simulation
+NOTE: this function needs to be called after defineSpecies
 }
 
