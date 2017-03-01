@@ -17,7 +17,7 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     geno <- geno[sample(nrow(geno), nInd*2, replace=T),]
     geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
     pedigree <- cbind(-geno$pedigree, 0) # For founders, parents will be negative
-    colnames(pedigree) <- paste("pedigree", 1:3, sep="")
+    colnames(pedigree) <- 1:3
     geno <- geno$progenies
     
     # Genetic effects. This works even if locCov is scalar
