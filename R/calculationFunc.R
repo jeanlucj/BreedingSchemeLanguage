@@ -8,7 +8,7 @@ calcGenotypicValue <- function(geno, mapData){
   # Calculate genotypic value one QTL at a time for all individuals
   gv1indThisQ <- function(ind){ # ind is zero base
     geno1pos <- geno[ind*2 + 1:2, posThisQ, drop=F]
-    if (!is.null(mapData$domModel)){ # 1 dominant over -1; degree in actType
+    if (mapData$domModel == "Partial"){ # 1 dominant over -1; degree in actType
       minMaxGeno <- apply(geno1pos, 2, range)
       coef <- sapply(1:length(actType), function(i) c(1-actType[i], actType[i]) %*% minMaxGeno[,i])
     } else{ # Standard model (-1,-1 same as 1,1 and opposite to -1,1 or 1,-1)

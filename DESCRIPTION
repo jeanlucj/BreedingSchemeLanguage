@@ -10,7 +10,8 @@ License: GPL-3
 Depends: R (>= 3.0.0), Rcpp (>= 0.11.0), snowfall
 Imports:
   ggplot2,
-  rrBLUP
+  rrBLUP,
+  lme4
 LinkingTo: Rcpp
 LazyLoad: yes
 NeedsCompilation: yes
