@@ -21,9 +21,14 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     geno <- geno$progenies
     
     # Genetic effects. This works even if locCov is scalar
+    if (md$domModel == "MultFit") md$multFitCoef <- diag(ncol(data$varParms$locCov))
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
     coef <- solve(chol(var(gValue))) %*% chol(data$varParms$locCov)
-    md$effects <- md$effects %*% coef
+    if (md$domModel == "MultFit"){
+      md$multFitCoef <- coef
+    } else{
+      md$effects <- md$effects %*% coef
+    }
     gValue <- gValue %*% coef
     # Year and location effects: create matrices with zero columns until phenotyped
     locEffects <- matrix(0, nrow=nInd, ncol=0)
