@@ -20,8 +20,11 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
     } else{ 
       locCov <- gVariance * locCorrelations
     }
-    nQTL <- max(bsl$mapData$effectID)
-    bsl$mapData$effects <- matrix(rnorm(nQTL * nrow(locCov)), nQTL) %*% chol(locCov)
+    newEff <- nrow(locCov) - 1
+    if (newEff > 0){
+      for (i in 1:newEff) cbind(bsl$mapData$effects, sample(bsl$mapData$effects[,1]))
+    }
+
     bsl$varParms <- list(gVariance=gVariance, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, randLoc=randLoc, locCov=locCov)
     return(bsl)
   }

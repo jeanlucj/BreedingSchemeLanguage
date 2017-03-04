@@ -16,7 +16,7 @@ phasedHapMap2mat <- function(hm){
     qtl <- which(!is.na(hm[[8]]))
     actionType <- hm[[8]][qtl]
     effects <- hm[[9]][qtl]
-    effects <- effects[!is.na(effects)]
+    effects <- matrix(effects[!is.na(effects)], ncol=1)
     if (all(!is.na(hm[[7]][qtl]))){
       effectID <- as.integer(hm[[7]][qtl])
     } else {
