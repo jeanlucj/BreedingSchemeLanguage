@@ -1,7 +1,8 @@
 #'Evaluate the phenotypic value
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
-#'@param errorVar error variance
+#'@param plotType links to previously defined error variance and cost (default: "Standard")
+#'@param nRep scalar: the number of replications per trial (i.e., year x loc combination) (default: 1)
 #'@param popID population ID to be evaluated (default: the latest population)
 #'@param locations integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
@@ -9,9 +10,10 @@
 #'@return phenotypic values and the all information created before (list)
 #'@export
 # Locations and years get added when you phenotype in them for the first time
-phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=NULL){
+phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
   parent.env(sEnv) <- environment()
-  phenotype.func <- function(bsl, errorVar, popID, locations, years){
+  phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
+    errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     # When to phenotype
     if (is.null(years)) years=max(ncol(bsl$yearEffects), 1)
     # Who to phenotype
@@ -91,20 +93,19 @@ phenotype <- function(sEnv=simEnv, errorVar=1, popID=NULL, locations=1, years=NU
     bsl$selCriterion <- list(popID=popID, criterion="pheno")
     # Take care of costs
     if (exists("totalCost", bsl)){
-      perPlotCost <- abs(bsl$costs$phenoCost$error - errorVar)
-      perPlotCost <- which(perPlotCost == min(perPlotCost))
-      perPlotCost <- bsl$costs$phenoCost$cost[perPlotCost]
-      bsl$totalCost <- bsl$totalCost + nPhen * perPlotCost * nLoc * nYr
+      perPlotCost <- bsl$costs$phenoCost[plotType]
+      bsl$totalCost <- bsl$totalCost + nPhen * perPlotCost * nLoc * nYr * nRep
     }
     return(bsl)
   }
+  
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, phenotype.func, errorVar=errorVar, popID=popID, locations=locations, years=years)
+      sims <- sfLapply(sims, phenotype.func, plotType=plotType, popID=popID, locations=locations, years=years)
       sfStop()
     }else{
-      sims <- lapply(sims, phenotype.func, errorVar=errorVar, popID=popID, locations=locations, years=years)
+      sims <- lapply(sims, phenotype.func, plotType=plotType, popID=popID, locations=locations, years=years)
     }
   })
 }

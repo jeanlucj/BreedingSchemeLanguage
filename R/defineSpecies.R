@@ -56,5 +56,6 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
   # list of objects to remove before returning the environment
   toRemove <- c(setdiff(ls(), c("sims", "nSim", "nCore")), "toRemove")
   rm(list=toRemove)
+  defineVariances(environment())
   return(environment())
 }
