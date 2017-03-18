@@ -4,10 +4,10 @@
 \alias{selfFertilize}
 \title{Self-fertilize}
 \usage{
-selfFertilize(simEnv, nProgeny = 100, popID = NULL)
+selfFertilize(sEnv = simEnv, nProgeny = 100, popID = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nProgeny}{the number of progeny}
 

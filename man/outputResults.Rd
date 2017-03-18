@@ -4,15 +4,15 @@
 \alias{outputResults}
 \title{Save the results}
 \usage{
-outputResults(simEnv, summarize = T, directory = NULL,
+outputResults(sEnv = simEnv, summarize = T, directory = ".",
   saveDataFileName = "BSLoutput")
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{summarize}{if T a result averaged over all the replications is saved, if F each replication's result is saved}
 
-\item{directory}{the directory to which the output will be saved (Enclose the phrase in double quotation!) (default: the current directory)}
+\item{directory}{the directory to which the output will be saved (Enclose the name in double quotation!) (default: the current directory)}
 
 \item{saveDataFileName}{the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")}
 }

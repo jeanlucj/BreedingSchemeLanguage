@@ -2,26 +2,28 @@
 % Please edit documentation in R/cross.R
 \name{cross}
 \alias{cross}
-\title{Random mate}
+\title{Cross with random mating, or equal contributions,
+or randomly between two populations}
 \usage{
-cross(simEnv, nProgeny = 100, equalContribution = F, popID = NULL,
-  popID2 = NULL)
+cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
+  popID = NULL, popID2 = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nProgeny}{the number of progenies}
 
 \item{equalContribution}{if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents}
 
-\item{popID}{population ID to be crossed (default: the latest population)}
+\item{popID}{population ID to be crossed. Default: the last population}
 
-\item{popID2}{population ID to be crossed with popID to make hybrids}
+\item{popID2}{population ID to be crossed with popID to make hybrids. Default: second population not used.}
 }
 \value{
 sequence information of progenies and the all information created before (list)
 }
 \description{
-Random mate
+Cross with random mating, or equal contributions,
+or randomly between two populations
 }
 

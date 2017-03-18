@@ -3,12 +3,12 @@
 #'@param geno matrix of haplotypes
 #'@param mapData map data
 #'
-# Calculate genotypic value one QTL at a time for all individuals
+# Calculate the genotypic values for individuals with geno at all locations
 calcGenotypicValue <- function(geno, mapData){
-  # Calculate the contribution to genotypic value of one indiviudal of one QTL
+  # Calculate genotypic value one QTL at a time for all individuals
   gv1indThisQ <- function(ind){ # ind is zero base
     geno1pos <- geno[ind*2 + 1:2, posThisQ, drop=F]
-    if (!is.null(mapData$domModel)){ # 1 dominant over -1; degree in actType
+    if (mapData$domModel == "Partial"){ # 1 dominant over -1; degree in actType
       minMaxGeno <- apply(geno1pos, 2, range)
       coef <- sapply(1:length(actType), function(i) c(1-actType[i], actType[i]) %*% minMaxGeno[,i])
     } else{ # Standard model (-1,-1 same as 1,1 and opposite to -1,1 or 1,-1)
@@ -18,31 +18,24 @@ calcGenotypicValue <- function(geno, mapData){
   }#END gv1indThisQ
 
   nInd <- nrow(geno) / 2
-  genoVal <- numeric(nInd)
+  genoVal <- matrix(0, ncol(mapData$effects), nInd)
   for(i in 1:max(mapData$effectID)){
     posThisQ <- mapData$effectivePos[mapData$effectID == i]
     actType <- mapData$actionType[mapData$effectID == i]
-    effect <- mapData$effects[i, 1]
+    effect <- mapData$effects[i, ]
     genoVal <- genoVal + sapply(0:(nInd - 1), gv1indThisQ)
   }
-  return(genoVal)
+  return(t(genoVal))
 }
 
 #'calcPhenotypicValue
 #'
 #'@param gv genotypic values
+#'@param nRep how many replications of phenotypic values: used for multiple locations and/or years
 #'@param errorVar error variance
-#'@param H2 a broad heritability
 #'
-# If both errorVar and H2 are given, the former is used
-calcPhenotypicValue <- function(gv, errorVar = NULL, H2 = NULL){
-  if (is.null(errorVar) & is.null(H2)){
-    stop("Need a measure of error variance to make phenotypic value!")
-  }else{
-    if(is.null(errorVar)){
-      errorVar <- var(gv) * (1 - H2) / H2
-    }
-    pv <- gv + rnorm(length(gv), 0, sqrt(errorVar))
-  }
+# If gv is a multitrait matrix, errorVar is equal across all traits
+calcPhenotypicValue <- function(gv, nRep, errorVar){
+  pv <- c(gv) + rnorm(length(gv)*nRep, 0, sqrt(errorVar))
   return(pv)
 }

@@ -4,14 +4,19 @@
 \alias{phenotype}
 \title{Evaluate the phenotypic value}
 \usage{
-phenotype(simEnv, errorVar = 1, popID = NULL)
+phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
+  years = NULL)
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{errorVar}{error variance}
 
 \item{popID}{population ID to be evaluated (default: the latest population)}
+
+\item{locations}{integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)}
+
+\item{years}{integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).}
 }
 \value{
 phenotypic values and the all information created before (list)

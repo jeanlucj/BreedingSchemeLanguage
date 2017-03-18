@@ -4,16 +4,19 @@
 \alias{select}
 \title{Select individuals}
 \usage{
-select(simEnv, nSelect = 40, popID = NULL, random = F)
+select(sEnv = simEnv, nSelect = 40, popID = NULL, random = F,
+  type = "Mass")
 }
 \arguments{
-\item{simEnv}{an environment that BSL statements operate on}
+\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nSelect}{the number of selected individuals}
 
 \item{popID}{population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)}
 
 \item{random}{assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)}
+
+\item{type}{"WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) the highest nSelect within families are taken.}
 }
 \value{
 information of the selected individuals and the all information created before (list)

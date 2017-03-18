@@ -37,7 +37,7 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 \item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance.}
 }
 \value{
-Species information and input values for the simulation (list)
+An environment that contains objects for the number of simulations specified
 }
 \description{
 Define and create species

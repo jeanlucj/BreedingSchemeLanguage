@@ -73,8 +73,9 @@ makeSelfs <- function(popSize, geno, pos){
   nRep <- popSize %/% nPar
   rem <- popSize %% nPar
   parents <- c(rep(1:nPar, nRep), sample(1:nPar, rem))
-  progenies <- makeProgenies(cbind(parents, parents), geno, pos)
-  return(list(progenies = progenies, pedigree = cbind(parents, parents)))
+  parents <- cbind(parents, parents)
+  progenies <- makeProgenies(parents, geno, pos)
+  return(list(progenies=progenies, pedigree=parents))
 }
 
 #'randomMate
@@ -83,6 +84,7 @@ makeSelfs <- function(popSize, geno, pos){
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
+# Randomly mate with no selfing
 randomMate <- function(popSize, geno, pos){
   parents <- t(sapply(rep(nrow(geno) / 2, popSize), sample, size=2))
   progenies <- makeProgenies(parents, geno, pos)

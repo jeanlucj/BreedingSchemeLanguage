@@ -4,14 +4,14 @@
 \alias{calcPhenotypicValue}
 \title{calcPhenotypicValue}
 \usage{
-calcPhenotypicValue(gv, errorVar = NULL, H2 = NULL)
+calcPhenotypicValue(gv, nRep, errorVar)
 }
 \arguments{
 \item{gv}{genotypic values}
 
-\item{errorVar}{error variance}
+\item{nRep}{how many replications of phenotypic values: used for multiple locations and/or years}
 
-\item{H2}{a broad heritability}
+\item{errorVar}{error variance}
 }
 \description{
 calcPhenotypicValue
