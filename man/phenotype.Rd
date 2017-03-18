@@ -4,13 +4,15 @@
 \alias{phenotype}
 \title{Evaluate the phenotypic value}
 \usage{
-phenotype(sEnv = simEnv, errorVar = 1, popID = NULL, locations = 1,
-  years = NULL)
+phenotype(sEnv = simEnv, plotType = "Standard", nRep = 1, popID = NULL,
+  locations = 1, years = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
-\item{errorVar}{error variance}
+\item{plotType}{links to previously defined error variance and cost (default: "Standard")}
+
+\item{nRep}{scalar: the number of replications per trial (i.e., year x loc combination) (default: 1)}
 
 \item{popID}{population ID to be evaluated (default: the latest population)}
 

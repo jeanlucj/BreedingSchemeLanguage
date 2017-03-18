@@ -14,6 +14,7 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
   parent.env(sEnv) <- environment()
   phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
+    names(errorVar) <- NULL
     # When to phenotype
     if (is.null(years)) years=max(ncol(bsl$yearEffects), 1)
     # Who to phenotype
@@ -102,10 +103,10 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, phenotype.func, plotType=plotType, popID=popID, locations=locations, years=years)
+      sims <- sfLapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
       sfStop()
     }else{
-      sims <- lapply(sims, phenotype.func, plotType=plotType, popID=popID, locations=locations, years=years)
+      sims <- lapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
     }
   })
 }

@@ -6,7 +6,8 @@
 NOTE: this function needs to be called after defineSpecies}
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
-  gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8)
+  gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8,
+  plotTypeErrVars = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -20,9 +21,11 @@ defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
 \item{gByYearVar}{scalar: the genotype by year variance Default is 1}
 
 \item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8}
+
+\item{plotTypeErrVars}{named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)}
 }
 \value{
-Species information and input values for the simulation (list)
+Breeding scheme simulation object supplemented with variance parameters
 }
 \description{
 Define the relationships among locations

@@ -5,14 +5,14 @@
 \title{Define the costs that go into breeding
 Default for some costs is zero because they probably belong to fixed costs}
 \usage{
-defineCosts(sEnv = simEnv, phenoCost = data.frame(1, 1), genoCost = 0.25,
+defineCosts(sEnv = simEnv, phenoCost = NULL, genoCost = 0.25,
   crossCost = 1, selfCost = 1, doubHapCost = 5, predCost = 0,
   selectCost = 0, locCost = 0, yearCost = 0)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
-\item{phenoCost}{two-column lookup table with error variance in first column and cost in second column (default: 1, 1)}
+\item{phenoCost}{named vector: names are the plot types and contents are the cost for one plot of that type (default: Standard=1; if plotTypes have been defined in defineVariances and phenoCost is not specified, all plotTypes are given a cost of 1)}
 
 \item{genoCost}{scalar: cost to genotype one individual default (0.25)}
 
@@ -31,7 +31,7 @@ defineCosts(sEnv = simEnv, phenoCost = data.frame(1, 1), genoCost = 0.25,
 \item{yearCost}{scalar: the cost of program upkeep for a year (0)}
 }
 \value{
-Species information and input values for the simulation (list)
+Breeding scheme simulation object supplemented with a list of costs
 }
 \description{
 Define the costs that go into breeding

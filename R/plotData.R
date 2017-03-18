@@ -31,7 +31,7 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
     }
   } else{
     modifyMSBL <- function(muSim){
-      muSim$muSim <- muSim$muSim[, as.character(popID)]
+      muSim$muSim <- muSim$muSim[, as.character(popID), drop=F]
       return(muSim)
     }
   }
