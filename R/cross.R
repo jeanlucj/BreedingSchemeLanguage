@@ -22,13 +22,34 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
     nPar1 <- length(GID.1)
     geno <- bsl$geno[rep(GID.1*2, each=2) + rep(-1:0, nPar1), ]
     if (is.null(popID2)){
-      if(equalContribution){
-        geno <- randomMateAll(popSize=nProgeny, geno=geno, pos=locPos)
-      }else{
-        geno <- randomMate(popSize=nProgeny, geno=geno, pos=locPos)
+      if (bsl$selCriterion$criterion == "OptimContrib"){
+        timesPerParE <- 2*nProgeny * bsl$selCriterion$optimContrib
+        timesPerPar <- round(timesPerParE)
+        if (sum(timesPerPar) < 2*nProgeny){
+          nToAdd <- 2*nProgeny - sum(timesPerPar)
+          offset <- timesPerParE - timesPerPar
+          whichAdd <- order(offset, decreasing=T)[1:nToAdd]
+          timesPerPar[whichAdd] <- timesPerPar[whichAdd] + 1
+        }
+        if (sum(timesPerPar) > 2*nProgeny){
+          nToSub <- sum(timesPerPar) - 2*nProgeny
+          offset <- timesPerPar - timesPerParE
+          whichSub <- order(offset, decreasing=T)[1:nToSub]
+          timesPerPar[whichSub] <- timesPerPar[whichSub] - 1
+        }
+        # Should avoid selfing but that's complicated
+        parents <- matrix(sample.int(rep(nPar1, times=timesPerPar), nProgeny)) 
+        geno <- makeProgenies(parents, geno, locPos)
+        pedigree <- matrix(GID.1[c(parents)], nProgeny)
+      } else{
+        if(equalContribution){
+          geno <- randomMateAll(popSize=nProgeny, geno=geno, pos=locPos)
+        }else{
+          geno <- randomMate(popSize=nProgeny, geno=geno, pos=locPos)
+        }
+        pedigree <- cbind(matrix(GID.1[geno$pedigree], nrow=nProgeny), 0)
+        geno <- geno$progenies
       }
-      pedigree <- cbind(matrix(GID.1[geno$pedigree], nrow=nProgeny), 0)
-      geno <- geno$progenies
     } else{ # Make pedigrees to mate two populations with each other
       tf <- bsl$genoRec$popID %in% popID2
       GID.2 <- bsl$genoRec$GID[tf]
