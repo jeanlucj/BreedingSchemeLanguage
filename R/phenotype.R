@@ -25,15 +25,15 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
     nPhen <- sum(tf)
     nLoc <- length(locations)
     nYr <- length(years)
-    nRep <- nYr
+    nTrial <- nYr
     if (bsl$varParms$randLoc){
-      nRep <- nRep * nLoc
-      pValue <- calcPhenotypicValue(gv=bsl$gValue[tf,,drop=F], nRep, errorVar=errorVar)
+      nTrial <- nTrial * nLoc
+      pValue <- calcPhenotypicValue(gv=bsl$gValue[tf,,drop=F], nRep=nTrial, errorVar=errorVar)
     } else{
       if (!all(locations %in% 1:ncol(bsl$gValue))){
         stop("Phenotyping at unknown locations")
       }
-      pValue <- calcPhenotypicValue(gv=bsl$gValue[tf, locations, drop=F], nRep, errorVar=errorVar)
+      pValue <- calcPhenotypicValue(gv=bsl$gValue[tf, locations, drop=F], nRep=nTrial, errorVar=errorVar)
     }
     # Year and location effects to add in
     nInd <- max(bsl$genoRec$GID)

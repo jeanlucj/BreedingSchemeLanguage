@@ -2,8 +2,7 @@
 % Please edit documentation in R/defineVariances.R
 \name{defineVariances}
 \alias{defineVariances}
-\title{Define the relationships among locations
-NOTE: this function needs to be called after defineSpecies}
+\title{Define genetic, interaction, and error variances}
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
   gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8,
@@ -28,7 +27,6 @@ defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
 Breeding scheme simulation object supplemented with variance parameters
 }
 \description{
-Define the relationships among locations
-NOTE: this function needs to be called after defineSpecies
+Define genetic, interaction, and error variances
 }
 

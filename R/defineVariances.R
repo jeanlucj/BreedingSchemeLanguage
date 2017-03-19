@@ -1,5 +1,4 @@
-#' Define the relationships among locations
-#' NOTE: this function needs to be called after defineSpecies
+#' Define genetic, interaction, and error variances
 #' 
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param gVariance genetic variance in the initial population Default is 1
@@ -12,14 +11,9 @@
 #'@return Breeding scheme simulation object supplemented with variance parameters
 #'
 #'@export
-defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=NULL){
+defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=c(Standard=1)){
   parent.env(sEnv) <- environment()
   variances.func <- function(bsl, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd, plotTypeErrVars){
-    if (is.null(plotTypeErrVars)){
-      plotTypeErrVars <- 1
-      names(plotTypeErrVars) <- "Standard"
-    }
-    
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly
       locCov <- matrix(gVariance)
@@ -28,7 +22,7 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
     }
     newEff <- nrow(locCov) - 1
     if (newEff > 0){
-      for (i in 1:newEff) cbind(bsl$mapData$effects, sample(bsl$mapData$effects[,1]))
+      bsl$mapData$effects <- cbind(bsl$mapData$effects, sapply(1:newEff, function(d) sample(bsl$mapData$effects[,1])))
     }
     
     bsl$varParms <- list(gVariance=gVariance, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, randLoc=randLoc, locCov=locCov, plotTypeErrVars=plotTypeErrVars)
