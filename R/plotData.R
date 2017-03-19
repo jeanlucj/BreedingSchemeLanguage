@@ -74,7 +74,7 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   if (add){
     prevData <- try(suppressWarnings(readRDS(file=paste(addDataFileName, ".rds", sep=""))), silent=T)
     if (class(prevData) != "try-error"){
-    totCost <- c(totCost, prevData$totCost)
+    totCost <- c(prevData$totCost, totCost)
     prevData <- prevData$plotData
     plotData$scheme <- plotData$scheme + max(prevData$scheme)
     plotData$group <- plotData$group + max(prevData$group)
