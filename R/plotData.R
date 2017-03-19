@@ -50,10 +50,14 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
       group <- c(group, rep(sim, nGenPlot))
       size <- c(size, rep(1, nGenPlot))
     }
-    g <- c(g, apply(muSim, 2, mean))
-    group <- c(group, rep(sEnv$nSim + 1, nGenPlot))
-    size <- c(size, rep(2, nGenPlot))
-    plotData <- data.frame(g=g, popID=rep(0:(nGenPlot - 1), nrow(muSim) + 1), size=size, col=loc, group=group, scheme=1)
+    nrp <- 0
+    if (nrow(muSim) > 1){
+      g <- c(g, apply(muSim, 2, mean))
+      group <- c(group, rep(sEnv$nSim + 1, nGenPlot))
+      size <- c(size, rep(2, nGenPlot))
+      nrp <- 1
+    }
+    plotData <- data.frame(g=g, popID=rep(0:(nGenPlot - 1), nrow(muSim) + nrp), size=size, col=loc, group=group, scheme=1)
   }#END makeDF
   muSimByLoc <- lapply(muSimByLoc, makeDF)
   
@@ -66,32 +70,47 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
     plotData <- rbind(plotData, toAdd)
   }
   
+  totCost <- sEnv$sims[[1]]$totalCost
   if (add){
-    prevData <- readRDS(file=paste(addDataFileName, ".rds", sep=""))
+    prevData <- try(suppressWarnings(readRDS(file=paste(addDataFileName, ".rds", sep=""))), silent=T)
+    if (class(prevData) != "try-error"){
+    totCost <- c(totCost, prevData$totCost)
+    prevData <- prevData$plotData
     plotData$scheme <- plotData$scheme + max(prevData$scheme)
     plotData$group <- plotData$group + max(prevData$group)
     plotData <- rbind(plotData, prevData)
+    }
   }
-  saveRDS(plotData, file=paste(addDataFileName, ".rds", sep=""))
-  p <- ggplot(data=plotData, aes(x=popID, y=g))
-  p <- p + geom_line(aes(size=factor(size), colour=factor(col), linetype=factor(scheme), group=factor(group)))
+  saveRDS(list(plotData=plotData, totCost=totCost), file=paste(addDataFileName, ".rds", sep=""))
+  
+  mapping <- aes(x=popID, y=g, group=group)
+  if (length(unique(plotData$col)) > 1) mapping <- modifyList(mapping, aes(colour=factor(col)))
+  if (length(unique(plotData$size)) > 1) mapping <- modifyList(mapping, aes(size=factor(size)))
+  if (length(unique(plotData$scheme)) > 1) mapping <- modifyList(mapping, aes(linetype=factor(scheme)))
+  p <- ggplot(data=plotData, mapping)
+  p <- p + geom_line()
   if (is.null(ymax)) {
     p <- p + ylim(min(plotData$g), max(plotData$g))
   }
   else {
     p <- p + ylim(min(plotData$g), ymax)
   }
-  # The palette with black:
-  cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-  # To use for line and point colors, add
-  p <- p + scale_colour_manual(values=cbPalette)
-  p <- p + scale_size_manual(name="", values=c(0.3, 2), labels=c("Repl", "Mean"))
   p <- p + labs(title="", x="Generation", y="Genetic improvement")
-  p <- p + guides(col=guide_legend("Locs"))
-  p <- p + guides(size=guide_legend("Lines"))
-  p <- p + guides(linetype=guide_legend("Scheme"))
-  if (exists("totalCost", sEnv$sims[[1]])){
-    p <- p + ggtitle(paste("Total scheme cost", round(sEnv$sims[[1]]$totalCost)))
+  
+  if (length(unique(plotData$col)) > 1){
+    cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    p <- p + scale_colour_manual(values=cbPalette)
+    p <- p + guides(col=guide_legend("Locs"))
+  } 
+  if (length(unique(plotData$size)) > 1){
+    p <- p + scale_size_manual(name="", values=c(0.3, 2), labels=c("Repl", "Mean"))
+    p <- p + guides(size=guide_legend("Lines"))
+  } 
+  if (length(unique(plotData$scheme)) > 1){
+    p <- p + guides(linetype=guide_legend("Scheme"))
+  }
+  if (!is.null(totCost)){
+    p <- p + ggtitle(paste("Cost of scheme", ifelse(length(totCost) > 1, "s", ""), ": ", paste(round(totCost), collapse=", "), sep=""))
   }
   print(p)
 }

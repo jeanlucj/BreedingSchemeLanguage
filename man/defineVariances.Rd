@@ -6,7 +6,7 @@
 \usage{
 defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
   gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8,
-  plotTypeErrVars = NULL)
+  plotTypeErrVars = c(Standard = 1))
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
