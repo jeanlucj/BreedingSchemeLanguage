@@ -52,6 +52,11 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     save(sims, nSim, nCore, file=paste(saveDataFileName, ".RData", sep=""))
   }else{ # loadData not NULL
     load(paste(loadData, ".RData", sep=""))
+    # Backward compatibility for versions that did not have domModel
+    if (is.null(sims[[1]]$mapData$domModel)) sims <- lapply(sims, function(bsl){
+      bsl$mapData$domModel <- "HetHom"
+      return(bsl)
+    })
   }
   # list of objects to remove before returning the environment
   toRemove <- c(setdiff(ls(), c("sims", "nSim", "nCore")), "toRemove")

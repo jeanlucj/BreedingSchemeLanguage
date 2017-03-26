@@ -11,10 +11,10 @@
 outputResults <- function(sEnv=simEnv, summarize=T, directory=".", saveDataFileName="BSLoutput"){
   if(summarize){
     getMean <- function(data){
-      tapply(data$genoRec$gValue, data$genoRec$basePopID, mean)
+      tapply(data$gValue, data$genoRec$basePopID, mean)
     }
     getVar <- function(data){
-      tapply(data$genoRec$gValue, data$genoRec$basePopID, var)
+      tapply(data$gValue, data$genoRec$basePopID, var)
     }
     muSim <- sapply(sEnv$sims, getMean)
     varSim <- sapply(sEnv$sims, getVar)

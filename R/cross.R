@@ -72,7 +72,12 @@ addProgenyData <- function(bsl, geno, pedigree){
   nProgeny <- nrow(geno) / 2
   M <- geno[1:nProgeny*2 - 1, bsl$mapData$effectivePos] + geno[1:nProgeny*2, bsl$mapData$effectivePos]
   nAdd <- ncol(bsl$yearEffects)
-  if (nAdd > 0){
+  if (nAdd == 0){ # The user is making croses without ever having phenotyped
+    bsl$locEffects <- matrix(0, nrow=nrow(bsl$locEffects) + nProgeny, ncol=0)
+    bsl$locEffectsI <- matrix(0, nrow=nrow(bsl$locEffectsI) + nProgeny, ncol=0)
+    bsl$yearEffects <- matrix(0, nrow=nrow(bsl$yearEffects) + nProgeny, ncol=0)
+    bsl$yearEffectsI <- matrix(0, nrow=nrow(bsl$yearEffectsI) + nProgeny, ncol=0)
+  } else{
     vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
     toAdd <- M %*% bsl$gByYqtl
     toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$yearScale[i])
