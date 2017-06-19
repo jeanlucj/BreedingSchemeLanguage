@@ -2,7 +2,7 @@
 #' 
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param gVariance genetic variance in the initial population Default is 1
-#'@param locCorrelations matrix: genetic correlation in performance between locations default: NULL will cause locCorrelations to be gVariance / (gVariance + gByLocVar). If given, the genetic co-variance across locations is gVariance * locCorrelations. Default is NULL
+#'@param locCorrelations matrix: genetic correlation in performance between locations default: If given, the genetic co-variance across locations is gVariance * locCorrelations. If NULL, deviations with variance gByLocVar will be added to the main genotypic effect to determine the genotypic value in each location. The expected genetic correlation between locations is then gVariance / (gVariance + gByLocVar). Default is NULL
 #'@param gByLocVar scalar: the genotype by location variance Default is 1, BUT if locCorrelations given, this parameter is not used)
 #'@param gByYearVar scalar: the genotype by year variance Default is 1
 #'@param fracGxEAdd scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8

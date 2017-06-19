@@ -5,7 +5,7 @@
 #'@param directory the directory to which the output will be saved (Enclose the name in double quotation!) (default: the current directory)
 #'@param saveDataFileName the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")
 #'
-#'@return The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+#'@return The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.
 #'
 #'@export
 outputResults <- function(sEnv=simEnv, summarize=T, directory=".", saveDataFileName="BSLoutput"){
