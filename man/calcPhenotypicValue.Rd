@@ -16,4 +16,3 @@ calcPhenotypicValue(gv, nRep, errorVar)
 \description{
 calcPhenotypicValue
 }
-

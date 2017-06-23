@@ -16,4 +16,3 @@ makeProgeny(genoMat, genoPat, pos)
 \description{
 makeProgeny
 }
-

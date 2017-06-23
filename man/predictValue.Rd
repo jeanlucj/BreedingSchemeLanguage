@@ -26,4 +26,3 @@ predicted values and the all information created before (list)
 \description{
 Genomic prediction
 }
-

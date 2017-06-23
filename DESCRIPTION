@@ -15,4 +15,4 @@ Imports:
 LinkingTo: Rcpp
 LazyLoad: yes
 NeedsCompilation: yes
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

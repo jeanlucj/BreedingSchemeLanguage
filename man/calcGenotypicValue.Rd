@@ -14,4 +14,3 @@ calcGenotypicValue(geno, mapData)
 \description{
 calcGenotypicValue
 }
-

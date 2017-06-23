@@ -16,4 +16,3 @@ randomMate(popSize, geno, pos)
 \description{
 randomMate
 }
-

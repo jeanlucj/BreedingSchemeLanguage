@@ -7,6 +7,8 @@
 makeSelfs(popSize, geno, pos)
 }
 \arguments{
+\item{popSize}{the number of selfed individuals to return}
+
 \item{geno}{matrix of haplotypes}
 
 \item{pos}{position of markers/QTLs}
@@ -14,4 +16,3 @@ makeSelfs(popSize, geno, pos)
 \description{
 makeSelfs
 }
-

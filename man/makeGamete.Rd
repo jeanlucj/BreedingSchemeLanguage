@@ -14,4 +14,3 @@ makeGamete(geno, pos)
 \description{
 makeGamete
 }
-

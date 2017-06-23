@@ -17,4 +17,3 @@ marker genotype and the all information created before (list)
 \description{
 Genotype markers
 }
-

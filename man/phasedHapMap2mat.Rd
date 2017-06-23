@@ -15,4 +15,3 @@ list with markers and map objects
 \description{
 Transform a data.frame with a hapmap data in it into a marker dosage and map list
 }
-

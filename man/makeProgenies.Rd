@@ -16,4 +16,3 @@ makeProgenies(parents, geno, pos)
 \description{
 makeProgenies
 }
-

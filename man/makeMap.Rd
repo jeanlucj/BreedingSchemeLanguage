@@ -27,4 +27,3 @@ map data including which loci are primary QTL and which are modifying loci, whic
 \description{
 create map and QTL effects
 }
-

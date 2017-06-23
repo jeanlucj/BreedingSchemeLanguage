@@ -17,4 +17,3 @@ initial population informationand the all information created before (list)
 \description{
 Create a founder population
 }
-

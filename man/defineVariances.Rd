@@ -13,7 +13,7 @@ defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
 
 \item{gVariance}{genetic variance in the initial population Default is 1}
 
-\item{locCorrelations}{matrix: genetic correlation in performance between locations default: NULL will cause locCorrelations to be gVariance / (gVariance + gByLocVar). If given, the genetic co-variance across locations is gVariance * locCorrelations. Default is NULL}
+\item{locCorrelations}{matrix: genetic correlation in performance between locations default: If given, the genetic co-variance across locations is gVariance * locCorrelations. If NULL, deviations with variance gByLocVar will be added to the main genotypic effect to determine the genotypic value in each location. The expected genetic correlation between locations is then gVariance / (gVariance + gByLocVar). Default is NULL}
 
 \item{gByLocVar}{scalar: the genotype by location variance Default is 1, BUT if locCorrelations given, this parameter is not used)}
 
@@ -29,4 +29,3 @@ Breeding scheme simulation object supplemented with variance parameters
 \description{
 Define genetic, interaction, and error variances
 }
-

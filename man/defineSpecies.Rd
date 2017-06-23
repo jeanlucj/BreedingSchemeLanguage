@@ -34,7 +34,7 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 
 \item{nEpiLoci}{the expected number of epistatic loci for each effect}
 
-\item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance.}
+\item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance. At the moment, functionality for the "Partial" option is only available when using ImportFounderHap.}
 }
 \value{
 An environment that contains objects for the number of simulations specified
@@ -42,4 +42,3 @@ An environment that contains objects for the number of simulations specified
 \description{
 Define and create species
 }
-

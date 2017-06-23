@@ -19,4 +19,3 @@ data with progeny information added
 \description{
 Add progeny information to data after cross, doubledHaploid, or selfFertilize
 }
-

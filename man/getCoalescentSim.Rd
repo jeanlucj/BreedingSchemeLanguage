@@ -30,4 +30,3 @@ getCoalescentSim(nPopsSamples = NULL, effPopSize = 100, nChr = 7,
 \description{
 getCalescentSim
 }
-

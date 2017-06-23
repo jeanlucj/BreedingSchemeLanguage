@@ -16,4 +16,3 @@ randomMateAll(popSize, geno, pos)
 \description{
 randomMateAll
 }
-

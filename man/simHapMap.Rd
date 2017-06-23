@@ -35,4 +35,3 @@ A data.frame with hapmap data in it
 \description{
 Generate a data.frame with a hapmap data in it to test phasedHapMap2mat
 }
-

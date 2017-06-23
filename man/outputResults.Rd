@@ -17,9 +17,8 @@ outputResults(sEnv = simEnv, summarize = T, directory = ".",
 \item{saveDataFileName}{the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")}
 }
 \value{
-The simulation results (The output data was saved as BSLoutput.RData. After you load the data in R, you can find the data named as BSLoutput.)
+The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.
 }
 \description{
 Save the results
 }
-

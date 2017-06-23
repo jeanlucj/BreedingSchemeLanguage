@@ -26,4 +26,3 @@ sequence information of progenies and the all information created before (list)
 Cross with random mating, or equal contributions,
 or randomly between two populations
 }
-

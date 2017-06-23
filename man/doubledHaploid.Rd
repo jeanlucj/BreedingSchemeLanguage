@@ -19,4 +19,3 @@ sequence information of progenies and the all information created before (list)
 \description{
 Doubled haploids
 }
-

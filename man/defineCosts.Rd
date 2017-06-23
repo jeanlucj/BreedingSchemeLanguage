@@ -37,4 +37,3 @@ Breeding scheme simulation object supplemented with a list of costs
 Define the costs that go into breeding
 Default for some costs is zero because they probably belong to fixed costs
 }
-

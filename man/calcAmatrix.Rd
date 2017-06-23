@@ -35,4 +35,3 @@ A matrix, \code{aMat}, the additive relationship matrix
  handle a pedigree of doubled haploid lines. Individuals can be
  self-pollinated for an arbitrary number of generations.
 }
-

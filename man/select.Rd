@@ -24,4 +24,3 @@ information of the selected individuals and the all information created before (
 \description{
 Select individuals
 }
-

@@ -16,4 +16,3 @@ makeDHs(popSize, geno, pos)
 \description{
 makeDHs
 }
-

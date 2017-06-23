@@ -26,4 +26,3 @@ phenotypic values and the all information created before (list)
 \description{
 Evaluate the phenotypic value
 }
-

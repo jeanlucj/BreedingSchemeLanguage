@@ -24,4 +24,3 @@ A ggplot object of the simulation results
 \description{
 Plot the results
 }
-
