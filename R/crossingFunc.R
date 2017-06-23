@@ -65,6 +65,7 @@ makeDHs <- function(popSize, geno, pos){
 
 #'makeSelfs
 #'
+#'@param popSize the number of selfed individuals to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
