@@ -6,6 +6,9 @@
 #'@param addDataFileName the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")
 #'@param popID vector of the population IDs you want plotted
 #'
+#'@importFrom stats weighted.mean
+#'@importFrom utils modifyList
+#'
 #'@return A ggplot object of the simulation results
 #'
 #'@export
@@ -83,10 +86,15 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   }
   saveRDS(list(plotData=plotData, totCost=totCost), file=paste(addDataFileName, ".rds", sep=""))
   
-  mapping <- aes(x=popID, y=g, group=group)
-  if (length(unique(plotData$col)) > 1) mapping <- modifyList(mapping, aes(colour=factor(col)))
-  if (length(unique(plotData$size)) > 1) mapping <- modifyList(mapping, aes(size=factor(size)))
-  if (length(unique(plotData$scheme)) > 1) mapping <- modifyList(mapping, aes(linetype=factor(scheme)))
+  plotData$group <- as.factor(plotData$group)
+  plotData$col <- as.factor(plotData$col)
+  plotData$size <- as.factor(plotData$size)
+  plotData$scheme <- as.factor(plotData$scheme)
+  
+  mapping <- aes_string(x="popID", y="g", group="group")
+  if (length(unique(plotData$col)) > 1) mapping <- modifyList(mapping, aes_string(colour="col"))
+  if (length(unique(plotData$size)) > 1) mapping <- modifyList(mapping, aes_string(size="size"))
+  if (length(unique(plotData$scheme)) > 1) mapping <- modifyList(mapping, aes_string(linetype="scheme"))
   p <- ggplot(data=plotData, mapping)
   p <- p + geom_line()
   if (is.null(ymax)) {

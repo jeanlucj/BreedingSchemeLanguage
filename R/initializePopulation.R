@@ -3,6 +3,8 @@
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nInd population size
 #'
+#'@importFrom stats var
+#'
 #'@return initial population informationand the all information created before (list)
 #'
 #'@export

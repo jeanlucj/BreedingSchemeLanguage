@@ -4,5 +4,5 @@
 #' 
 #' @name BreedingSchemeLanguage
 #' @docType package
-#' @import snowfall Rcpp rrBLUP lme4 ggplot2
-NULL
+#' @import ggplot2 lme4 snowfall Rcpp 
+utils::globalVariables("simEnv")

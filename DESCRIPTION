@@ -9,9 +9,11 @@ Description: Users can simulate their planned breeding schemes by using function
 License: GPL-3
 Depends: R (>= 3.0.0), Rcpp (>= 0.11.0), snowfall
 Imports:
+  stats,
   ggplot2,
-  rrBLUP,
   lme4
+Suggests:
+  rrBLUP (<= 4.4)
 LinkingTo: Rcpp
 LazyLoad: yes
 NeedsCompilation: yes

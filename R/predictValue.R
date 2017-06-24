@@ -7,6 +7,8 @@
 #'@param years data from which years should be used (default: all years)
 #'@param sharingInfo one of "none", "markers", "pedigree".  If none, genotypic values are assumed IID. If markers or pedigree, a genomic or pedigree relationship matrix is constructed
 #'
+#'@importFrom stats as.formula
+#'
 #'@return predicted values and the all information created before (list)
 #'
 #'@export
@@ -15,7 +17,7 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
   predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
     if (is.null(locations)) locations <- unique(bsl$phenoRec$loc)
     if (is.null(years)) years <- unique(bsl$phenoRec$year)
-    phenoRec <- subset(bsl$phenoRec, subset=loc %in% locations & year %in% years)
+    phenoRec <- subset(bsl$phenoRec, subset = bsl$phenoRec$loc %in% locations & bsl$phenoRec$year %in% years)
     ########################################################
     # Consider all individuals to be IID
     if (sharingInfo == "none"){
@@ -56,10 +58,10 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
       predGID <- c(GID.train, GID.pred)
       mt1ObsPerGID <- sum(phenoRec$phenoGID %in% predGID) > length(predGID)
       
-      K <- A.mat(M)
+      K <- rrBLUP::A.mat(M)
       rownames(K) <- colnames(K) <- predGID
       kbDat <- subset(phenoRec, phenoRec$phenoGID %in% predGID)
-      kbo <- kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
+      kbo <- rrBLUP::kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
       predict <- kbo$g
     }
     ########################################################
@@ -83,7 +85,7 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
       K <- bsl$aMat[predGID, predGID]
       rownames(K) <- colnames(K) <- predGID
       kbDat <- subset(phenoRec, phenoRec$phenoGID %in% predGID)
-      kbo <- kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
+      kbo <- rrBLUP::kin.blup(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), K=K, reduce=mt1ObsPerGID, R=kbDat$error)
       predict <- kbo$g
     }
         

@@ -24,7 +24,7 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     } else{
       if(substr(criterion, 1, 5) == "pheno"){
         GIDcan <- intersect(GIDcan, bsl$phenoRec$phenoGID)
-        usePheno <- subset(bsl$phenoRec, phenoGID %in% GIDcan)
+        usePheno <- subset(bsl$phenoRec, bsl$phenoRec$phenoGID %in% GIDcan)
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }
       if(substr(criterion, 1, 4) == "pred"){
