@@ -29,7 +29,13 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
     popSizes <- tapply(pID, pID, length)
     modifyMSBL <- function(muSim){
       ms <- muSim$muSim
-      muSim$muSim <- sapply(popID, function(popVec) apply(ms, 1, function(vec) weighted.mean(vec[as.character(popVec)], popSizes[as.character(popVec)])))
+      getMeanOfPops <- function(popVec){
+        cnames <- as.character(popVec)
+        cnames <- intersect(cnames, colnames(ms))
+        if (length(cnames) == 0) stop("Plotting popIDs that are empty")
+        apply(ms, 1, function(vec) weighted.mean(vec[cnames], popSizes[cnames]))
+      }
+      muSim$muSim <- sapply(popID, getMeanOfPops)
       return(muSim)
     }
   } else{
