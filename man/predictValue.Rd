@@ -5,7 +5,7 @@
 \title{Genomic prediction}
 \usage{
 predictValue(sEnv = simEnv, popID = NULL, trainingPopID = NULL,
-  locations = NULL, years = NULL, sharingInfo = "none")
+  locations = NULL, years = NULL, sharingInfo = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
