@@ -7,7 +7,7 @@
 randomMateAll(popSize, geno, pos)
 }
 \arguments{
-\item{popSize}{population size}
+\item{popSize}{the number of progeny to return}
 
 \item{geno}{matrix of haplotypes}
 

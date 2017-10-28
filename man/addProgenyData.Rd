@@ -11,7 +11,8 @@ addProgenyData(bsl, geno, pedigree)
 
 \item{geno}{the genotypes of the progeny}
 
-\item{pedigree}{the three-column pedigree of the progeny (last col: DH, outbred, self)}
+\item{pedigree}{the three-column pedigree of the progeny (last col: DH, outbred, self)
+Normally DH=-1, outbred=0, self=nGen of selfing but that is not currenly properly updated}
 }
 \value{
 data with progeny information added
