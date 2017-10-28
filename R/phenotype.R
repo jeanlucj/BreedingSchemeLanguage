@@ -93,7 +93,7 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
     toAdd <- data.frame(phenoGID=bsl$genoRec$GID[tf], loc=loc, year=yr, error=errorVar, pValue=pValue)
     bsl$phenoRec <- rbind(bsl$phenoRec, toAdd)
 
-    bsl$selCriterion <- list(popID=popID, criterion="pheno")
+    bsl$selCriterion <- list(popID=popID, criterion="pheno", sharing="none")
     # Take care of costs
     if (exists("totalCost", bsl)){
       perPlotCost <- bsl$costs$phenoCost[plotType]

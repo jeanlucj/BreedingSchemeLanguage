@@ -15,6 +15,9 @@ genotype <- function(sEnv=simEnv, popID=NULL){
       tf <- data$genoRec$popID %in% popID
       data$genoRec$hasGeno <- data$genoRec$hasGeno | tf
     }
+    
+    data$selCriterion$sharing <- "markers"
+    
     if (exists("totalCost", data)) data$totalCost <- data$totalCost + (sum(data$genoRec$hasGeno) - nHasGeno) * data$costs$genoCost
     return(data)
   }
