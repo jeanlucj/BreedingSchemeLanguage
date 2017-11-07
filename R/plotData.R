@@ -4,7 +4,8 @@
 #'@param ymax the maximum value of y-axis (default: the maximun value in the data)
 #'@param add if T a new result will be added to an existing plot, if F a new plot will be drawn (default)
 #'@param addDataFileName the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")
-#'@param popID vector of the population IDs you want plotted
+#'@param popID list of vectors of the population IDs you want plotted
+#'@param suppress if TRUE, this call is just to assemble the data to be plotted in a later call to plotData (default: FALSE)
 #'
 #'@importFrom stats weighted.mean
 #'@importFrom utils modifyList
@@ -12,7 +13,7 @@
 #'@return A ggplot object of the simulation results
 #'
 #'@export
-plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL){
+plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL, suppress=F){
   plotBase <- is.null(popID)
   if (plotBase) popID <- sort(unique(sEnv$sims[[1]]$genoRec$basePopID))
   nLoc <- ncol(sEnv$sims[[1]]$gValue)
@@ -126,5 +127,5 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   if (!is.null(totCost)){
     p <- p + ggtitle(paste("Cost of scheme", ifelse(length(totCost) > 1, "s", ""), ": ", paste(round(totCost), collapse=", "), sep=""))
   }
-  print(p)
+  if (!suppress) print(p)
 }

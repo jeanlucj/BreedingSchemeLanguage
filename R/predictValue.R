@@ -197,10 +197,9 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
       # Figure out who to predict
       tf <- bsl$genoRec$popID %in% popID
       predGID <- bsl$genoRec$GID[tf]
-      mt1ObsPerGID <- sum(phenoRec$phenoGID %in% predGID) > length(predGID)
-      
+
       kbDat <- subset(phenoRec, phenoRec$phenoGID %in% predGID)
-      kbo <- kin.blup4.4(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), reduce=mt1ObsPerGID, R=kbDat$error)
+      kbo <- kin.blup4.4(kbDat, geno="phenoGID", pheno="pValue", fixed=c("loc", "year"), R=kbDat$error)
       predict <- kbo$g
       predGID <- as.integer(names(predict))
     }
