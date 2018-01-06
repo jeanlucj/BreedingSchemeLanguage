@@ -24,7 +24,12 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
-    coef <- solve(chol(var(gValue))) %*% chol(data$varParms$locCov)
+    if (nrow(gValue) == 1){
+      covGval <- diag(ncol(gValue))
+    } else if (nrow(gValue) <= ncol(gValue) * (ncol(gValue) + 1) / 2){
+      covGval <- diag(diag(var(gValue)))
+    } else covGval <- var(gValue)
+    coef <- solve(chol(covGval)) %*% chol(data$varParms$locCov)
     md$effects <- md$effects %*% coef
     gValue <- gValue %*% coef
     # Year and location effects: create matrices with zero columns until phenotyped

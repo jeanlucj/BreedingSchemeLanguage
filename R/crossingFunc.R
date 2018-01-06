@@ -81,22 +81,22 @@ makeSelfs <- function(popSize, geno, pos){
 
 #'randomMate
 #'
-#'@param popSize population size
+#'@param popSize number of progeny to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
-# Randomly mate with no selfing
+# Randomly mate. Selfing is possible.
 randomMate <- function(popSize, geno, pos){
-  parents <- t(sapply(rep(nrow(geno) / 2, popSize), sample, size=2))
+  parents <- t(sapply(rep(nrow(geno) / 2, popSize), sample, size=2, replace=T))
   progenies <- makeProgenies(parents, geno, pos)
   return(list(progenies = progenies, pedigree = parents))
 }
 
-# Randomly mate but all parents have to be used equally.
+# Randomly mate but all parents have to be used equally and no selfing is allowed.
 # It's trickier than it seems
 #'randomMateAll
 #'
-#'@param popSize population size
+#'@param popSize number of progeny to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'

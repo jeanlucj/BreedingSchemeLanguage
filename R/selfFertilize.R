@@ -4,7 +4,7 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
-#'@return sequence information of progenies and the all information created before (list)
+#'@return Modify the objects in sEnv to add a population of selfed progeny
 #'
 #'@export
 selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
