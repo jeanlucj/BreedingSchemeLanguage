@@ -49,7 +49,7 @@ DH <- function(genoParent, pos){
 
 #'makeDHs
 #'
-#'@param popSize population size
+#'@param popSize the number of DH individuals to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
@@ -81,7 +81,7 @@ makeSelfs <- function(popSize, geno, pos){
 
 #'randomMate
 #'
-#'@param popSize number of progeny to return
+#'@param popSize the number of progeny to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
@@ -96,13 +96,13 @@ randomMate <- function(popSize, geno, pos){
 # It's trickier than it seems
 #'randomMateAll
 #'
-#'@param popSize number of progeny to return
+#'@param popSize the number of progeny to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
 #'
 randomMateAll <- function(popSize, geno, pos){
   equalAndRand <- function(popSize, nPar){
-    parents <- matrix(sample(c(rep(1:nPar, 2*popSize %/% nPar), sample(nPar, 2*popSize %% nPar))), popSize)
+    parents <- matrix(sample(c(rep(1:nPar, (2*popSize) %/% nPar), sample(nPar, (2*popSize) %% nPar))), popSize)
     noSelfs <- function(parRow){
       if (parents[parRow, 1] == parents[parRow, 2]){
         par <- parents[parRow, 1]
@@ -118,6 +118,43 @@ randomMateAll <- function(popSize, geno, pos){
   
   nPar <- nrow(geno) / 2
   parents <- equalAndRand(popSize, nPar)
+  progenies <- makeProgenies(parents, geno, pos)
+  return(list(progenies = progenies, pedigree = parents))
+}
+
+# Randomly mate but use parents equally and do not allow matings between full- or half-sibs
+#'randomMateNoFam
+#'
+#'@param popSize the number of progeny to return
+#'@param geno matrix of haplotypes
+#'@param pos position of markers/QTLs
+#'
+randomMateNoFam <- function(popSize, geno, pos, genoRec){
+  equalAndNoFam <- function(popSize, nPar, genoRec){
+    parents <- matrix(sample(c(rep(1:nPar, (2*popSize) %/% nPar), sample(nPar, (2*popSize) %% nPar))), popSize)
+    noFamPairs <- function(parRow){
+      related <- function(par1, par2){
+        any(genoRec[par1, 2:3] %in% genoRec[par2, 2:3]) # Columns 2 and 3 have the parent IDs
+      }
+      okSwap <- function(pair){
+        cond1 <- sapply(parents[,1], related, par2=pair[2])
+        cond2 <- sapply(parents[,2], related, par2=pair[1])
+        return(which(!cond1 & !cond2))
+      }
+      if (related(parents[parRow, 1], parents[parRow, 2])){
+        par <- parents[parRow, 1]
+        swapCan <- okSwap(parents[parRow,])
+        swapRow <- sample(swapCan, 1)
+        parents[parRow, 1] <<- parents[swapRow, 1]
+        parents[swapRow, 1] <<- par 
+      }
+    }
+    dummy <- sapply(1:popSize, noFamPairs)
+    return(parents)
+  }
+  
+  nPar <- nrow(geno) / 2
+  parents <- equalAndNoFam(popSize, nPar, genoRec)
   progenies <- makeProgenies(parents, geno, pos)
   return(list(progenies = progenies, pedigree = parents))
 }

@@ -5,7 +5,7 @@
 \title{Plot the results}
 \usage{
 plotData(sEnv = simEnv, ymax = NULL, add = F,
-  addDataFileName = "plotData", popID = NULL)
+  addDataFileName = "plotData", popID = NULL, suppress = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -16,7 +16,9 @@ plotData(sEnv = simEnv, ymax = NULL, add = F,
 
 \item{addDataFileName}{the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")}
 
-\item{popID}{vector of the population IDs you want plotted}
+\item{popID}{list of vectors of the population IDs you want plotted}
+
+\item{suppress}{if TRUE, this call is just to assemble the data to be plotted in a later call to plotData (default: FALSE)}
 }
 \value{
 A ggplot object of the simulation results

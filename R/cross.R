@@ -10,7 +10,7 @@
 #'@return sequence information of progenies and the all information created before (list)
 #'
 #'@export
-cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL){
+cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL, notWithinFam=F){
   parent.env(sEnv) <- environment()
   cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2){
     locPos <- bsl$mapData$map$Pos
@@ -20,11 +20,16 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
     tf <- bsl$genoRec$popID %in% popID
     GID.1 <- bsl$genoRec$GID[tf]
     nPar1 <- length(GID.1)
-    geno <- bsl$geno[rep(GID.1*2, each=2) + rep(-1:0, nPar1), ]
+    if (nPar1 == 0) stop(paste("There are no parents in population", popID))
+    geno <- bsl$geno[rep(tf, each=2), ]
     if (is.null(popID2)){
-      if(equalContribution){
-        geno <- randomMateAll(popSize=nProgeny, geno=geno, pos=locPos)
-      }else{
+      if (equalContribution | notWithinFam){
+        if (notWithinFam){ # notWithinFam fulfills the conditions of equalContribution
+          geno <- randomMateNoFam(popSize=nProgeny, geno=geno, pos=locPos, bsl$genoRec[tf,])
+        } else{
+          geno <- randomMateAll(popSize=nProgeny, geno=geno, pos=locPos)
+        }
+      } else{
         geno <- randomMate(popSize=nProgeny, geno=geno, pos=locPos)
       }
       pedigree <- cbind(matrix(GID.1[geno$pedigree], nrow=nProgeny), 0)
@@ -61,7 +66,7 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
 #'@param bsl the list that has all the objects for one simulation
 #'@param geno the genotypes of the progeny
 #'@param pedigree the three-column pedigree of the progeny (last col: DH, outbred, self)
-#'
+#' Normally DH=-1, outbred=0, self=nGen of selfing but that is not currenly properly updated
 #'@return data with progeny information added
 #'
 addProgenyData <- function(bsl, geno, pedigree){

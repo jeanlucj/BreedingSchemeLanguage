@@ -19,16 +19,19 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     }
     tf <- bsl$genoRec$popID %in% popID
     GIDcan <- bsl$genoRec$GID[tf]
+    if (length(GIDcan) == 0) stop(paste("There are no selection candidates in the population", popID))
     if (random){
       selectedGID <- sample(GIDcan, nSelect)
     } else{
       if(substr(criterion, 1, 5) == "pheno"){
         GIDcan <- intersect(GIDcan, bsl$phenoRec$phenoGID)
+        if (length(GIDcan) == 0) stop(paste("There are no selection candidates in the population", popID, "with phenotypes"))
         usePheno <- subset(bsl$phenoRec, bsl$phenoRec$phenoGID %in% GIDcan)
         candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }
       if(substr(criterion, 1, 4) == "pred"){
         GIDcan <- intersect(GIDcan, bsl$predRec$predGID)
+        if (length(GIDcan) == 0) stop(paste("There are no selection candidates in the population", popID, "with predictions"))
         usePred <- bsl$predRec[bsl$predRec$predGID %in% GIDcan & bsl$predRec$predNo == max(bsl$predRec$predNo),]
         candValue <- usePred$predict[order(usePred$predGID)]
       }
