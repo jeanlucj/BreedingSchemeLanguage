@@ -12,7 +12,7 @@ initializePopulation(sEnv = simEnv, nInd = 100)
 \item{nInd}{population size}
 }
 \value{
-initial population informationand the all information created before (list)
+modifies the objects in environment sEnv by creating a founder population
 }
 \description{
 Create a founder population

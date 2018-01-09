@@ -14,7 +14,7 @@ selfFertilize(sEnv = simEnv, nProgeny = 100, popID = NULL)
 \item{popID}{population ID to be self-fertilized (default: the latest population)}
 }
 \value{
-sequence information of progenies and the all information created before (list)
+Modify the objects in sEnv to add a population of selfed progeny
 }
 \description{
 Self-fertilize

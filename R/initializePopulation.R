@@ -5,7 +5,7 @@
 #'
 #'@importFrom stats var
 #'
-#'@return initial population informationand the all information created before (list)
+#'@return modifies the objects in environment sEnv by creating a founder population
 #'
 #'@export
 initializePopulation <- function(sEnv=simEnv, nInd=100){
@@ -16,7 +16,7 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     
     geno <- data$founderHaps * 2 - 1
     data$founderHaps <- NULL
-    geno <- geno[sample(nrow(geno), nInd*2, replace=T),]
+    geno <- geno[sample(nrow(geno), nrow(geno), replace=T),]
     geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
     pedigree <- cbind(-geno$pedigree, 0) # For founders, parents will be negative
     colnames(pedigree) <- 1:3
@@ -24,11 +24,12 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
-    if (nrow(gValue) == 1){
+    covGval <- var(gValue)
+    if (any(is.na(covGval)) | sum(diag(covGval)) == 0){
       covGval <- diag(ncol(gValue))
-    } else if (nrow(gValue) <= ncol(gValue) * (ncol(gValue) + 1) / 2){
-      covGval <- diag(diag(var(gValue)))
-    } else covGval <- var(gValue)
+    } else if (rankMatrix(covGval) < ncol(gValue)){
+      covGval <- diag(diag(covGval))
+    }
     coef <- solve(chol(covGval)) %*% chol(data$varParms$locCov)
     md$effects <- md$effects %*% coef
     gValue <- gValue %*% coef
