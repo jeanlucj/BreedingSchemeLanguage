@@ -9,7 +9,7 @@
 #'
 #'@importFrom stats as.formula
 #'
-#'@return predicted values and the all information created before (list)
+#'@return modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them
 #'
 #'@export
 predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){

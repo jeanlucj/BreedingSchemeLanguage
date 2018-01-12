@@ -5,7 +5,7 @@
 #'
 #'@importFrom stats var
 #'
-#'@return modifies the objects in environment sEnv by creating a founder population
+#'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export
 initializePopulation <- function(sEnv=simEnv, nInd=100){

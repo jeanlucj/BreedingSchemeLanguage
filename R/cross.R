@@ -1,5 +1,4 @@
-#' Cross with random mating, or equal contributions,
-#'or randomly between two populations
+#' Cross with random mating, or equal contributions, or randomly between two populations
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nProgeny the number of progenies
@@ -7,7 +6,7 @@
 #'@param popID population ID to be crossed. Default: the last population
 #'@param popID2 population ID to be crossed with popID to make hybrids. Default: second population not used.
 #'
-#'@return sequence information of progenies and the all information created before (list)
+#'@return modifies the list sims in environment sEnv by creating a progeny population as specified, with an incremented population number
 #'
 #'@export
 cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL, notWithinFam=F){

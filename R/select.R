@@ -6,7 +6,7 @@
 #'@param random assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)
 #'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) the highest nSelect within families are taken.
 #'
-#'@return information of the selected individuals and the all information created before (list)
+#'@return modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID
 #'
 #'@export
 select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){

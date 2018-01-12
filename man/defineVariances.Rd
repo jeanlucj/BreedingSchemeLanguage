@@ -24,7 +24,7 @@ defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
 \item{plotTypeErrVars}{named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)}
 }
 \value{
-Breeding scheme simulation object supplemented with variance parameters
+modifies the list sims in environment sEnv by adding parameters that determine genetic, location, year, and error variances
 }
 \description{
 Define genetic, interaction, and error variances

@@ -14,7 +14,7 @@ doubledHaploid(sEnv = simEnv, nProgeny = 100, popID = NULL)
 \item{popID}{population ID to be devided by meiosis and doubled (default: the latest population)}
 }
 \value{
-sequence information of progenies and the all information created before (list)
+modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
 }
 \description{
 Doubled haploids

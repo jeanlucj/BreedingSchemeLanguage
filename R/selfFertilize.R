@@ -4,7 +4,7 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
-#'@return Modify the objects in sEnv to add a population of selfed progeny
+#'@return modifies the list sims in environment sEnv by creating a selfed progeny population as specified, with an incremented population number
 #'
 #'@export
 selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){

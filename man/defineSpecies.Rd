@@ -22,7 +22,7 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 
 \item{nChr}{the number of chromosomes}
 
-\item{lengthChr}{the length of each chromosome (cM; all chromosomes are the same length)}
+\item{lengthChr}{the length of each chromosome (cM. all chromosomes are the same length)}
 
 \item{effPopSize}{the effective population size in the base population}
 
@@ -37,7 +37,7 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 \item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance. At the moment, functionality for the "Partial" option is only available when using ImportFounderHap.}
 }
 \value{
-An environment that contains objects for the number of simulations specified
+An environment that contains a list sims with each object of the list being one replicate to initiate a simulation
 }
 \description{
 Define and create species

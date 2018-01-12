@@ -4,7 +4,7 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
 #'
-#'@return sequence information of progenies and the all information created before (list)
+#'@return modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
 #'
 #'@export
 doubledHaploid <- function(sEnv=simEnv, nProgeny=100, popID=NULL){

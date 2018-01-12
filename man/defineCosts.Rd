@@ -31,7 +31,7 @@ defineCosts(sEnv = simEnv, phenoCost = NULL, genoCost = 0.25,
 \item{yearCost}{scalar: the cost of program upkeep for a year (0)}
 }
 \value{
-Breeding scheme simulation object supplemented with a list of costs
+modifies the list sims in environment sEnv by adding cost parameters allowing the total cost of the simulated scheme to be calculated
 }
 \description{
 Define the costs that go into breeding

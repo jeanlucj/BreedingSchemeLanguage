@@ -12,7 +12,7 @@
 #'@param locCost scalar: the cost of maintaining a location for a year (0)
 #'@param yearCost scalar: the cost of program upkeep for a year (0)
 #'
-#'@return Breeding scheme simulation object supplemented with a list of costs
+#'@return modifies the list sims in environment sEnv by adding cost parameters allowing the total cost of the simulated scheme to be calculated
 #'
 #'@export
 defineCosts <- function(sEnv=simEnv, phenoCost=NULL, genoCost=0.25, crossCost=1, selfCost=1, doubHapCost=5, predCost=0, selectCost=0, locCost=0, yearCost=0){

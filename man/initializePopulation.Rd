@@ -12,7 +12,7 @@ initializePopulation(sEnv = simEnv, nInd = 100)
 \item{nInd}{population size}
 }
 \value{
-modifies the objects in environment sEnv by creating a founder population
+modifies the list sims in environment sEnv by creating a founder population
 }
 \description{
 Create a founder population

@@ -9,7 +9,8 @@
 #'
 #'@importFrom stats sd
 #'
-#'@return phenotypic values and the all information created before (list)
+#'@return modifies the list sims in environment sEnv by generating phenotypes for the specified popID, locations, and years.
+#'
 #'@export
 # Locations and years get added when you phenotype in them for the first time
 phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){

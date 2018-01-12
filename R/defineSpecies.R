@@ -6,7 +6,7 @@
 #'@param nSim the number of simulation trials
 #'@param nCore simulation processed in parallel over this number of CPUs (Check computer capacity before setting above 1.)
 #'@param nChr the number of chromosomes
-#'@param lengthChr the length of each chromosome (cM; all chromosomes are the same length)
+#'@param lengthChr the length of each chromosome (cM. all chromosomes are the same length)
 #'@param effPopSize the effective population size in the base population
 #'@param nMarkers the number of markers, which is used especially for genomic selection
 #'@param nQTL the number of QTLs controlling the target trait
@@ -17,7 +17,7 @@
 #'@importFrom stats runif
 #'@importFrom utils read.table
 #'
-#'@return An environment that contains objects for the number of simulations specified
+#'@return An environment that contains a list sims with each object of the list being one replicate to initiate a simulation
 #'
 #'@export
 defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName="previousData", nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom"){
