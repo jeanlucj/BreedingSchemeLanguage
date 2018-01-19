@@ -70,29 +70,29 @@ phasedHapMap2mat <- function(hm){
 #' 
 # Quick function to create a HapMap data.frame for testing
 #
-simHapMap <- function(nInd=200, nMrk=1050, nChr=7, lenChr=150, maf=runif(nMrk), nCharCode=2, nQTL=NULL, propDomi=NULL, interactionMean=NULL, varEffects=NULL){
+simHapMap <- function(nInd=200, nMrk=1050, nChr=7, lenChr=150, maf=stats::runif(nMrk), nCharCode=2, nQTL=NULL, propDomi=NULL, interactionMean=NULL, varEffects=NULL){
   nucl <- c("A", "C", "G", "T")
   gt <- replicate(nMrk, sample(4, 2))
   alleles <- paste(nucl[gt[1,]], nucl[gt[2,]], sep="/")
   chr <- sort(sample(nChr, nMrk, replace=T))
-  pos <- round(lenChr * runif(nMrk), 2)
+  pos <- round(lenChr * stats::runif(nMrk), 2)
   pos <- pos[order(chr, pos)]
   hapmap <- data.frame(locus=paste("locus", 1:nMrk, sep=""), alleles=alleles, chrom=chr, pos=pos)
   if (!(nCharCode %in% 1:2)) nCharCode <- 2
   nInd <- nInd * 2 / nCharCode
-  gam <- matrix(rbinom(nInd*nMrk, 1, 1 - maf) + 1, nMrk, nInd)
+  gam <- matrix(stats::rbinom(nInd*nMrk, 1, 1 - maf) + 1, nMrk, nInd)
   gam1 <- apply(gam, 2, function(gamVec) nucl[gt[cbind(gamVec, 1:nMrk)]])
   if (nCharCode == 2){
-    gam <- matrix(rbinom(nInd*nMrk, 1, 1 - maf) + 1, nMrk, nInd)
+    gam <- matrix(stats::rbinom(nInd*nMrk, 1, 1 - maf) + 1, nMrk, nInd)
     gam2 <- apply(gam, 2, function(gamVec) nucl[gt[cbind(gamVec, 1:nMrk)]])
   } else gam2 <- NULL
   hm <- matrix(paste(gam1, gam2, sep=""), nMrk, nInd)
   if (!is.null(nQTL)){
-    nEffectiveLoci <- 1 + rpois(n = nQTL, lambda = interactionMean)
+    nEffectiveLoci <- 1 + stats::rpois(n = nQTL, lambda = interactionMean)
     effectivePos <- sample(1:nMrk, sum(nEffectiveLoci))
-    actionType <- rbinom(sum(nEffectiveLoci), 1, propDomi)
+    actionType <- stats::rbinom(sum(nEffectiveLoci), 1, propDomi)
     effectID <- rep(1:nQTL, times=nEffectiveLoci)
-    effects <- as.matrix(rnorm(nQTL, 0, sqrt(varEffects)), nQTL)
+    effects <- as.matrix(stats::rnorm(nQTL, 0, sqrt(varEffects)), nQTL)
     col7 <- col8 <- col9 <- rep(NA, nMrk)
     col7[effectivePos] <- effectID
     col8[effectivePos] <- actionType

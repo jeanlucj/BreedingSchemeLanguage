@@ -8,8 +8,6 @@
 #'@param interactionMean the expected number of epistatic loci for each effect
 #'@param qtlInfo possible to give the function all of the qtl information
 #'
-#'@importFrom stats rbinom rpois
-#'
 #'@return map data including which loci are primary QTL and which are modifying loci, which have dominance effects, the effect sizes
 #'
 makeMap <- function(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, qtlInfo=NULL){
@@ -19,11 +17,11 @@ makeMap <- function(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, qtlIn
     effectivePos <- qtlInfo$effectivePos
     effects <- qtlInfo$effects
   } else {
-    nEffectiveLoci <- 1 + rpois(n=nQTL, lambda=interactionMean)
+    nEffectiveLoci <- 1 + stats::rpois(n=nQTL, lambda=interactionMean)
     effectivePos <- sample(1:nLoci, sum(nEffectiveLoci))
-    actionType <- rbinom(sum(nEffectiveLoci), 1, propDomi)
+    actionType <- stats::rbinom(sum(nEffectiveLoci), 1, propDomi)
     effectID <- rep(1:nQTL, times=nEffectiveLoci)
-    effects <- matrix(rnorm(nQTL), nQTL) # Will be modified by defineVariances if called
+    effects <- matrix(stats::rnorm(nQTL), nQTL) # Will be modified by defineVariances if called
     if (nLoci - length(effectivePos) < nMarkers) stop("Number of markers is not enough!")
   }
   

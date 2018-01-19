@@ -4,7 +4,8 @@
 #'@param nProgeny the number of progenies
 #'@param equalContribution if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents
 #'@param popID population ID to be crossed. Default: the last population
-#'@param popID2 population ID to be crossed with popID to make hybrids. Default: second population not used.
+#'@param popID2 population ID to be crossed with popID to make hybrids. Default: second population not used
+#'@param notWithinFam if TRUE, like equalContribution, all individuals are used the same number of times as parents and self-fertilization is not allowed. In addition, half- and full-sibs are not allowed to mate
 #'
 #'@return modifies the list sims in environment sEnv by creating a progeny population as specified, with an incremented population number
 #'
@@ -51,9 +52,9 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
 
   with(sEnv, {
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
+      snowfall::sfStop()
     } else{
       sims <- lapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
     }
@@ -87,7 +88,7 @@ addProgenyData <- function(bsl, geno, pedigree){
     toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$yearScale[i])
     bsl$yearEffects <- rbind(bsl$yearEffects, toAdd)
     vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
-    toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
+    toAdd <- matrix(stats::rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
     bsl$yearEffectsI <- rbind(bsl$yearEffectsI, toAdd)
   }
   nAdd <- ncol(bsl$locEffects)
@@ -97,7 +98,7 @@ addProgenyData <- function(bsl, geno, pedigree){
     toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$locScale[i])
     bsl$locEffects <- rbind(bsl$locEffects, toAdd)
     vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
-    toAdd <- matrix(rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
+    toAdd <- matrix(stats::rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
     bsl$locEffectsI <- rbind(bsl$locEffectsI, toAdd)
   }
   # Add on to the genotypic records

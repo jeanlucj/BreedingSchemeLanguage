@@ -87,7 +87,7 @@ for (chr in 1:nChr){
   uniqPos <- unique(map[mrkThisChr,"Pos"])
   for (pos in uniqPos){
     mrkAtPos <- which(mrkThisChr & map[,"Pos"] == pos)
-    if (length(mrkAtPos) > 1) map[mrkAtPos,"Pos"] <- map[mrkAtPos,"Pos"] + sort(round(runif(length(mrkAtPos), 0, 100 * recBTpieces), 6))
+    if (length(mrkAtPos) > 1) map[mrkAtPos,"Pos"] <- map[mrkAtPos,"Pos"] + sort(round(stats::runif(length(mrkAtPos), 0, 100 * recBTpieces), 6))
   }
 }
 map <- as.data.frame(map)

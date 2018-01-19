@@ -30,7 +30,7 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
   }
   
   with(sEnv, {
-    # This is too fast to want to parallelize
+    # This is too fast to parallelize
     sims <- lapply(sims, variances.func, gVariance=gVariance, locCorrelations=locCorrelations, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, plotTypeErrVars=plotTypeErrVars)
   })
 }

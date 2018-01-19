@@ -27,9 +27,9 @@ selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
   }
   with(sEnv, {
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
+      snowfall::sfStop()
     }else{
       sims <- lapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
     }

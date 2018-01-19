@@ -28,7 +28,7 @@ defineCosts <- function(sEnv=simEnv, phenoCost=NULL, genoCost=0.25, crossCost=1,
   }
   
   with(sEnv, {
-    # This is too fast to want to parallelize
+    # This is too fast to parallelize
     sims <- lapply(sims, cost.func, phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
   })
 }

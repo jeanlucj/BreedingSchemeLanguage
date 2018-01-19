@@ -23,7 +23,7 @@ genotype <- function(sEnv=simEnv, popID=NULL){
     return(data)
   }
   with(sEnv, {
-    # This is too fast to want to parallelize
+    # This is too fast to parallelize
     sims <- lapply(sims, genotype.func, popID=popID)
   })
 }

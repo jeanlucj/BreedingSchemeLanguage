@@ -12,6 +12,8 @@ randomMateNoFam(popSize, geno, pos, genoRec)
 \item{geno}{matrix of haplotypes}
 
 \item{pos}{position of markers/QTLs}
+
+\item{genoRec}{pedigree records of the individuals represented by geno}
 }
 \description{
 randomMateNoFam

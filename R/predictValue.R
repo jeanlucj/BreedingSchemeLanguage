@@ -7,8 +7,6 @@
 #'@param years data from which years should be used (default: all years)
 #'@param sharingInfo one of "none", "markers", "pedigree".  If none, genotypic values are assumed IID. If markers or pedigree, a genomic or pedigree relationship matrix is constructed
 #'
-#'@importFrom stats as.formula
-#'
 #'@return modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them
 #'
 #'@export
@@ -58,7 +56,7 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
             for (i in 1:p) {
                 xpos <- match(fixed[i],names)
                 xx <- factor(data[,xpos])	
-                if (length(unique(xx)) > 1) {X <- cbind(X,model.matrix(~x-1,data.frame(x=xx)))}
+                if (length(unique(xx)) > 1) {X <- cbind(X,stats::model.matrix(~x-1,data.frame(x=xx)))}
             }
         }
         if (!is.null(covariate)) {
@@ -162,9 +160,8 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
                 }
                 
                 if (n.core > 1) {
-                    library(parallel)
                     it <- split(theta,factor(cut(theta,n.core,labels=FALSE)))
-                    soln <- unlist(mclapply(it,ms.fun,mc.cores=n.core),recursive=FALSE)
+                    soln <- unlist(snowfall::sfLapply(it,ms.fun,mc.cores=n.core),recursive=FALSE)
                 } else {
                     soln <- ms.fun(theta)
                 }      
@@ -240,7 +237,7 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
             for (i in 1:p) {
                 xpos <- match(fixed[i],names)
                 xx <- factor(data[,xpos])	
-                if (length(unique(xx)) > 1) {X <- cbind(X,model.matrix(~x-1,data.frame(x=xx)))}
+                if (length(unique(xx)) > 1) {X <- cbind(X,stats::model.matrix(~x-1,data.frame(x=xx)))}
             }
         }
         if (!is.null(covariate)) {
@@ -344,9 +341,8 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
                 }
                 
                 if (n.core > 1) {
-                    library(parallel)
                     it <- split(theta,factor(cut(theta,n.core,labels=FALSE)))
-                    soln <- unlist(mclapply(it,ms.fun,mc.cores=n.core),recursive=FALSE)
+                    soln <- unlist(snowfall::sfLapply(it,ms.fun,mc.cores=n.core),recursive=FALSE)
                 } else {
                     soln <- ms.fun(theta)
                 }      
@@ -441,11 +437,10 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
   }#END predict.func
   
   with(sEnv, {
-    if (is.null(sharingInfo)) sharingInfo <- sims[[1]]$selCriterion$sharing
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+      snowfall::sfStop()
     }else{
       sims <- lapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
     }

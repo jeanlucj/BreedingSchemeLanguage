@@ -14,15 +14,12 @@
 #'@param nEpiLoci the expected number of epistatic loci for each effect
 #'@param domModel the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance. At the moment, functionality for the "Partial" option is only available when using ImportFounderHap.
 #'
-#'@importFrom stats runif
-#'@importFrom utils read.table
-#'
 #'@return An environment that contains a list sims with each object of the list being one replicate to initiate a simulation
 #'
 #'@export
 defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName="previousData", nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom"){
   defineSpecies.func <- function(simNum, nChr, lengthChr, effPopSize, nMarkers, nQTL, propDomi, nEpiLoci, founderHaps=NULL, domModel){
-    seed <- round(runif(1, 0, 1e9))
+    seed <- round(stats::runif(1, 0, 1e9))
     nLoci <- nMarkers + nQTL * (nEpiLoci + 1) * 2
     if (is.null(founderHaps)){
       minMAF <- 0.01
@@ -48,7 +45,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     if (is.null(importFounderHap)){
     sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, domModel=domModel)
     }else{ # importFounderHap not NULL
-      foundHap <- read.table(file=paste(importFounderHap, ".hmp", sep=""))
+      foundHap <- utils::read.table(file=paste(importFounderHap, ".hmp", sep=""))
       foundHap <- phasedHapMap2mat(foundHap)
       sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap, domModel=domModel)
     }

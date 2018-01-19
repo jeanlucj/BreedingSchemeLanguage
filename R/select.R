@@ -27,7 +27,7 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
         GIDcan <- intersect(GIDcan, bsl$phenoRec$phenoGID)
         if (length(GIDcan) == 0) stop(paste("There are no selection candidates in the population", popID, "with phenotypes"))
         usePheno <- subset(bsl$phenoRec, bsl$phenoRec$phenoGID %in% GIDcan)
-        candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
+        candValue <- by(usePheno, as.factor(usePheno$phenoGID), function(gidRec) stats::weighted.mean(x=gidRec$pValue, w=1/gidRec$error))
       }
       if(substr(criterion, 1, 4) == "pred"){
         GIDcan <- intersect(GIDcan, bsl$predRec$predGID)
@@ -53,9 +53,9 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
   } #END select.func
   with(sEnv, {
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random, type=type)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, select.func, nSelect=nSelect, popID=popID, random=random, type=type)
+      snowfall::sfStop()
     }else{
       sims <- lapply(sims, select.func, nSelect=nSelect, popID=popID, random=random, type=type)
     }

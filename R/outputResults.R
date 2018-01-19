@@ -14,7 +14,7 @@ outputResults <- function(sEnv=simEnv, summarize=T, directory=".", saveDataFileN
       tapply(data$gValue, data$genoRec$basePopID, mean)
     }
     getVar <- function(data){
-      tapply(data$gValue, data$genoRec$basePopID, var)
+      tapply(data$gValue, data$genoRec$basePopID, stats::var)
     }
     muSim <- sapply(sEnv$sims, getMean)
     varSim <- sapply(sEnv$sims, getVar)
