@@ -7,9 +7,6 @@
 #'@param popID list of vectors of the population IDs you want plotted
 #'@param suppress if TRUE, this call is just to assemble the data to be plotted in a later call to plotData (default: FALSE)
 #'
-#'@importFrom stats weighted.mean
-#'@importFrom utils modifyList
-#'
 #'@return A ggplot object of the simulation results
 #'
 #'@export
@@ -34,7 +31,7 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
         cnames <- as.character(popVec)
         cnames <- intersect(cnames, colnames(ms))
         if (length(cnames) == 0) stop("Plotting popIDs that are empty")
-        apply(ms, 1, function(vec) weighted.mean(vec[cnames], popSizes[cnames]))
+        apply(ms, 1, function(vec) stats::weighted.mean(vec[cnames], popSizes[cnames]))
       }
       muSim$muSim <- sapply(popID, getMeanOfPops)
       return(muSim)
@@ -98,34 +95,34 @@ plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", 
   plotData$size <- as.factor(plotData$size)
   plotData$scheme <- as.factor(plotData$scheme)
   
-  mapping <- aes_string(x="popID", y="g", group="group")
-  if (length(unique(plotData$col)) > 1) mapping <- modifyList(mapping, aes_string(colour="col"))
-  if (length(unique(plotData$size)) > 1) mapping <- modifyList(mapping, aes_string(size="size"))
-  if (length(unique(plotData$scheme)) > 1) mapping <- modifyList(mapping, aes_string(linetype="scheme"))
-  p <- ggplot(data=plotData, mapping)
-  p <- p + geom_line()
+  mapping <- ggplot2::aes_string(x="popID", y="g", group="group")
+  if (length(unique(plotData$col)) > 1) mapping <- utils::modifyList(mapping, ggplot2::aes_string(colour="col"))
+  if (length(unique(plotData$size)) > 1) mapping <- utils::modifyList(mapping, ggplot2::aes_string(size="size"))
+  if (length(unique(plotData$scheme)) > 1) mapping <- utils::modifyList(mapping, ggplot2::aes_string(linetype="scheme"))
+  p <- ggplot2::ggplot(data=plotData, mapping)
+  p <- p + ggplot2::geom_line()
   if (is.null(ymax)) {
-    p <- p + ylim(min(plotData$g), max(plotData$g))
+    p <- p + ggplot2::ylim(min(plotData$g), max(plotData$g))
   }
   else {
-    p <- p + ylim(min(plotData$g), ymax)
+    p <- p + ggplot2::ylim(min(plotData$g), ymax)
   }
-  p <- p + labs(title="", x="Generation", y="Genetic improvement")
+  p <- p + ggplot2::labs(title="", x="Generation", y="Genetic improvement")
   
   if (length(unique(plotData$col)) > 1){
     cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-    p <- p + scale_colour_manual(values=cbPalette)
-    p <- p + guides(col=guide_legend("Locs"))
+    p <- p + ggplot2::scale_colour_manual(values=cbPalette)
+    p <- p + ggplot2::guides(col=ggplot2::guide_legend("Locs"))
   } 
   if (length(unique(plotData$size)) > 1){
-    p <- p + scale_size_manual(name="", values=c(0.3, 2), labels=c("Repl", "Mean"))
-    p <- p + guides(size=guide_legend("Lines"))
+    p <- p + ggplot2::scale_size_manual(name="", values=c(0.3, 2), labels=c("Repl", "Mean"))
+    p <- p + ggplot2::guides(size=ggplot2::guide_legend("Lines"))
   } 
   if (length(unique(plotData$scheme)) > 1){
-    p <- p + guides(linetype=guide_legend("Scheme"))
+    p <- p + ggplot2::guides(linetype=ggplot2::guide_legend("Scheme"))
   }
   if (!is.null(totCost)){
-    p <- p + ggtitle(paste("Cost of scheme", ifelse(length(totCost) > 1, "s", ""), ": ", paste(round(totCost), collapse=", "), sep=""))
+    p <- p + ggplot2::ggtitle(paste("Cost of scheme", ifelse(length(totCost) > 1, "s", ""), ": ", paste(round(totCost), collapse=", "), sep=""))
   }
   if (!suppress) print(p)
 }

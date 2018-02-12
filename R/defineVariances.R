@@ -8,7 +8,7 @@
 #'@param fracGxEAdd scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8
 #'@param plotTypeErrVars named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)
 #'
-#'@return Breeding scheme simulation object supplemented with variance parameters
+#'@return modifies the list sims in environment sEnv by adding parameters that determine genetic, location, year, and error variances
 #'
 #'@export
 defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=c(Standard=1)){
@@ -30,7 +30,7 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
   }
   
   with(sEnv, {
-    # This is too fast to want to parallelize
+    # This is too fast to parallelize
     sims <- lapply(sims, variances.func, gVariance=gVariance, locCorrelations=locCorrelations, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, plotTypeErrVars=plotTypeErrVars)
   })
 }

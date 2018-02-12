@@ -8,7 +8,7 @@ makeGamete <- function(geno, pos){
   rec <- (1 - exp(-2 * btwLocDist / 100)) / 2
   rec[rec < 0] <- 0.5
   rec <- c(0.5, rec)
-  crossOver <- rec >= runif(length(rec))
+  crossOver <- rec >= stats::runif(length(rec))
   selectHaplo <- cumsum(crossOver) %% 2
   return(ifelse(selectHaplo, geno[1,], geno[2,]))
 }
@@ -128,6 +128,7 @@ randomMateAll <- function(popSize, geno, pos){
 #'@param popSize the number of progeny to return
 #'@param geno matrix of haplotypes
 #'@param pos position of markers/QTLs
+#'@param genoRec pedigree records of the individuals represented by geno
 #'
 randomMateNoFam <- function(popSize, geno, pos, genoRec){
   equalAndNoFam <- function(popSize, nPar, genoRec){

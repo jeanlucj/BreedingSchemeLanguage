@@ -21,7 +21,7 @@ phenotype(sEnv = simEnv, plotType = "Standard", nRep = 1, popID = NULL,
 \item{years}{integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).}
 }
 \value{
-phenotypic values and the all information created before (list)
+modifies the list sims in environment sEnv by generating phenotypes for the specified popID, locations, and years.
 }
 \description{
 Evaluate the phenotypic value

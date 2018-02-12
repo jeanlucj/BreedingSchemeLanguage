@@ -7,9 +7,8 @@
 #'@param locations integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
 #'
-#'@importFrom stats sd
+#'@return modifies the list sims in environment sEnv by generating phenotypes for the specified popID, locations, and years.
 #'
-#'@return phenotypic values and the all information created before (list)
 #'@export
 # Locations and years get added when you phenotype in them for the first time
 phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
@@ -47,15 +46,15 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
     if (nAdd > 0){
       # Create GxY effects
       vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
-      gByYqtl <- matrix(rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
+      gByYqtl <- matrix(stats::rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
       bsl$gByYqtl <- cbind(bsl$gByYqtl, gByYqtl)
       toAdd <- M %*% gByYqtl
-      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, sd) * sqrt(vp)
+      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd) * sqrt(vp)
       toAdd <- sapply(1:length(sdFound), function(i) toAdd[,i] * sdFound[i])
       bsl$yearScale <- c(bsl$yearScale, sdFound)
       bsl$yearEffects <- cbind(bsl$yearEffects, toAdd)
       vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
-      toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
+      toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$yearEffectsI <- cbind(bsl$yearEffectsI, toAdd)
       if (exists("totalCost", bsl)){
         bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$yearCost
@@ -64,15 +63,15 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
     nAdd <- max(locations) - ncol(bsl$locEffects)
     if (bsl$varParms$randLoc & nAdd > 0){
       vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
-      gByLqtl <- matrix(rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
+      gByLqtl <- matrix(stats::rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
       bsl$gByLqtl <- cbind(bsl$gByLqtl, gByLqtl)
       toAdd <- M %*% gByLqtl
-      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, sd) * sqrt(vp)
+      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd) * sqrt(vp)
       toAdd <- sapply(1:length(sdFound), function(i) toAdd[,i] * sdFound[i])
       bsl$locScale <- c(bsl$locScale, sdFound)
       bsl$locEffects <- cbind(bsl$locEffects, toAdd)
       vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
-      toAdd <- matrix(rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
+      toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$locEffectsI <- cbind(bsl$locEffectsI, toAdd)
       if (exists("totalCost", bsl)){
         bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$locCost

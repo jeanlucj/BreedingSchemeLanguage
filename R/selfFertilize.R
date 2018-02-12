@@ -4,7 +4,7 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
-#'@return Modify the objects in sEnv to add a population of selfed progeny
+#'@return modifies the list sims in environment sEnv by creating a selfed progeny population as specified, with an incremented population number
 #'
 #'@export
 selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
@@ -27,9 +27,9 @@ selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
   }
   with(sEnv, {
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
+      snowfall::sfStop()
     }else{
       sims <- lapply(sims, selfFertilize.func, nProgeny=nProgeny, popID=popID)
     }

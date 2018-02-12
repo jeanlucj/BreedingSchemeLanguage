@@ -21,7 +21,7 @@ predictValue(sEnv = simEnv, popID = NULL, trainingPopID = NULL,
 \item{sharingInfo}{one of "none", "markers", "pedigree".  If none, genotypic values are assumed IID. If markers or pedigree, a genomic or pedigree relationship matrix is constructed}
 }
 \value{
-predicted values and the all information created before (list)
+modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them
 }
 \description{
 Genomic prediction

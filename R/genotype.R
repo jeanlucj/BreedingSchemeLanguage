@@ -2,7 +2,8 @@
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param popID population ID to be genotyped (default: all populations)
-#'@return marker genotype and the all information created before (list)
+#'
+#'@return modifies the list sims in environment sEnv by indicating that genotypes of individuals in popID are available for breeding tasks
 #'
 #'@export
 genotype <- function(sEnv=simEnv, popID=NULL){
@@ -22,7 +23,7 @@ genotype <- function(sEnv=simEnv, popID=NULL){
     return(data)
   }
   with(sEnv, {
-    # This is too fast to want to parallelize
+    # This is too fast to parallelize
     sims <- lapply(sims, genotype.func, popID=popID)
   })
 }

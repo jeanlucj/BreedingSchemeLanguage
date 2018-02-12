@@ -2,8 +2,7 @@
 % Please edit documentation in R/cross.R
 \name{cross}
 \alias{cross}
-\title{Cross with random mating, or equal contributions,
-or randomly between two populations}
+\title{Cross with random mating, or equal contributions, or randomly between two populations}
 \usage{
 cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
   popID = NULL, popID2 = NULL, notWithinFam = F)
@@ -17,12 +16,13 @@ cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
 
 \item{popID}{population ID to be crossed. Default: the last population}
 
-\item{popID2}{population ID to be crossed with popID to make hybrids. Default: second population not used.}
+\item{popID2}{population ID to be crossed with popID to make hybrids. Default: second population not used}
+
+\item{notWithinFam}{if TRUE, like equalContribution, all individuals are used the same number of times as parents and self-fertilization is not allowed. In addition, half- and full-sibs are not allowed to mate}
 }
 \value{
-sequence information of progenies and the all information created before (list)
+modifies the list sims in environment sEnv by creating a progeny population as specified, with an incremented population number
 }
 \description{
-Cross with random mating, or equal contributions,
-or randomly between two populations
+Cross with random mating, or equal contributions, or randomly between two populations
 }

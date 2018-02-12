@@ -12,7 +12,7 @@ genotype(sEnv = simEnv, popID = NULL)
 \item{popID}{population ID to be genotyped (default: all populations)}
 }
 \value{
-marker genotype and the all information created before (list)
+modifies the list sims in environment sEnv by indicating that genotypes of individuals in popID are available for breeding tasks
 }
 \description{
 Genotype markers

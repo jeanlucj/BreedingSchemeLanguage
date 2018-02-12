@@ -3,15 +3,13 @@
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nInd population size
 #'
-#'@importFrom stats var
-#'
-#'@return modifies the objects in environment sEnv by creating a founder population
+#'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export
 initializePopulation <- function(sEnv=simEnv, nInd=100){
   parent.env(sEnv) <- environment()
   initializePopulation.func <- function(data, nInd){
-    seed <- round(runif(1, 0, 1e9))
+    seed <- round(stats::runif(1, 0, 1e9))
     md <- data$mapData
     
     geno <- data$founderHaps * 2 - 1
@@ -24,10 +22,10 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)
-    covGval <- var(gValue)
+    covGval <- stats::var(gValue)
     if (any(is.na(covGval)) | sum(diag(covGval)) == 0){
       covGval <- diag(ncol(gValue))
-    } else if (rankMatrix(covGval) < ncol(gValue)){
+    } else if (Matrix::rankMatrix(covGval) < ncol(gValue)){
       covGval <- diag(diag(covGval))
     }
     coef <- solve(chol(covGval)) %*% chol(data$varParms$locCov)
@@ -49,9 +47,9 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
   }
   with(sEnv, {
     if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, initializePopulation.func, nInd=nInd)
-      sfStop()
+      snowfall::sfInit(parallel=T, cpus=nCore)
+      sims <- snowfall::sfLapply(sims, initializePopulation.func, nInd=nInd)
+      snowfall::sfStop()
     }else{
       sims <- lapply(sims, initializePopulation.func, nInd=nInd)
     }
