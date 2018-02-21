@@ -4,7 +4,7 @@
 \alias{genotype}
 \title{Genotype markers}
 \usage{
-genotype(sEnv = simEnv, popID = NULL)
+genotype(sEnv = NULL, popID = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

@@ -9,8 +9,7 @@
 #'@return modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID
 #'
 #'@export
-select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
-  parent.env(sEnv) <- environment()
+select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
   select.func <- function(bsl, nSelect, popID, random, type){
     criterion <- bsl$selCriterion$criterion
     if(is.null(popID)){
@@ -51,6 +50,15 @@ select <- function(sEnv=simEnv, nSelect=40, popID=NULL, random=F, type="Mass"){
     if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + bsl$costs$selectCost
     return(bsl)
   } #END select.func
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

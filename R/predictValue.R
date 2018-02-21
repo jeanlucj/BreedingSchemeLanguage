@@ -10,8 +10,7 @@
 #'@return modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them
 #'
 #'@export
-predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){
-  parent.env(sEnv) <- environment()
+predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){
   predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
     if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     if (is.null(sharingInfo)) sharingInfo <- bsl$selCriterion$sharing
@@ -436,6 +435,15 @@ predictValue <- function(sEnv=simEnv, popID=NULL, trainingPopID=NULL, locations=
     return(bsl)
   }#END predict.func
   
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

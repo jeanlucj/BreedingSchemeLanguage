@@ -11,8 +11,7 @@
 #'
 #'@export
 # Locations and years get added when you phenotype in them for the first time
-phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
-  parent.env(sEnv) <- environment()
+phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
   phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     names(errorVar) <- NULL
@@ -101,6 +100,15 @@ phenotype <- function(sEnv=simEnv, plotType="Standard", nRep=1, popID=NULL, loca
     return(bsl)
   }
   
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       sfInit(parallel=T, cpus=nCore)

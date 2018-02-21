@@ -15,8 +15,7 @@
 #'@return modifies the list sims in environment sEnv by adding cost parameters allowing the total cost of the simulated scheme to be calculated
 #'
 #'@export
-defineCosts <- function(sEnv=simEnv, phenoCost=NULL, genoCost=0.25, crossCost=1, selfCost=1, doubHapCost=5, predCost=0, selectCost=0, locCost=0, yearCost=0){
-  parent.env(sEnv) <- environment()
+defineCosts <- function(sEnv=NULL, phenoCost=NULL, genoCost=0.25, crossCost=1, selfCost=1, doubHapCost=5, predCost=0, selectCost=0, locCost=0, yearCost=0){
   cost.func <- function(bsl, phenoCost, genoCost, crossCost, selfCost, doubHapCost, predCost, selectCost, locCost, yearCost){
     if (is.null(phenoCost)){
       phenoCost <- rep(1, length(bsl$varParms$plotTypeErrVars))
@@ -27,6 +26,15 @@ defineCosts <- function(sEnv=simEnv, phenoCost=NULL, genoCost=0.25, crossCost=1,
     return(bsl)
   }
   
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     # This is too fast to parallelize
     sims <- lapply(sims, cost.func, phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)

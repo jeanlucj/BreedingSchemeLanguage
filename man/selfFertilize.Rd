@@ -4,7 +4,7 @@
 \alias{selfFertilize}
 \title{Self-fertilize}
 \usage{
-selfFertilize(sEnv = simEnv, nProgeny = 100, popID = NULL)
+selfFertilize(sEnv = NULL, nProgeny = 100, popID = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

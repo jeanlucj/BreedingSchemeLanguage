@@ -159,3 +159,27 @@ randomMateNoFam <- function(popSize, geno, pos, genoRec){
   progenies <- makeProgenies(parents, geno, pos)
   return(list(progenies = progenies, pedigree = parents))
 }
+
+#'predGameteMeanVar
+#'
+#'@param geno 2 x nLoc matrix of haplotypes, coded -1 and 1
+#'@param pos position of markers/QTLs
+#'@param locEff effects of each locus
+#'
+predGameteMeanVar <- function(geno, pos, locEff){
+  expMean <- colMeans(geno) %*% locEff
+  polymorphic <- apply(geno, 2, stats::sd) > 0
+  nPoly <- sum(polymorphic)
+  pos <- pos[polymorphic]; locEff <- locEff[polymorphic]
+  btwLocDist <- diff(pos)
+  chrBrk <- which(btwLocDist < 0) + 1
+  sameChr <- matrix(1, nPoly, nPoly)
+  for (b in chrBrk){
+    sameChr[1:(b-1), b:nPoly] <- sameChr[b:nPoly, 1:(b-1)] <- 0
+  }
+  gamDiseq <- exp(-2 * as.matrix(stats::dist(btwLocDist)) / 100)
+  gamDiseq <- gamDiseq * sameChr
+  signSqrt <- sqrt(abs(locEff))*sign(locEff)
+  expVar <- t(signSqrt) %*% gamDiseq %*% signSqrt
+  return(c(expMean=expMean, expVar=expVar))
+}

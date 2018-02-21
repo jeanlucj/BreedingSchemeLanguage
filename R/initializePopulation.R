@@ -6,8 +6,7 @@
 #'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export
-initializePopulation <- function(sEnv=simEnv, nInd=100){
-  parent.env(sEnv) <- environment()
+initializePopulation <- function(sEnv=NULL, nInd=100){
   initializePopulation.func <- function(data, nInd){
     seed <- round(stats::runif(1, 0, 1e9))
     md <- data$mapData
@@ -45,6 +44,15 @@ initializePopulation <- function(sEnv=simEnv, nInd=100){
     data$yearEffects <- yearEffects; data$yearEffectsI <- yearEffectsI
     return(data)
   }
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

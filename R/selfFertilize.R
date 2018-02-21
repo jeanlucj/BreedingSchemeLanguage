@@ -7,8 +7,7 @@
 #'@return modifies the list sims in environment sEnv by creating a selfed progeny population as specified, with an incremented population number
 #'
 #'@export
-selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
-  parent.env(sEnv) <- environment()
+selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL){
   selfFertilize.func <- function(data, nProgeny, popID){
     locPos <- data$mapData$map$Pos
     if(is.null(popID)){
@@ -25,6 +24,15 @@ selfFertilize <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
     if (exists("totalCost", data)) data$totalCost <- data$totalCost + nProgeny * data$costs$selfCost
     return(data)
   }
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

@@ -4,7 +4,7 @@
 \alias{defineVariances}
 \title{Define genetic, interaction, and error variances}
 \usage{
-defineVariances(sEnv = simEnv, gVariance = 1, locCorrelations = NULL,
+defineVariances(sEnv = NULL, gVariance = 1, locCorrelations = NULL,
   gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8,
   plotTypeErrVars = c(Standard = 1))
 }

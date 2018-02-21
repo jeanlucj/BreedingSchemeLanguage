@@ -4,7 +4,7 @@
 \alias{initializePopulation}
 \title{Create a founder population}
 \usage{
-initializePopulation(sEnv = simEnv, nInd = 100)
+initializePopulation(sEnv = NULL, nInd = 100)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

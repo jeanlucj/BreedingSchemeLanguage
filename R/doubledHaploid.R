@@ -7,8 +7,7 @@
 #'@return modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
 #'
 #'@export
-doubledHaploid <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
-  parent.env(sEnv) <- environment()
+doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL){
   doubledHaploid.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){
@@ -25,6 +24,15 @@ doubledHaploid <- function(sEnv=simEnv, nProgeny=100, popID=NULL){
     if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + nProgeny * bsl$costs$doubHapCost
     return(bsl)
   }
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

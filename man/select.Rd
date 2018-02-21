@@ -4,7 +4,7 @@
 \alias{select}
 \title{Select individuals}
 \usage{
-select(sEnv = simEnv, nSelect = 40, popID = NULL, random = F,
+select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
   type = "Mass")
 }
 \arguments{

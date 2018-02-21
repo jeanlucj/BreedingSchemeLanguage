@@ -8,7 +8,15 @@
 #'@return The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.
 #'
 #'@export
-outputResults <- function(sEnv=simEnv, summarize=T, directory=".", saveDataFileName="BSLoutput"){
+outputResults <- function(sEnv=NULL, summarize=T, directory=".", saveDataFileName="BSLoutput"){
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
   if(summarize){
     getMean <- function(data){
       tapply(data$gValue, data$genoRec$basePopID, mean)

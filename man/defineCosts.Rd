@@ -5,7 +5,7 @@
 \title{Define the costs that go into breeding
 Default for some costs is zero because they probably belong to fixed costs}
 \usage{
-defineCosts(sEnv = simEnv, phenoCost = NULL, genoCost = 0.25,
+defineCosts(sEnv = NULL, phenoCost = NULL, genoCost = 0.25,
   crossCost = 1, selfCost = 1, doubHapCost = 5, predCost = 0,
   selectCost = 0, locCost = 0, yearCost = 0)
 }

@@ -4,7 +4,7 @@
 \alias{doubledHaploid}
 \title{Doubled haploids}
 \usage{
-doubledHaploid(sEnv = simEnv, nProgeny = 100, popID = NULL)
+doubledHaploid(sEnv = NULL, nProgeny = 100, popID = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

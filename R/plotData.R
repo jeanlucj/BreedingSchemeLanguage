@@ -10,7 +10,15 @@
 #'@return A ggplot object of the simulation results
 #'
 #'@export
-plotData <- function(sEnv=simEnv, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL, suppress=F){
+plotData <- function(sEnv=NULL, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL, suppress=F){
+  
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
   plotBase <- is.null(popID)
   if (plotBase) popID <- sort(unique(sEnv$sims[[1]]$genoRec$basePopID))
   nLoc <- ncol(sEnv$sims[[1]]$gValue)

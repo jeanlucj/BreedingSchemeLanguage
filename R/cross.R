@@ -10,8 +10,7 @@
 #'@return modifies the list sims in environment sEnv by creating a progeny population as specified, with an incremented population number
 #'
 #'@export
-cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL, notWithinFam=F){
-  parent.env(sEnv) <- environment()
+cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL, notWithinFam=F){
   cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){
@@ -50,6 +49,14 @@ cross <- function(sEnv=simEnv, nProgeny=100, equalContribution=F, popID=NULL, po
     return(bsl)
   }#END cross.func
 
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)

@@ -11,8 +11,7 @@
 #'@return modifies the list sims in environment sEnv by adding parameters that determine genetic, location, year, and error variances
 #'
 #'@export
-defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=c(Standard=1)){
-  parent.env(sEnv) <- environment()
+defineVariances <- function(sEnv=NULL, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=c(Standard=1)){
   variances.func <- function(bsl, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd, plotTypeErrVars){
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly
@@ -29,6 +28,14 @@ defineVariances <- function(sEnv=simEnv, gVariance=1, locCorrelations=NULL, gByL
     return(bsl)
   }
   
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
+  parent.env(sEnv) <- environment()
   with(sEnv, {
     # This is too fast to parallelize
     sims <- lapply(sims, variances.func, gVariance=gVariance, locCorrelations=locCorrelations, gByLocVar=gByLocVar, gByYearVar=gByYearVar, fracGxEAdd=fracGxEAdd, plotTypeErrVars=plotTypeErrVars)

@@ -4,8 +4,8 @@
 \alias{cross}
 \title{Cross with random mating, or equal contributions, or randomly between two populations}
 \usage{
-cross(sEnv = simEnv, nProgeny = 100, equalContribution = F,
-  popID = NULL, popID2 = NULL, notWithinFam = F)
+cross(sEnv = NULL, nProgeny = 100, equalContribution = F, popID = NULL,
+  popID2 = NULL, notWithinFam = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

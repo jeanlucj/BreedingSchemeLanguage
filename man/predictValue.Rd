@@ -4,7 +4,7 @@
 \alias{predictValue}
 \title{Genomic prediction}
 \usage{
-predictValue(sEnv = simEnv, popID = NULL, trainingPopID = NULL,
+predictValue(sEnv = NULL, popID = NULL, trainingPopID = NULL,
   locations = NULL, years = NULL, sharingInfo = NULL)
 }
 \arguments{

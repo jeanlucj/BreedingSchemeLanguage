@@ -4,7 +4,7 @@
 \alias{phenotype}
 \title{Evaluate the phenotypic value}
 \usage{
-phenotype(sEnv = simEnv, plotType = "Standard", nRep = 1, popID = NULL,
+phenotype(sEnv = NULL, plotType = "Standard", nRep = 1, popID = NULL,
   locations = 1, years = NULL)
 }
 \arguments{
