@@ -5,7 +5,7 @@
 \title{Select individuals}
 \usage{
 select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
-  type = "Mass")
+  type = "Mass", parms = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -17,6 +17,8 @@ select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
 \item{random}{assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)}
 
 \item{type}{"WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) the highest nSelect within families are taken.}
+
+\item{parms}{an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.}
 }
 \value{
 modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID

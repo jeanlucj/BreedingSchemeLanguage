@@ -4,12 +4,14 @@
 \alias{initializePopulation}
 \title{Create a founder population}
 \usage{
-initializePopulation(sEnv = NULL, nInd = 100)
+initializePopulation(sEnv = NULL, nInd = 100, parms = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{nInd}{population size}
+
+\item{parms}{an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.}
 }
 \value{
 modifies the list sims in environment sEnv by creating a founder population

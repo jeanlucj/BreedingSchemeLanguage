@@ -2,11 +2,17 @@
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nInd population size
+#'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
 #'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export
-initializePopulation <- function(sEnv=NULL, nInd=100){
+initializePopulation <- function(sEnv=NULL, nInd=100, parms=NULL){
+  if(!is.null(parms)){
+    for (n in 1:length(parms)){
+      assign(names(parms)[n], parms[[n]])
+    }
+  }
   initializePopulation.func <- function(data, nInd){
     seed <- round(stats::runif(1, 0, 1e9))
     md <- data$mapData
