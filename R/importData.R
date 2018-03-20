@@ -46,7 +46,7 @@ phasedHapMap2mat <- function(hm){
       numCodes <- c(1, 0, rep(NA, length(missings)))
       gam1 <- sapply(substr(vec, 1, 1), function(code) numCodes[code == codes])
       gam2 <- sapply(substr(vec, 2, 2), function(code) numCodes[code == codes])
-      return(c(gam1, gam2))
+      return(c(rbind(gam1, gam2)))
     }
   }
   res <- apply(hm, 1, hapMap2num) 
