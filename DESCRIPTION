@@ -1,8 +1,8 @@
 Package: BreedingSchemeLanguage
 Type: Package
 Title: Describe and Simulate Breeding Schemes
-Version: 1.4
-Date: 2017-10-28
+Version: 0.9.4
+Date: 2018-03-27
 Author: Shiori Yabe, Hiroyoshi Iwata, and Jean-Luc Jannink
 Maintainer: Jean-Luc Jannink <jeanluc.work@gmail.com>
 Description: Users can simulate their planned breeding schemes by using functions that do standard breeding tasks.
