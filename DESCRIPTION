@@ -14,7 +14,8 @@ Imports:
   ggplot2,
   lme4,
   rrBLUP,
-  Matrix
+  Matrix,
+    Rcpp
 LinkingTo: Rcpp
 LazyLoad: yes
 VignetteBuilder: knitr
