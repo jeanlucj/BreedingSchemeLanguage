@@ -45,7 +45,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     if (is.null(importFounderHap)){
     sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, domModel=domModel)
     }else{ # importFounderHap not NULL
-      foundHap <- utils::read.table(file=paste(importFounderHap, ".hmp", sep=""), stringsAsFactors=F)
+      foundHap <- utils::read.table(file=paste(importFounderHap, ".hmp", sep=""), stringsAsFactors=F, skip=1) # Skip the header
       foundHap <- phasedHapMap2mat(foundHap)
       sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap, domModel=domModel)
     }
