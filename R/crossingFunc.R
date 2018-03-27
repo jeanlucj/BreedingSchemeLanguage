@@ -92,6 +92,22 @@ randomMate <- function(popSize, geno, pos){
   return(list(progenies = progenies, pedigree = parents))
 }
 
+#'pedigreeMate
+#'
+#'@param parents two- or three-column matrix: first two columns index the parents you want to cross, if there is a third column, it is the number of progeny from that pair of parents
+#'@param geno matrix of haplotypes
+#'@param pos position of markers/QTLs
+#'
+# Make progeny based on a pedigree.
+pedigreeMate <- function(parents, geno, pos){
+  if (ncol(parents) > 2){
+    test <- apply(parents, 1, function(vec) rep.int(vec[1:2], vec[3]))
+    test <- matrix(unlist(test), ncol=2, byrow=T)
+  }
+  progenies <- makeProgenies(parents, geno, pos)
+  return(list(progenies = progenies, pedigree = parents))
+}
+
 # Randomly mate but all parents have to be used equally and no selfing is allowed.
 # It's trickier than it seems
 #'randomMateAll

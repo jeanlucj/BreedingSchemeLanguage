@@ -51,7 +51,7 @@
 
 using namespace std;
 
-RcppExport SEXP mainR(SEXP par1, SEXP par2, SEXP par3, SEXP par4, SEXP par5, SEXP par6, SEXP par7, SEXP par8, SEXP par9, SEXP par10)
+RcppExport SEXP coalescentSim(SEXP par1, SEXP par2, SEXP par3, SEXP par4, SEXP par5, SEXP par6, SEXP par7, SEXP par8, SEXP par9, SEXP par10)
 {
   string popSize = Rcpp::as<std::string>(par3);
   string rec = Rcpp::as<std::string>(par6);

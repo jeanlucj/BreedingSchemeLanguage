@@ -5,11 +5,17 @@
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to their features (T: random selection, F: selection of good individuals)
 #'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) the highest nSelect within families are taken.
+#'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
 #'@return modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID
 #'
 #'@export
-select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
+select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass", parms=NULL){
+  if(!is.null(parms)){
+    for (n in 1:length(parms)){
+      assign(names(parms)[n], parms[[n]])
+    }
+  }
   select.func <- function(bsl, nSelect, popID, random, type){
     criterion <- bsl$selCriterion$criterion
     if(is.null(popID)){

@@ -1,6 +1,6 @@
-#'getCalescentSim
+#'getCoalescentSim
 #'
-#'@useDynLib BreedingSchemeLanguage mainR
+#'@useDynLib BreedingSchemeLanguage coalescentSim
 #'
 #'@param nPopsSamples -pop[2] (GENOME)
 #'@param effPopSize -N (GENOME)
@@ -29,7 +29,7 @@ systemCall[9] <- tree     # tree
 systemCall[10] <- round(8 * nMrkOrMut / nChr)     # s
 
 doGenome <- function(call){
-  .Call('mainR',
+  .Call('coalescentSim',
         par1 = call[1],
         par2 = call[2],
         par3 = as.character(call[3]),

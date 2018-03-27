@@ -2,7 +2,7 @@
 % Please edit documentation in R/getCoalescentSim.R
 \name{getCoalescentSim}
 \alias{getCoalescentSim}
-\title{getCalescentSim}
+\title{getCoalescentSim}
 \usage{
 getCoalescentSim(nPopsSamples = NULL, effPopSize = 100, nChr = 7,
   nPiecesPerChr = 15000, recBTpieces = 1e-04, nMrkOrMut = 100,
@@ -28,5 +28,5 @@ getCoalescentSim(nPopsSamples = NULL, effPopSize = 100, nChr = 7,
 \item{tree}{-tree (GENOME)}
 }
 \description{
-getCalescentSim
+getCoalescentSim
 }

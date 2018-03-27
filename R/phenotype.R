@@ -6,12 +6,18 @@
 #'@param popID population ID to be evaluated (default: the latest population)
 #'@param locations integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
+#'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
 #'@return modifies the list sims in environment sEnv by generating phenotypes for the specified popID, locations, and years.
 #'
 #'@export
 # Locations and years get added when you phenotype in them for the first time
-phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
+phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL, parms=NULL){
+  if(!is.null(parms)){
+    for (n in 1:length(parms)){
+      assign(names(parms)[n], parms[[n]])
+    }
+  }
   phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     names(errorVar) <- NULL
