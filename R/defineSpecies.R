@@ -16,6 +16,21 @@
 #'
 #'@return An environment that contains a list sims with each object of the list being one replicate to initiate a simulation
 #'
+#'@examples
+#'if (exists("simEnv")){
+#'rm(list=names(simEnv), envir=simEnv)
+#'rm(simEnv)
+#'}
+#'simEnv <- defineSpecies(nSim=2, nChr=5, lengthChr=100, effPopSize=20, nMarkers=100, nQTL=10)
+#'initializePopulation(nInd=50) # popID 0 created
+#'phenotype()
+#'select(nSelect=20) # popID 1 selected out of popID 0
+#'cross() # popID 2 created
+#'phenotype(nRep=2)
+#'select(nSelect=5) # popID 3 selected out of popID 2
+#'cross() # popID 4 created
+#'plotData()
+#'
 #'@export
 defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName="previousData", nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom"){
   defineSpecies.func <- function(simNum, nChr, lengthChr, effPopSize, nMarkers, nQTL, propDomi, nEpiLoci, founderHaps=NULL, domModel){
@@ -45,7 +60,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     if (is.null(importFounderHap)){
     sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, domModel=domModel)
     }else{ # importFounderHap not NULL
-      foundHap <- utils::read.table(file=paste(importFounderHap, ".hmp", sep=""), stringsAsFactors=F, skip=1) # Skip the header
+      foundHap <- utils::read.table(file=importFounderHap, stringsAsFactors=F, skip=1) # Skip the header
       foundHap <- phasedHapMap2mat(foundHap)
       sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap, domModel=domModel)
     }

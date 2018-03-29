@@ -1,0 +1,13 @@
+rref <- bibentry(
+  bibtype   = "Article",
+  title     = "A Simple Package to Script and Simulate Breeding Schemes: The
+  Breeding Scheme Language",
+  author    = "Shiori Yabe and Hiroyoshi Iwata and Jean-Luc Jannink",
+  journal   = "Crop Science",
+  publisher = "The Crop Science Society of America, Inc.",
+  volume    =  57,
+  number    =  3,
+  pages     = "1347--1354",
+  year      =  2017,
+  address   = "Madison, WI"
+)

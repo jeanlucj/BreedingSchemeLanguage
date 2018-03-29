@@ -28,11 +28,11 @@ phasedHapMap2mat <- function(hm){
   # Different functions if hapmap with 1 or 2 character codes
   if (nchar(hm[1, 2]) == 1){ 
     hapMap2num <- function(vec){ # Convert to numeric if one character codes
-      hets <- c("W","R","Y","K","M","S") # NOTE: hets become missing here
+      nucleo <- c("A", "T", "C", "G") # NOTE: anything else is set to missing
       missings <- c("-", "0","N")
       alleles <- unlist(strsplit(vec[1], "/"))
       vec <- vec[-1]
-      vec[vec %in% c(hets, missings)] <- NA
+      vec[!(vec %in% nucleo)] <- NA
       vec[alleles[1]==vec] <- 1
       vec[alleles[2]==vec] <- 0
       return(suppressWarnings(as.numeric(vec)))
