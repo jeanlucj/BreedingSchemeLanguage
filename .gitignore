@@ -1,0 +1,15 @@
+.DS_Store
+.Rhistory
+R/.DS_Store
+inst/.DS_Store
+man/.DS_Store
+man/.Rapp.history
+src/.DS_Store
+src/BreedingSchemeLanguage.so
+src/Error.o
+src/Main.o
+src/Random.o
+src/genome.o
+src/init.o
+src/stochastic.o
+vignettes/.DS_Store
