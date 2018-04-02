@@ -1,0 +1,87 @@
+---
+title: "Loading Existing Data into a Simulation"
+author: 
+- Jean-Luc Jannink
+date: "2018-03-31"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Loading Existing Data into a Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.dpi = 96)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load the BreedingSchemeLanguage.
+
+```{r}
+library(BreedingSchemeLanguage)
+```
+
+#### Avoid writing over a previously existing simulation environment
+
+```{r}
+if (exists("simEnv")){
+  rm(list=names(simEnv), envir=simEnv)
+  rm(simEnv)
+}
+```
+
+#### Find the path to the HapMap file in the package
+
+```{r}
+filePathName <- system.file("extdata", "exampleHapMapFile.hmp", package = "BreedingSchemeLanguage")
+```
+
+* This is what the file looks like
+```{r, echo=FALSE, include=TRUE}
+hapmap <- readLines(con=filePathName)
+hapmap[11] <- ""
+for (i in 1:11)
+  cat(paste(substr(hapmap[i], 1, 83), "..."), "\n")
+```
+
+* The first row is a header
+* The ninth row (locus8) has specification for a QTL
+    + 17 is an unordered effect ID
+    + 0 indicates additive gene action
+    + -1.311 is the QTL effect
+    
+#### Load the historical haplotypes into the simulation environment
+
+```{r}
+simEnv <- defineSpecies(loadData=NULL, importFounderHap=filePathName, nChr=5, lengthChr=100, nMarkers=300)
+initializePopulation()
+```
+
+* Also create the population of diploid founders
+
+#### Run selection on founders
+
+```{r}
+phenotype()
+genotype()
+predictValue()
+select(nSelect=50)
+cross(equalContribution=T)
+```
+
+* Since the population was just genotyped, the default is for `predictValue()` to use markers to enable information sharing across observations
+* The `equalContribution` parameter in `cross()` ensures that all parents contribute to the same number of progeny
+
+#### Intense selection on genomic predictions
+
+```{r}
+genotype()
+predictValue()
+select(nSelect=5)
+cross()
+plotData()
+```
+
+* The penultimate population was not phenotyped before selection
+* The final `cross()` function serves to evaluate the response to genomic selection
+* Note that this simulation only allows one replication: there will be variability in response including the possibility of a negative response to genomic selection

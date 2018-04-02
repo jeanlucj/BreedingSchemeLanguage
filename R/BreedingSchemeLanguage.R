@@ -7,3 +7,4 @@
 #' @import ggplot2 lme4 snowfall Rcpp 
 #' @useDynLib BreedingSchemeLanguage
 #' @importFrom Rcpp sourceCpp
+library(Rcpp)

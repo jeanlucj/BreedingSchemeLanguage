@@ -11,15 +11,16 @@ Authors@R: c(
 Maintainer: Jean-Luc Jannink <jeanluc.work@gmail.com>
 Description: Users can simulate their planned breeding schemes by using functions that do standard breeding tasks.
 License: GPL-3
-Depends: R (>= 3.0.0)
+Depends:
+  R (>= 3.0.0)
 Imports:
+  Rcpp,
   snowfall,
   stats,
   ggplot2,
   lme4,
   rrBLUP,
   Matrix,
-    Rcpp
 LinkingTo: Rcpp
 LazyLoad: yes
 VignetteBuilder: knitr
