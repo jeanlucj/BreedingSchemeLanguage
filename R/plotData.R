@@ -2,16 +2,17 @@
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param ymax the maximum value of y-axis (default: the maximun value in the data)
-#'@param add if T a new result will be added to an existing plot, if F a new plot will be drawn (default)
-#'@param addDataFileName the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")
+#'@param add if TRUE a new result will be added to an existing plot, using data loaded from addDataFileName. if FALSE a new plot will be drawn (default)
+#'@param addDataFileName if not NULL, the name to save the summarized data for the next simulation, like "plot1_1". A path can be specified, like "simDirectory/plot1_1" (in which case "simDirectory" must exist). Default: NULL
 #'@param popID list of vectors of the population IDs you want plotted
 #'@param suppress if TRUE, this call is just to assemble the data to be plotted in a later call to plotData (default: FALSE)
 #'
-#'@return A ggplot object of the simulation results
+#'@seealso \code{\link{defineSpecies}} for an example
+#'
+#'@return A matrix with the plot data
 #'
 #'@export
-plotData <- function(sEnv=NULL, ymax=NULL, add=F, addDataFileName="plotData", popID=NULL, suppress=F){
-  
+plotData <- function(sEnv=NULL, ymax=NULL, add=FALSE, addDataFileName=NULL, popID=NULL, suppress=F){
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
       sEnv <- get("simEnv", .GlobalEnv)
@@ -96,7 +97,7 @@ plotData <- function(sEnv=NULL, ymax=NULL, add=F, addDataFileName="plotData", po
     plotData <- rbind(plotData, prevData)
     }
   }
-  saveRDS(list(plotData=plotData, totCost=totCost), file=paste(addDataFileName, ".rds", sep=""))
+  if (!is.null(addDataFileName)) saveRDS(list(plotData=plotData, totCost=totCost), file=paste(addDataFileName, ".rds", sep=""))
   
   plotData$group <- as.factor(plotData$group)
   plotData$col <- as.factor(plotData$col)

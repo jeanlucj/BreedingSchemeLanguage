@@ -8,6 +8,8 @@
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
 #'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
+#'@seealso \code{\link{defineSpecies}} for an example
+#'
 #'@return modifies the list sims in environment sEnv by generating phenotypes for the specified popID, locations, and years.
 #'
 #'@export

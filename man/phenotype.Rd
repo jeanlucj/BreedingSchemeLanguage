@@ -28,3 +28,6 @@ modifies the list sims in environment sEnv by generating phenotypes for the spec
 \description{
 Evaluate the phenotypic value
 }
+\seealso{
+\code{\link{defineSpecies}} for an example
+}

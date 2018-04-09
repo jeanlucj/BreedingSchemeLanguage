@@ -22,3 +22,6 @@ modifies the list sims in environment sEnv by creating a founder population
 \description{
 Create a founder population
 }
+\seealso{
+\code{\link{defineSpecies}} for an example
+}

@@ -4,17 +4,14 @@
 \alias{outputResults}
 \title{Save the results}
 \usage{
-outputResults(sEnv = NULL, summarize = T, directory = ".",
-  saveDataFileName = "BSLoutput")
+outputResults(sEnv = NULL, summarize = T, saveDataFileName = "BSLoutput")
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{summarize}{if T a result averaged over all the replications is saved, if F each replication's result is saved}
 
-\item{directory}{the directory to which the output will be saved (Enclose the name in double quotation!) (default: the current directory)}
-
-\item{saveDataFileName}{the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")}
+\item{saveDataFileName}{the file name to save the simulated data with double-quotation, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: "BSLoutput".}
 }
 \value{
 The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.

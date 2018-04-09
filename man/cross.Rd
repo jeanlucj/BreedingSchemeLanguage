@@ -30,3 +30,6 @@ modifies the list sims in environment sEnv by creating a progeny population as s
 \description{
 Cross with random mating, or equal contributions, or randomly between two populations
 }
+\seealso{
+\code{\link{defineSpecies}} for an example
+}

@@ -5,24 +5,30 @@
 \title{Plot the results}
 \usage{
 plotData(sEnv = NULL, ymax = NULL, add = F,
-  addDataFileName = "plotData", popID = NULL, suppress = F)
+  addDataFileName = "plotData", savePlotData = FALSE, popID = NULL,
+  suppress = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{ymax}{the maximum value of y-axis (default: the maximun value in the data)}
 
-\item{add}{if T a new result will be added to an existing plot, if F a new plot will be drawn (default)}
+\item{add}{if TRUE a new result will be added to an existing plot, using data loaded from addDataFileName. if FALSE a new plot will be drawn (default)}
 
-\item{addDataFileName}{the name to save the summarized data for the next simulation with double-quotation, like "plot1_1". (default: "plotData")}
+\item{addDataFileName}{the name to save the summarized data for the next simulation, like "plot1_1". A path can be specified, like "simDirectory/plot1_1" (in which case "simDirectory" must exist). Default: "plotData"}
+
+\item{savePlotData}{Logical. If TRUE, the plot data will be saved to a file given by addDataFileName. Default: FALSE}
 
 \item{popID}{list of vectors of the population IDs you want plotted}
 
 \item{suppress}{if TRUE, this call is just to assemble the data to be plotted in a later call to plotData (default: FALSE)}
 }
 \value{
-A ggplot object of the simulation results
+A matrix with the plot data
 }
 \description{
 Plot the results
+}
+\seealso{
+\code{\link{defineSpecies}} for an example
 }

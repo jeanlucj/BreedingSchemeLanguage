@@ -5,16 +5,19 @@
 \title{Define and create species}
 \usage{
 defineSpecies(loadData = NULL, importFounderHap = NULL,
-  saveDataFileName = "previousData", nSim = 1, nCore = 1, nChr = 7,
-  lengthChr = 150, effPopSize = 100, nMarkers = 1000, nQTL = 50,
-  propDomi = 0, nEpiLoci = 0, domModel = "HetHom")
+  saveSpeciesData = FALSE, saveDataFileName = "previousData", nSim = 1,
+  nCore = 1, nChr = 7, lengthChr = 150, effPopSize = 100,
+  nMarkers = 1000, nQTL = 50, propDomi = 0, nEpiLoci = 0,
+  domModel = "HetHom", parms = NULL)
 }
 \arguments{
-\item{loadData}{if null create a new species (default), else the file name of previously created species like "fileName" (Do not put "RData" extension).}
+\item{loadData}{if null create a new species (default), else the file name of previously created species like "species1_1" (Do not put "RData" extension). A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist).}
 
-\item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally generated founder haplotypes in hapmap format.}
+\item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).}
 
-\item{saveDataFileName}{the name to save the species data with double-quotation, like "species1_1". (default: "previousData")}
+\item{saveSpeciesData}{Logical. If TRUE, the species data will be saved to a file given by saveDataFileName. Default: FALSE}
+
+\item{saveDataFileName}{the name to save the species data, like "species1_1". A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist). Default: "previousData"}
 
 \item{nSim}{the number of simulation trials}
 
@@ -35,6 +38,8 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 \item{nEpiLoci}{the expected number of epistatic loci for each effect}
 
 \item{domModel}{the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance. At the moment, functionality for the "Partial" option is only available when using ImportFounderHap.}
+
+\item{parms}{optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL}
 }
 \value{
 An environment that contains a list sims with each object of the list being one replicate to initiate a simulation

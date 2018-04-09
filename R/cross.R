@@ -9,6 +9,8 @@
 #'@param pedigree optional two- or three-column matrix: the first two columns are the GIDs that you want to cross, the third column is the number of progeny from that cross. NOTE: pedigree supercedes the nProgeny, equalContribution, popID, popID2, and notWithinFam parameters. You have to know what you are doing to use this parameter. Default: NULL
 #'@param parms optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL
 #'
+#'@seealso \code{\link{defineSpecies}} for an example
+#'
 #'@return modifies the list sims in environment sEnv by creating a progeny population as specified, with an incremented population number
 #'
 #'@export

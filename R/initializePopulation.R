@@ -5,6 +5,8 @@
 #'@param founderHapsInDiploids set to TRUE if you have uploaded phased diploid data in defineSpecies
 #'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
+#'@seealso \code{\link{defineSpecies}} for an example
+#'
 #'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export

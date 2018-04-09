@@ -2,14 +2,12 @@
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param summarize if T a result averaged over all the replications is saved, if F each replication's result is saved
-#'@param directory the directory to which the output will be saved (Enclose the name in double quotation!) (default: the current directory)
-#'@param saveDataFileName the file name to save the simulated data with double-quotation, like "result1_1". (default: "BSLoutput")
+#'@param saveDataFileName string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: "BSLoutput".
 #'
 #'@return The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.
 #'
 #'@export
-outputResults <- function(sEnv=NULL, summarize=T, directory=".", saveDataFileName="BSLoutput"){
-  
+outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName="BSLoutput"){
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
       sEnv <- get("simEnv", .GlobalEnv)
@@ -31,5 +29,5 @@ outputResults <- function(sEnv=NULL, summarize=T, directory=".", saveDataFileNam
   }else{
     BSLoutput <- sEnv$sims
   }
-  saveRDS(BSLoutput, file=paste(directory, "/", saveDataFileName, ".rds", sep=""))
+  saveRDS(BSLoutput, file=paste(saveDataFileName, ".rds", sep=""))
 }

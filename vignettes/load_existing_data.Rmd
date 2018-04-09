@@ -17,13 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### Load the BreedingSchemeLanguage.
 
-```{r}
+```{r loadBSL}
 library(BreedingSchemeLanguage)
 ```
 
 #### Avoid writing over a previously existing simulation environment
 
-```{r}
+```{r deletePriorSim}
 if (exists("simEnv")){
   rm(list=names(simEnv), envir=simEnv)
   rm(simEnv)
@@ -32,12 +32,12 @@ if (exists("simEnv")){
 
 #### Find the path to the HapMap file in the package
 
-```{r}
+```{r pathToHapMap}
 filePathName <- system.file("extdata", "exampleHapMapFile.hmp", package = "BreedingSchemeLanguage")
 ```
 
 * This is what the file looks like
-```{r, echo=FALSE, include=TRUE}
+```{r displayHapMap, echo=FALSE, include=TRUE}
 hapmap <- readLines(con=filePathName)
 hapmap[11] <- ""
 for (i in 1:11)
@@ -52,8 +52,8 @@ for (i in 1:11)
     
 #### Load the historical haplotypes into the simulation environment
 
-```{r}
-simEnv <- defineSpecies(loadData=NULL, importFounderHap=filePathName, nChr=5, lengthChr=100, nMarkers=300)
+```{r defineSpecies}
+simEnv <- defineSpecies(loadData=NULL, importFounderHap=filePathName, saveSpeciesData=FALSE,  nChr=5, lengthChr=100, nMarkers=300)
 initializePopulation()
 ```
 
@@ -61,7 +61,7 @@ initializePopulation()
 
 #### Run selection on founders
 
-```{r}
+```{r selectionFounders}
 phenotype()
 genotype()
 predictValue()
@@ -74,12 +74,12 @@ cross(equalContribution=T)
 
 #### Intense selection on genomic predictions
 
-```{r}
+```{r genomicSelection}
 genotype()
 predictValue()
 select(nSelect=5)
 cross()
-plotData()
+cycleMeans <- plotData(savePlotData=FALSE)
 ```
 
 * The penultimate population was not phenotyped before selection

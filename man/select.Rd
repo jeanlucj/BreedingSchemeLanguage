@@ -26,3 +26,6 @@ modifies the list sims in environment sEnv by selecting individuals of the speci
 \description{
 Select individuals
 }
+\seealso{
+\code{\link{defineSpecies}} for an example
+}

@@ -12,41 +12,36 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(fig.dpi = 96)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.dpi=96)
 ```
 
 BreedingSchemeLanguage is a package that simulates plant breeding using phenotypic or genomic selection. All package functions simulate recognizable breeding tasks that can be assembled into breeding schemes. For example, users can simulate phenotyping in multiple (possibly correlated) locations over years, calculate the cost of the simulated breeding scheme, and compare multiple breeding strategies.  Reasonable defaults are given for each function, but many aspects are customizable. Functions are context dependent, e.g, by default, the `phenotype()` function will generate phenotypes for the last population created.
 
 ## Start using BreedingSchemeLanguage
 
-Load the BreedingSchemeLanguage.
+Load the BreedingSchemeLanguage. Find a temporary directory to work with for this vignette.
 
-```{r}
+```{r loadBSL}
 library(BreedingSchemeLanguage)
+simTempDir <- tempdir()
 ```
 
 ## Define simulation settings
 
-Define the genetic architecture of the plant species and other whole simulation settings.
+Define the genetic architecture of the plant species and other whole simulation settings. Because generating historical haplotypes is rather slow, save them so they can be reused.
 
-```{r}
-simEnv <- defineSpecies(nSim = 5)
+```{r defineSpecies}
+simEnv <- defineSpecies(nSim=3, saveSpeciesData=TRUE, saveDataFileName=paste(simTempDir, "simSpecies", sep="/"))
 ```
 
-- Here, we plan to conduct five simulations using default settings (i.e., genome with seven chromosomes of 150 cM length, historical effective population size of 100, trait controlled by additive QTLs, etc.). 
-
-Generating the historical haplotypes is rather slow, but they are saved and can be reused:
-
-```{r}
-simEnv <- defineSpecies(loadData = "previousData")
-```
+- Here, we plan to conduct three simulations using default settings (i.e., genome with seven chromosomes of 150 cM length, historical effective population size of 100, trait controlled by additive QTLs, etc.). 
 
 - The BSL keeps simulation objects in an R environment. If users specify the default `simEnv` the environment object does not need to be passed to the functions.
 
 Specify environmental variances and breeding costs
 
-```{r}
+```{r defineVariances}
 locCor <- matrix(c(1, 0.6, 0.3, 
                    0.6, 1, 0.8, 
                    0.3, 0.8, 1)
@@ -64,7 +59,7 @@ defineCosts(phenoCost=plotCosts)
 
 Initialize the breeding population from historical haplotypes.
 
-```{r}
+```{r initialize}
 initializePopulation()
 ```
 
@@ -72,28 +67,22 @@ initializePopulation()
 
 ## Simulate breeding schemes
 
-Estimate the *per se* or own performance of individuals in the initial breeding population.
+Estimate the *per se* or own performance of individuals in the initial breeding population and select based on these values.
 
-```{r}
+```{r firstEvaluation}
 phenotype(locations=1:3, years=1:2, plotType="Preliminary")
 predictValue()
+select()
 ```
 
 - Phenotype in all locations over two years in Preliminary trials.
 - In the absence of genotype data or specifying that pedigree should be used, the genotypic are estimated as independently and identically distributed from the phenotypic data.
-
-Select based on these values
-
-```{r}
-select()
-cross()
-```
-
 - No arguements are passed to `select()` so the default of using the values just estimated (in the `predictValue()` function) and selecting 40 individuals applies. The function `cross()` creates the next generation of 100 individuals (also by default).
 
-Select using pedigree information
+Cross to create progeny, phenotype them then select using pedigree information
 
-```{r}
+```{r createEvaluateC1}
+cross()
 phenotype(plotType="Advanced", locations=3, years=3)
 predictValue(sharingInfo="pedigree")
 select()
@@ -105,7 +94,7 @@ select()
 
 Genomic selection among progeny produced by selfing
 
-```{r}
+```{r createC2bySelfingCreateC3}
 selfFertilize(nProgeny=120)
 genotype()
 predictValue(sharingInfo="markers", locations=3)
@@ -121,7 +110,40 @@ cross()
 ## Plot the results
 
 ```{r}
-plotData()
+cycleMeans <- plotData(addDataFileName=paste(simTempDir, "simPlot", sep="/"), savePlotData=TRUE)
 ```
 
-- The thick line shows the mean value of the five simulations, while each thin line shows the selection responses in each simulation.
+- The thick line shows the mean value of the three simulations, while each thin line shows the selection responses in each simulation.
+
+## Start a new simulation from the same historical haplotypes
+
+First, it is best to delete the previous simulation environment, then load the data using the name given at the beginning of the vignette. Simple simulation using defaults.
+
+```{r newSim}
+if (exists("simEnv")){
+rm(list=names(simEnv), envir=simEnv)
+rm(simEnv)
+}
+simEnv <- defineSpecies(loadData=paste(simTempDir, "simSpecies", sep="/"))
+initializePopulation()
+phenotype()
+select()
+cross()
+phenotype()
+select()
+cross()
+phenotype()
+select()
+cross()
+cycleMeans <- plotData(add=TRUE, addDataFileName=paste(simTempDir, "simPlot", sep="/"), savePlotData=TRUE)
+```
+
+- The results of the second simple default scheme are shown with the dashed lines.
+
+## Clean up after the vignette
+
+```{r cleanup}
+fr <- file.remove(paste(simTempDir, "simSpecies.RData", sep="/"))
+fr <- file.remove(paste(simTempDir, "simPlot.rds", sep="/"))
+```
+

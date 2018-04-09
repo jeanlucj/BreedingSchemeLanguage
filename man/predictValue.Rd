@@ -5,7 +5,7 @@
 \title{Genomic prediction}
 \usage{
 predictValue(sEnv = NULL, popID = NULL, trainingPopID = NULL,
-  locations = NULL, years = NULL, sharingInfo = NULL)
+  locations = NULL, years = NULL, sharingInfo = NULL, parms = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -19,6 +19,8 @@ predictValue(sEnv = NULL, popID = NULL, trainingPopID = NULL,
 \item{years}{data from which years should be used (default: all years)}
 
 \item{sharingInfo}{one of "none", "markers", "pedigree".  If none, genotypic values are assumed IID. If markers or pedigree, a genomic or pedigree relationship matrix is constructed}
+
+\item{parms}{optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL}
 }
 \value{
 modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them

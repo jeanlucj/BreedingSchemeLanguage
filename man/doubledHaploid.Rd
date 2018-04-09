@@ -4,7 +4,7 @@
 \alias{doubledHaploid}
 \title{Doubled haploids}
 \usage{
-doubledHaploid(sEnv = NULL, nProgeny = 100, popID = NULL)
+doubledHaploid(sEnv = NULL, nProgeny = 100, popID = NULL, parms = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -12,6 +12,8 @@ doubledHaploid(sEnv = NULL, nProgeny = 100, popID = NULL)
 \item{nProgeny}{the number of progeny}
 
 \item{popID}{population ID to be devided by meiosis and doubled (default: the latest population)}
+
+\item{parms}{optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL}
 }
 \value{
 modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
