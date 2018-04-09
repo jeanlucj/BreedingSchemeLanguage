@@ -32,7 +32,7 @@ simTempDir <- tempdir()
 Define the genetic architecture of the plant species and other whole simulation settings. Because generating historical haplotypes is rather slow, save them so they can be reused.
 
 ```{r defineSpecies}
-simEnv <- defineSpecies(nSim=3, saveSpeciesData=TRUE, saveDataFileName=paste(simTempDir, "simSpecies", sep="/"))
+simEnv <- defineSpecies(nSim=3, saveDataFileName=paste(simTempDir, "simSpecies", sep="/"))
 ```
 
 - Here, we plan to conduct three simulations using default settings (i.e., genome with seven chromosomes of 150 cM length, historical effective population size of 100, trait controlled by additive QTLs, etc.). 
@@ -110,7 +110,7 @@ cross()
 ## Plot the results
 
 ```{r}
-cycleMeans <- plotData(addDataFileName=paste(simTempDir, "simPlot", sep="/"), savePlotData=TRUE)
+cycleMeans <- plotData(addDataFileName=paste(simTempDir, "simPlot", sep="/"))
 ```
 
 - The thick line shows the mean value of the three simulations, while each thin line shows the selection responses in each simulation.
@@ -135,7 +135,7 @@ cross()
 phenotype()
 select()
 cross()
-cycleMeans <- plotData(add=TRUE, addDataFileName=paste(simTempDir, "simPlot", sep="/"), savePlotData=TRUE)
+cycleMeans <- plotData(add=TRUE, addDataFileName=paste(simTempDir, "simPlot", sep="/"))
 ```
 
 - The results of the second simple default scheme are shown with the dashed lines.

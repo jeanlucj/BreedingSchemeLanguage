@@ -5,19 +5,16 @@
 \title{Define and create species}
 \usage{
 defineSpecies(loadData = NULL, importFounderHap = NULL,
-  saveSpeciesData = FALSE, saveDataFileName = "previousData", nSim = 1,
-  nCore = 1, nChr = 7, lengthChr = 150, effPopSize = 100,
-  nMarkers = 1000, nQTL = 50, propDomi = 0, nEpiLoci = 0,
-  domModel = "HetHom", parms = NULL)
+  saveDataFileName = NULL, nSim = 1, nCore = 1, nChr = 7,
+  lengthChr = 150, effPopSize = 100, nMarkers = 1000, nQTL = 50,
+  propDomi = 0, nEpiLoci = 0, domModel = "HetHom", parms = NULL)
 }
 \arguments{
 \item{loadData}{if null create a new species (default), else the file name of previously created species like "species1_1" (Do not put "RData" extension). A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist).}
 
 \item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).}
 
-\item{saveSpeciesData}{Logical. If TRUE, the species data will be saved to a file given by saveDataFileName. Default: FALSE}
-
-\item{saveDataFileName}{the name to save the species data, like "species1_1". A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist). Default: "previousData"}
+\item{saveDataFileName}{if not NULL, the name to save the species data, like "species1_1". A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist). Default: NULL}
 
 \item{nSim}{the number of simulation trials}
 

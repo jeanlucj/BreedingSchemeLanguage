@@ -11,7 +11,7 @@ outputResults(sEnv = NULL, summarize = T, saveDataFileName = "BSLoutput")
 
 \item{summarize}{if T a result averaged over all the replications is saved, if F each replication's result is saved}
 
-\item{saveDataFileName}{the file name to save the simulated data with double-quotation, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: "BSLoutput".}
+\item{saveDataFileName}{string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: "BSLoutput".}
 }
 \value{
 The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.

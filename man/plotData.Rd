@@ -4,9 +4,8 @@
 \alias{plotData}
 \title{Plot the results}
 \usage{
-plotData(sEnv = NULL, ymax = NULL, add = F,
-  addDataFileName = "plotData", savePlotData = FALSE, popID = NULL,
-  suppress = F)
+plotData(sEnv = NULL, ymax = NULL, add = FALSE, addDataFileName = NULL,
+  popID = NULL, suppress = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -15,9 +14,7 @@ plotData(sEnv = NULL, ymax = NULL, add = F,
 
 \item{add}{if TRUE a new result will be added to an existing plot, using data loaded from addDataFileName. if FALSE a new plot will be drawn (default)}
 
-\item{addDataFileName}{the name to save the summarized data for the next simulation, like "plot1_1". A path can be specified, like "simDirectory/plot1_1" (in which case "simDirectory" must exist). Default: "plotData"}
-
-\item{savePlotData}{Logical. If TRUE, the plot data will be saved to a file given by addDataFileName. Default: FALSE}
+\item{addDataFileName}{if not NULL, the name to save the summarized data for the next simulation, like "plot1_1". A path can be specified, like "simDirectory/plot1_1" (in which case "simDirectory" must exist). Default: NULL}
 
 \item{popID}{list of vectors of the population IDs you want plotted}
 
