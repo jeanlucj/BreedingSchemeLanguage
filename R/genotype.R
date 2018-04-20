@@ -13,19 +13,19 @@ genotype <- function(sEnv=NULL, popID=NULL, parms=NULL){
       assign(names(parms)[n], parms[[n]])
     }
   }
-  genotype.func <- function(data, popID){
-    nHasGeno <- sum(data$genoRec$hasGeno)
+  genotype.func <- function(bsl, popID){
+    nHasGeno <- sum(bsl$genoRec$hasGeno)
     if (is.null(popID)){
-      data$genoRec$hasGeno <- TRUE
+      bsl$genoRec$hasGeno <- TRUE
     } else{
-      tf <- data$genoRec$popID %in% popID
-      data$genoRec$hasGeno <- data$genoRec$hasGeno | tf
+      tf <- bsl$genoRec$popID %in% popID
+      bsl$genoRec$hasGeno <- bsl$genoRec$hasGeno | tf
     }
     
-    data$selCriterion$sharing <- "markers"
+    bsl$selCriterion$sharing <- "markers"
     
-    if (exists("totalCost", data)) data$totalCost <- data$totalCost + (sum(data$genoRec$hasGeno) - nHasGeno) * data$costs$genoCost
-    return(data)
+    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + (sum(bsl$genoRec$hasGeno) - nHasGeno) * bsl$costs$genoCost
+    return(bsl)
   }
   
   if(is.null(sEnv)){

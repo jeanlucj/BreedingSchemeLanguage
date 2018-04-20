@@ -138,5 +138,7 @@ addProgenyData <- function(bsl, geno, pedigree){
   bsl$genoRec <- rbind(bsl$genoRec, addRec)
   # Add on to the genotypes
   bsl$geno <- rbind(bsl$geno, geno)
+  bsl$selCriterion$popID <- popID
+  
   return(bsl)
 }
