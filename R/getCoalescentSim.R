@@ -42,14 +42,12 @@ doGenome <- function(call){
         par10 = call[10])
 }
 
-if(file.exists("genomeOUT.txt")){
-  file.remove("genomeOUT.txt")
-}
-sink("genomeOUT.txt")
+tempFileName <- tempfile(pattern="genome", fileext=".txt")
+sink(tempFileName)
 doGenome(systemCall)
 sink()
-genOut <- readLines("genomeOUT.txt", n=-1)
-file.remove("genomeOUT.txt")
+genOut <- readLines(tempFileName, n=-1)
+file.remove(tempFileName)
 strtPos <- grep("SNP genetic position", genOut)
 map <- NULL
 for (chr in 1:nChr){
