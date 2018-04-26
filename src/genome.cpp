@@ -296,8 +296,8 @@ void FreeCoalescentMemory(){
    delete [] child_flags;
    delete [] parent_flags;
 
-   delete [] cblocks;
-   delete [] pblocks;
+   free(cblocks);
+   free(pblocks);
 
    delete [] parent_First;
    delete [] parent_Last;
