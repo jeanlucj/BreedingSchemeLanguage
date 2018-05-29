@@ -8,7 +8,7 @@ cross(sEnv = NULL, nProgeny = 100, equalContribution = F, popID = NULL,
   popID2 = NULL, notWithinFam = F, pedigree = NULL, parms = NULL)
 }
 \arguments{
-\item{sEnv}{the environment that BSL functions operate in. Default: "simEnv" so use that to avoid specifying when calling functions}
+\item{sEnv}{the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted}
 
 \item{nProgeny}{the number of progenies. Default: 100}
 

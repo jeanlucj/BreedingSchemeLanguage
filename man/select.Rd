@@ -8,7 +8,7 @@ select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
   type = "Mass", parms = NULL)
 }
 \arguments{
-\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
+\item{sEnv}{the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted}
 
 \item{nSelect}{the number of selected individuals}
 

@@ -8,7 +8,7 @@ predictValue(sEnv = NULL, popID = NULL, trainingPopID = NULL,
   locations = NULL, years = NULL, sharingInfo = NULL, parms = NULL)
 }
 \arguments{
-\item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
+\item{sEnv}{the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted}
 
 \item{popID}{population ID to be predicted (default: the latest population)}
 

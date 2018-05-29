@@ -1,6 +1,6 @@
 #'Genomic prediction
 #'
-#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
+#'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
 #'@param popID population ID to be predicted (default: the latest population)
 #'@param trainingPopID population ID to be used for training a prediction model (default: all populations with phenotype data). NOTE: if sharingInfo="none" this parameter has no effect.
 #'@param locations data from which locations should be used (default: all locations)

@@ -14,21 +14,21 @@ selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL, parms=NULL){
       assign(names(parms)[n], parms[[n]])
     }
   }
-  selfFertilize.func <- function(data, nProgeny, popID){
-    locPos <- data$mapData$map$Pos
+  selfFertilize.func <- function(bsl, nProgeny, popID){
+    locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){
-      popID <- max(data$genoRec$popID)
+      popID <- max(bsl$genoRec$popID)
     }
-    tf <- data$genoRec$popID %in% popID
-    GIDpar <- data$genoRec$GID[tf]
+    tf <- bsl$genoRec$popID %in% popID
+    GIDpar <- bsl$genoRec$GID[tf]
     nPar <- length(GIDpar)
-    geno <- data$geno[rep(GIDpar*2, each=2) + rep(-1:0, nPar),]
+    geno <- bsl$geno[rep(GIDpar*2, each=2) + rep(-1:0, nPar),]
     geno <- makeSelfs(popSize=nProgeny, geno=geno, pos=locPos)
     pedigree <- cbind(matrix(GIDpar[geno$pedigree], nProgeny), 1)
     geno <- geno$progenies
-    data <- addProgenyData(data, geno, pedigree)
-    if (exists("totalCost", data)) data$totalCost <- data$totalCost + nProgeny * data$costs$selfCost
-    return(data)
+    bsl <- addProgenyData(bsl, geno, pedigree)
+    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + nProgeny * bsl$costs$selfCost
+    return(bsl)
   }
   
   if(is.null(sEnv)){

@@ -1,0 +1,15 @@
+26 Apr 2018
+Version 0.9.5 submitted to CRAN
+
+26 Apr 2018
+Change to genome.cpp to correct a memory allocation error
+
+25 Apr 2018
+Change to getCoalescentSim so that it uses an R session designated temporary file
+
+20 Apr 2018
+Bug fix to select() when random=T so that within-family selection is also random.
+Behavior fix to cross(), selfFertilize(), and doubledHaploid() so that the newly created population is the target for a subsequent select() if random=T.
+
+9 Apr 2018
+Version 0.9.4 uploaded to CRAN

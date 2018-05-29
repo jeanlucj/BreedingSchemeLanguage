@@ -1,6 +1,6 @@
 #'Select individuals
 #'
-#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
+#'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
 #'@param nSelect the number of selected individuals
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to estimated value (T: random selection, F: selection for high value)
@@ -46,8 +46,12 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass", par
       if(substr(criterion, 1, 4) == "pred"){
         GIDcan <- intersect(GIDcan, bsl$predRec$predGID)
         if (length(GIDcan) == 0) stop(paste("There are no selection candidates in the population", popID, "with predictions"))
-        usePred <- bsl$predRec[bsl$predRec$predGID %in% GIDcan & bsl$predRec$predNo == max(bsl$predRec$predNo),]
-        candValue <- usePred$predict[order(usePred$predGID)]
+        # Return the last prediction for a candidate
+        lastPred <- function(cand){
+          usePred <- bsl$predRec[bsl$predRec$predGID == cand,,drop=F]
+          return(usePred[which.max(usePred$predNo), "predict"])
+        }
+        candValue <- sapply(GIDcan, lastPred)
       }
       # Done computing the candidate values
       if (type == "WithinFamily"){

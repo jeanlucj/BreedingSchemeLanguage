@@ -1,6 +1,6 @@
 #' Cross with random mating, or equal contributions, or randomly between two populations
 #'
-#'@param sEnv the environment that BSL functions operate in. Default: "simEnv" so use that to avoid specifying when calling functions
+#'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
 #'@param nProgeny the number of progenies. Default: 100
 #'@param equalContribution if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents. Default: F
 #'@param popID population ID to be crossed. Default: the last population
@@ -20,14 +20,14 @@ cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popI
       assign(names(parms)[n], parms[[n]])
     }
   }
-  cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2){
+  cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2, pedigree){
     locPos <- bsl$mapData$map$Pos
     if (!is.null(pedigree)){
       GID.1 <- sort(unique(c(pedigree[,1:2])))
       geno <- bsl$geno[sort(c(GID.1 * 2 - 1, GID.1 * 2)),]
       idx <- 1:length(GID.1)
       names(idx) <- GID.1
-      parents <- matrix(idx[as.character(pedigree)], nrow(pedigree))
+      parents <- matrix(idx[as.character(pedigree[,1:2])], nrow(pedigree))
       if (ncol(pedigree) > 2) parents <- cbind(parents, pedigree[,3])
       geno <- pedigreeMate(parents=parents, geno=geno, pos=locPos)
       pedigree <- cbind(matrix(GID.1[geno$pedigree], ncol=2), 0)
@@ -81,10 +81,10 @@ cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popI
   with(sEnv, {
     if(nCore > 1){
       snowfall::sfInit(parallel=T, cpus=nCore)
-      sims <- snowfall::sfLapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
+      sims <- snowfall::sfLapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2, pedigree=pedigree)
       snowfall::sfStop()
     } else{
-      sims <- lapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2)
+      sims <- lapply(sims, cross.func, nProgeny=nProgeny, equalContribution=equalContribution, popID=popID, popID2=popID2, pedigree=pedigree)
     }
   })
 }
