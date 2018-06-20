@@ -1,13 +1,13 @@
 #' Save the results
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
-#'@param summarize if T a result averaged over all the replications is saved, if F each replication's result is saved
-#'@param saveDataFileName string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: "BSLoutput".
+#'@param summarize If TRUE a matrix with breeding cycles in rows and replications in columns, with the first set of columns being cycle means and the second set of columns cycle variances. If FALSE a list as long as the number of replications, with each list element containing a list of all simulation objects.
+#'@param saveDataFileName NULL or string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: NULL.
 #'
-#'@return The output data is saved as a ".rds" file, with the file name dependent on the saveDataFileName parameter. To examine the data, use the readRDS function.
+#'@return If saveDataFileName is NULL, data is return as an object, else data is saved as a ".rds" file. To examine the data, use the readRDS function.
 #'
 #'@export
-outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName="BSLoutput"){
+outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName=NULL){
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
       sEnv <- get("simEnv", .GlobalEnv)
@@ -29,5 +29,5 @@ outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName="BSLoutput"){
   }else{
     BSLoutput <- sEnv$sims
   }
-  saveRDS(BSLoutput, file=paste(saveDataFileName, ".rds", sep=""))
+  if (is.null(saveDataFileName)) return(BSLoutput) else saveRDS(BSLoutput, file=paste(saveDataFileName, ".rds", sep=""))
 }

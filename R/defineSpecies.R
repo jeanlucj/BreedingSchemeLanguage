@@ -1,7 +1,7 @@
 #'Define and create species
 #'
 #'@param loadData if null create a new species (default), else the file name of previously created species like "species1_1" (Do not put "RData" extension). A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist).
-#'@param importFounderHap if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).
+#'@param importFounderHap if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).  If founder haplotypes are loaded, the `nMarkers` parameter is superseded by the number of loci in those haplotypes.
 #'@param saveDataFileName if not NULL, the name to save the species data, like "species1_1". A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist). Default: NULL
 #'@param nSim the number of simulation trials
 #'@param nCore simulation processed in parallel over this number of CPUs (Check computer capacity before setting above 1.)
@@ -66,8 +66,9 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     if (is.null(importFounderHap)){
     sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, domModel=domModel)
     } else{ # importFounderHap not NULL
-      foundHap <- utils::read.delim(file=importFounderHap, stringsAsFactors=F, skip=1) # Skip the header
+      foundHap <- utils::read.delim(file=importFounderHap, stringsAsFactors=F)
       foundHap <- phasedHapMap2mat(foundHap)
+      nMarkers <- nrow(foundHap$map) - nQTL * (nEpiLoci + 1) * 2
       sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap, domModel=domModel)
     }
     if (!is.null(saveDataFileName)) save(sims, nSim, nCore, file=paste(saveDataFileName, ".RData", sep=""))

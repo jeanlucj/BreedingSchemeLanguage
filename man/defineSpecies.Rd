@@ -12,7 +12,7 @@ defineSpecies(loadData = NULL, importFounderHap = NULL,
 \arguments{
 \item{loadData}{if null create a new species (default), else the file name of previously created species like "species1_1" (Do not put "RData" extension). A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist).}
 
-\item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).}
+\item{importFounderHap}{if null create new founder haplotypes (default), else the file name of externally sourced founder haplotypes in hapmap format (see Manual).  If founder haplotypes are loaded, the `nMarkers` parameter is superseded by the number of loci in those haplotypes.}
 
 \item{saveDataFileName}{if not NULL, the name to save the species data, like "species1_1". A path can be specified, like "simDirectory/species1_1" (in which case "simDirectory" must exist). Default: NULL}
 
