@@ -16,16 +16,6 @@
 #'
 #'@export
 defineCosts <- function(sEnv=NULL, phenoCost=NULL, genoCost=0.25, crossCost=1, selfCost=1, doubHapCost=5, predCost=0, selectCost=0, locCost=0, yearCost=0){
-  cost.func <- function(bsl, phenoCost, genoCost, crossCost, selfCost, doubHapCost, predCost, selectCost, locCost, yearCost){
-    if (is.null(phenoCost)){
-      phenoCost <- rep(1, length(bsl$varParms$plotTypeErrVars))
-      names(phenoCost) <- names(bsl$varParms$plotTypeErrVars)
-    }
-    bsl$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
-    if (bsl$varParms$randLoc) bsl$totalCost <- 0 else bsl$totalCost <- locCost * ncol(bsl$varParms$locCov)
-    return(bsl)
-  }
-  
   
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
@@ -34,10 +24,12 @@ defineCosts <- function(sEnv=NULL, phenoCost=NULL, genoCost=0.25, crossCost=1, s
       stop("No simulation environment was passed")
     }
   } 
-  parent.env(sEnv) <- environment()
-  with(sEnv, {
-    # This is too fast to parallelize
-    sims <- lapply(sims, cost.func, phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
-  })
-}
   
+  bsl <- sEnv$sims[[1]]
+  if (is.null(phenoCost)){
+    phenoCost <- rep(1, length(bsl$varParms$plotTypeErrVars))
+    names(phenoCost) <- names(bsl$varParms$plotTypeErrVars)
+  }
+  sEnv$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
+  if (bsl$varParms$randLoc) sEnv$totalCost <- 0 else sEnv$totalCost <- locCost * ncol(bsl$varParms$locCov)
+}
