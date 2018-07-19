@@ -6,6 +6,7 @@
 #'@param popID population ID to be evaluated (default: the latest population)
 #'@param locations integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
+#'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
 #'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
 #'@seealso \code{\link{defineSpecies}} for an example
@@ -14,7 +15,7 @@
 #'
 #'@export
 # Locations and years get added when you phenotype in them for the first time
-phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL, parms=NULL){
+phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL, onlyCost=FALSE, parms=NULL){
   if(!is.null(parms)){
     for (n in 1:length(parms)){
       assign(names(parms)[n], parms[[n]])
@@ -115,15 +116,27 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     } else{
       stop("No simulation environment was passed")
     }
-  } 
+  }
+  
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if(nCore > 1){
-      sfInit(parallel=T, cpus=nCore)
-      sims <- sfLapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
-      sfStop()
-    }else{
-      sims <- lapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
+    if (exists("totalCost")){
+      # Calculate cost
+      bsl <- sims[[1]]
+      nPhen <- sum(bsl$genoRec$popID %in% popID)
+      nLoc <- length(locations)
+      nYr <- length(years)
+      perPlotCost <- costs$phenoCost[plotType]
+      totalCost <- totalCost + nPhen * perPlotCost * nLoc * nYr * nRep
+    }
+    if (!onlyCost){
+      if(nCore > 1){
+        sfInit(parallel=T, cpus=nCore)
+        sims <- sfLapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
+        sfStop()
+      }else{
+        sims <- lapply(sims, phenotype.func, plotType=plotType, nRep=nRep, popID=popID, locations=locations, years=years)
+      }
     }
   })
 }
