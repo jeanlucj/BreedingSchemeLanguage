@@ -122,12 +122,11 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
   with(sEnv, {
     if (exists("totalCost")){
       # Calculate cost
-      bsl <- sims[[1]]
-      nPhen <- sum(bsl$genoRec$popID %in% popID)
+      genoRec <- sims[[1]]$genoRec
+      nPhen <- sum(genoRec$popID %in% popID)
       nLoc <- length(locations)
       nYr <- length(years)
-      perPlotCost <- costs$phenoCost[plotType]
-      totalCost <- totalCost + nPhen * perPlotCost * nLoc * nYr * nRep
+      totalCost <- totalCost + nPhen * costs$phenoCost[plotType] * nLoc * nYr * nRep
     }
     if (!onlyCost){
       if(nCore > 1){
