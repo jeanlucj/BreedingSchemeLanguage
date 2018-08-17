@@ -11,6 +11,7 @@
 #'
 #'@export
 predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){
+  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
     if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     if (is.null(sharingInfo)) sharingInfo <- bsl$selCriterion$sharing
@@ -431,10 +432,8 @@ predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NU
     bsl$predRec <- rbind(bsl$predRec, toAdd)
 
     bsl$selCriterion <- list(popID=popID, criterion="pred")
-    if (exists("totalCost", bsl)) bsl$totalCost <- bsl$totalCost + bsl$costs$predCost
     return(bsl)
   }#END predict.func
-  
   
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
@@ -445,12 +444,16 @@ predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NU
   } 
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if(nCore > 1){
-      snowfall::sfInit(parallel=T, cpus=nCore)
-      sims <- snowfall::sfLapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
-      snowfall::sfStop()
-    }else{
-      sims <- lapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+    if (exists("totalCost")) totalCost <- totalCost + costs$predCost
+    
+    if (!onlyCost){
+      if(nCore > 1){
+        snowfall::sfInit(parallel=T, cpus=nCore)
+        sims <- snowfall::sfLapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+        snowfall::sfStop()
+      }else{
+        sims <- lapply(sims, predictValue.func, popID=popID, trainingPopID=trainingPopID, locations=locations, years=years, sharingInfo=sharingInfo)
+      }
     }
   })
 }

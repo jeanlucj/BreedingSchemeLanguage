@@ -4,12 +4,12 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be self-fertilized (default: the latest population)
 #'
-#'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
-#'
 #'@return modifies the list sims in environment sEnv by creating a selfed progeny population as specified, with an incremented population number
 #'
 #'@export
-selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL, onlyCost=FALSE){
+selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL){
+  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
+  
   selfFertilize.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){

@@ -5,8 +5,8 @@
 \title{Generate a data.frame with a hapmap data in it to test phasedHapMap2mat}
 \usage{
 simHapMap(nInd = 200, nMrk = 1050, nChr = 7, lenChr = 150,
-  maf = stats::runif(nMrk), nCharCode = 2, nQTL = NULL, propDomi = NULL,
-  interactionMean = NULL, varEffects = NULL)
+  maf = stats::runif(nMrk), nCharCode = 2, nQTL = NULL,
+  propDomi = NULL, interactionMean = NULL, varEffects = NULL)
 }
 \arguments{
 \item{nInd}{The number of individuals with marker data}

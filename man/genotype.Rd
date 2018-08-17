@@ -4,14 +4,12 @@
 \alias{genotype}
 \title{Genotype markers}
 \usage{
-genotype(sEnv = NULL, popID = NULL, parms = NULL)
+genotype(sEnv = NULL, popID = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
 
 \item{popID}{population ID to be genotyped (default: all populations)}
-
-\item{parms}{an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.}
 }
 \value{
 modifies the list sims in environment sEnv by indicating that genotypes of individuals in popID are available for breeding tasks

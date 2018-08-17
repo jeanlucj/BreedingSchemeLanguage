@@ -4,8 +4,8 @@
 \alias{plotData}
 \title{Plot the results}
 \usage{
-plotData(sEnv = NULL, ymax = NULL, add = FALSE, addDataFileName = NULL,
-  popID = NULL, suppress = F)
+plotData(sEnv = NULL, ymax = NULL, add = FALSE,
+  addDataFileName = NULL, popID = NULL, suppress = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}

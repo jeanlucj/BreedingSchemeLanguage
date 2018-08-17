@@ -3,12 +3,12 @@
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
-#'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
 #'
 #'@return modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
 #'
 #'@export
-doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL, onlyCost=FALSE){
+doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL){
+  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   doubledHaploid.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){

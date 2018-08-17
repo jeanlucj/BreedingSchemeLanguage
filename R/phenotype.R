@@ -6,7 +6,6 @@
 #'@param popID population ID to be evaluated (default: the latest population)
 #'@param locations integer vector of the locations where phenotyping occurs (e.g., c(1, 3) to phenotype at locations 1 and 3. Default: 1, phenotype at the first location)
 #'@param years integer vector of the years when phenotyping occurs (e.g., 1:2 to phenotype during the first two years of the breeding scheme. Default: the last year among previous phenotyping. NOTE: thus, to phenotype in a new [the next] year, specify the next year number [e.g., if past phenotyping was in years 1 & 2, specify 3]).
-#'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
 #'
 #'@seealso \code{\link{defineSpecies}} for an example
 #'
@@ -14,7 +13,8 @@
 #'
 #'@export
 # Locations and years get added when you phenotype in them for the first time
-phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL, onlyCost=FALSE){
+phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
+  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     names(errorVar) <- NULL
@@ -95,14 +95,8 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     bsl$phenoRec <- rbind(bsl$phenoRec, toAdd)
 
     bsl$selCriterion <- list(popID=popID, criterion="pheno", sharing="none")
-    # Take care of costs
-    if (exists("totalCost", bsl)){
-      perPlotCost <- bsl$costs$phenoCost[plotType]
-      bsl$totalCost <- bsl$totalCost + nPhen * perPlotCost * nLoc * nYr * nRep
-    }
     return(bsl)
   }
-  
   
   if(is.null(sEnv)){
     if(exists("simEnv", .GlobalEnv)){
@@ -111,7 +105,6 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
       stop("No simulation environment was passed")
     }
   }
-  
   parent.env(sEnv) <- environment()
   with(sEnv, {
     if (exists("totalCost")){

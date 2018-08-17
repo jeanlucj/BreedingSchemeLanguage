@@ -2,12 +2,12 @@
 #'
 #'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
 #'@param popID population ID to be genotyped (default: all populations)
-#'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
 #'
 #'@return modifies the list sims in environment sEnv by indicating that genotypes of individuals in popID are available for breeding tasks
 #'
 #'@export
-genotype <- function(sEnv=NULL, popID=NULL, onlyCost=FALSE){
+genotype <- function(sEnv=NULL, popID=NULL){
+  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   genotype.func <- function(bsl, popID){
     nHasGeno <- sum(bsl$genoRec$hasGeno)
     if (is.null(popID)){

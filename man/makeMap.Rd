@@ -4,7 +4,8 @@
 \alias{makeMap}
 \title{create map and QTL effects}
 \usage{
-makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean, qtlInfo = NULL)
+makeMap(map, nLoci, nMarkers, nQTL, propDomi, interactionMean,
+  qtlInfo = NULL)
 }
 \arguments{
 \item{map}{map information (Chromosome and Position)}

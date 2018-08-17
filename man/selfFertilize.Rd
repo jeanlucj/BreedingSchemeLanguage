@@ -4,7 +4,7 @@
 \alias{selfFertilize}
 \title{Self-fertilize}
 \usage{
-selfFertilize(sEnv = NULL, nProgeny = 100, popID = NULL, parms = NULL)
+selfFertilize(sEnv = NULL, nProgeny = 100, popID = NULL)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions}
@@ -12,8 +12,6 @@ selfFertilize(sEnv = NULL, nProgeny = 100, popID = NULL, parms = NULL)
 \item{nProgeny}{the number of progeny}
 
 \item{popID}{population ID to be self-fertilized (default: the latest population)}
-
-\item{parms}{optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL}
 }
 \value{
 modifies the list sims in environment sEnv by creating a selfed progeny population as specified, with an incremented population number
