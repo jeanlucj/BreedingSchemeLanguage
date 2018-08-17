@@ -13,7 +13,6 @@
 #'@param propDomi the probability of dominant QTL among the all QTL
 #'@param nEpiLoci the expected number of epistatic loci for each effect
 #'@param domModel the dominance model: "HetHom" means homozygotes have equal effect but opposite to that of heterozygotes, "Partial": zero means ancestral dominant over derived, one means derived dominant over ancestral, any value in between means partial dominance. At the moment, functionality for the "Partial" option is only available when using ImportFounderHap.
-#'@param parms optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL
 #'
 #'@return An environment that contains a list sims with each object of the list being one replicate to initiate a simulation
 #'
@@ -33,12 +32,7 @@
 #'plotData()
 #'
 #'@export
-defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName=NULL, nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom", parms=NULL){
-  if(!is.null(parms)){
-    for (n in 1:length(parms)){
-      assign(names(parms)[n], parms[[n]])
-    }
-  }
+defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName=NULL, nSim=1, nCore=1, nChr=7, lengthChr=150, effPopSize=100, nMarkers=1000, nQTL=50, propDomi=0, nEpiLoci=0, domModel="HetHom"){
   defineSpecies.func <- function(simNum, nChr, lengthChr, effPopSize, nMarkers, nQTL, propDomi, nEpiLoci, founderHaps=NULL, domModel){
     seed <- round(stats::runif(1, 0, 1e9))
     nLoci <- nMarkers + nQTL * (nEpiLoci + 1) * 2

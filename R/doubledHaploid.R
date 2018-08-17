@@ -4,17 +4,11 @@
 #'@param nProgeny the number of progeny
 #'@param popID population ID to be devided by meiosis and doubled (default: the latest population)
 #'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
-#'@param parms optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL
 #'
 #'@return modifies the list sims in environment sEnv by creating a doubled haploid progeny population as specified, with an incremented population number
 #'
 #'@export
-doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL, onlyCost=FALSE, parms=NULL){
-  if(!is.null(parms)){
-    for (n in 1:length(parms)){
-      assign(names(parms)[n], parms[[n]])
-    }
-  }
+doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL, onlyCost=FALSE){
   doubledHaploid.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){

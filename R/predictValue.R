@@ -6,17 +6,11 @@
 #'@param locations data from which locations should be used (default: all locations)
 #'@param years data from which years should be used (default: all years)
 #'@param sharingInfo one of "none", "markers", "pedigree".  If none, genotypic values are assumed IID. If markers or pedigree, a genomic or pedigree relationship matrix is constructed
-#'@param parms optional named list. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script. Default: NULL
 #'
 #'@return modifies the list sims in environment sEnv by calculating predicted values as specified and changing the default selection criterion to use them
 #'
 #'@export
-predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL, parms=NULL){
-  if(!is.null(parms)){
-    for (n in 1:length(parms)){
-      assign(names(parms)[n], parms[[n]])
-    }
-  }
+predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){
   predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
     if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     if (is.null(sharingInfo)) sharingInfo <- bsl$selCriterion$sharing

@@ -6,19 +6,13 @@
 #'@param random assuming random selection or selection according to estimated value (T: random selection, F: selection for high value)
 #'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then selection within families is random.
 #'@param onlyCost logical. If true, don't do the breeding task, just calculate its cost.  Default: FALSE. 
-#'@param parms an optional named list or vector. Objects with those names will be created with the corresponding values. A way to pass values that are not predetermined by the script.
 #'
 #'@seealso \code{\link{defineSpecies}} for an example
 #'
 #'@return modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID
 #'
 #'@export
-select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass", onlyCost=F, parms=NULL){
-  if(!is.null(parms)){
-    for (n in 1:length(parms)){
-      assign(names(parms)[n], parms[[n]])
-    }
-  }
+select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass", onlyCost=F){
   select.func <- function(bsl, nSelect, popID, random, type){
     criterion <- bsl$selCriterion$criterion
     if(is.null(popID)){
