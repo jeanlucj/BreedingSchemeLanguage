@@ -8,8 +8,6 @@
 #'
 #'@export
 selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
-  
   selfFertilize.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){

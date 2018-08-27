@@ -5,13 +5,13 @@
 #'@param locCorrelations matrix: genetic correlation in performance between locations default: If given, the genetic co-variance across locations is gVariance * locCorrelations. If NULL, deviations with variance gByLocVar will be added to the main genotypic effect to determine the genotypic value in each location. The expected genetic correlation between locations is then gVariance / (gVariance + gByLocVar). Default is NULL
 #'@param gByLocVar scalar: the genotype by location variance Default is 1, BUT if locCorrelations given, this parameter is not used)
 #'@param gByYearVar scalar: the genotype by year variance Default is 1
-#'@param fracGxEAdd scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8
+#'@param fracGxEAdd scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 1
 #'@param plotTypeErrVars named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)
 #'
 #'@return modifies the list sims in environment sEnv by adding parameters that determine genetic, location, year, and error variances
 #'
 #'@export
-defineVariances <- function(sEnv=NULL, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=0.8, plotTypeErrVars=c(Standard=1)){
+defineVariances <- function(sEnv=NULL, gVariance=1, locCorrelations=NULL, gByLocVar=1, gByYearVar=1, fracGxEAdd=1, plotTypeErrVars=c(Standard=1)){
   variances.func <- function(bsl, gVariance, locCorrelations, gByLocVar, gByYearVar, fracGxEAdd, plotTypeErrVars){
     randLoc <- is.null(locCorrelations)
     if (randLoc){ # compound symmetric GxE here, with only g defined explicitly

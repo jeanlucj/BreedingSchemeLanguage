@@ -14,7 +14,6 @@
 #'
 #'@export
 cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popID2=NULL, notWithinFam=F, pedigree=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   cross.func <- function(bsl, nProgeny, equalContribution, popID, popID2, pedigree){
     locPos <- bsl$mapData$map$Pos
     if (!is.null(pedigree)){
@@ -103,7 +102,7 @@ addProgenyData <- function(bsl, geno, pedigree){
   nProgeny <- nrow(geno) / 2
   M <- geno[1:nProgeny*2 - 1, bsl$mapData$effectivePos] + geno[1:nProgeny*2, bsl$mapData$effectivePos]
   nAdd <- ncol(bsl$yearEffects)
-  if (nAdd == 0){ # The user is making croses without ever having phenotyped
+  if (nAdd == 0){ # The user is making crosses without ever having phenotyped
     bsl$locEffects <- matrix(0, nrow=nrow(bsl$locEffects) + nProgeny, ncol=0)
     bsl$locEffectsI <- matrix(0, nrow=nrow(bsl$locEffectsI) + nProgeny, ncol=0)
     bsl$yearEffects <- matrix(0, nrow=nrow(bsl$yearEffects) + nProgeny, ncol=0)

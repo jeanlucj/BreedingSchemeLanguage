@@ -78,5 +78,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
   toRemove <- c(setdiff(ls(), c("sims", "nSim", "nCore")), "toRemove")
   rm(list=toRemove)
   defineVariances(environment())
+  # for cost accounting
+  onlyCost <- FALSE
   return(environment())
 }

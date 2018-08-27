@@ -11,7 +11,6 @@
 #'
 #'@export
 predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NULL, years=NULL, sharingInfo=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   predictValue.func <- function(bsl, popID, trainingPopID, locations, years, sharingInfo){
     if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     if (is.null(sharingInfo)) sharingInfo <- bsl$selCriterion$sharing

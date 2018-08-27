@@ -8,7 +8,6 @@
 #'
 #'@export
 doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   doubledHaploid.func <- function(bsl, nProgeny, popID){
     locPos <- bsl$mapData$map$Pos
     if(is.null(popID)){

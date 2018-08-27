@@ -5,7 +5,7 @@
 \title{Define genetic, interaction, and error variances}
 \usage{
 defineVariances(sEnv = NULL, gVariance = 1, locCorrelations = NULL,
-  gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 0.8,
+  gByLocVar = 1, gByYearVar = 1, fracGxEAdd = 1,
   plotTypeErrVars = c(Standard = 1))
 }
 \arguments{
@@ -19,7 +19,7 @@ defineVariances(sEnv = NULL, gVariance = 1, locCorrelations = NULL,
 
 \item{gByYearVar}{scalar: the genotype by year variance Default is 1}
 
-\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 0.8}
+\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 1}
 
 \item{plotTypeErrVars}{named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)}
 }

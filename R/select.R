@@ -1,7 +1,7 @@
 #'Select individuals
 #'
 #'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
-#'@param nSelect the number of selected individuals
+#'@param nSelect the number of selected individuals (default: 40)
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to estimated value (T: random selection, F: selection for high value)
 #'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then selection within families is random.
@@ -12,10 +12,10 @@
 #'
 #'@export
 select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   select.func <- function(bsl, nSelect, popID, random, type){
     criterion <- bsl$selCriterion$criterion
-    if(is.null(popID)){
+    if (is.null(criterion)) random <- TRUE
+    if (is.null(popID)){
       popID <- bsl$selCriterion$popID
       if(is.null(popID)) popID <- 0
     }

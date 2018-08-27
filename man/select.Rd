@@ -10,7 +10,7 @@ select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted}
 
-\item{nSelect}{the number of selected individuals}
+\item{nSelect}{the number of selected individuals (default: 40)}
 
 \item{popID}{population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)}
 

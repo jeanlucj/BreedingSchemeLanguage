@@ -1,7 +1,7 @@
 #'Create a founder population
 #'
-#'@param sEnv the environment that BSL functions operate in. Default is "simEnv" so use that to avoid specifying when calling functions
-#'@param nInd population size
+#'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
+#'@param nInd population size (default:100)
 #'@param founderHapsInDiploids set to TRUE if you have uploaded phased diploid data in defineSpecies
 #'
 #'@seealso \code{\link{defineSpecies}} for an example

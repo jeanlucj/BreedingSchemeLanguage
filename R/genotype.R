@@ -7,7 +7,6 @@
 #'
 #'@export
 genotype <- function(sEnv=NULL, popID=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   genotype.func <- function(bsl, popID){
     nHasGeno <- sum(bsl$genoRec$hasGeno)
     if (is.null(popID)){
@@ -17,7 +16,6 @@ genotype <- function(sEnv=NULL, popID=NULL){
       bsl$genoRec$hasGeno <- bsl$genoRec$hasGeno | tf
     }
     bsl$selCriterion$sharing <- "markers"
-    
     return(bsl)
   }
   
@@ -31,15 +29,16 @@ genotype <- function(sEnv=NULL, popID=NULL){
   parent.env(sEnv) <- environment()
   with(sEnv, {
     if (exists("totalCost")){
-      genoRec <- sims[[1]]$genoRec
-      nHasGeno <- sum(genoRec$hasGeno)
+      t1 <- sims[[1]]$genoRec
+      t2 <- sum(t1$hasGeno)
       if (is.null(popID)){
-        genoRec$hasGeno <- TRUE
+        t1$hasGeno <- TRUE
       } else{
-        tf <- genoRec$popID %in% popID
-        genoRec$hasGeno <- genoRec$hasGeno | tf
+        t1$hasGeno <- t1$hasGeno | (t1$popID %in% popID)
       }
-      totalCost <- totalCost + (sum(genoRec$hasGeno) - nHasGeno) * costs$genoCost
+      totalCost <- totalCost + (sum(t1$hasGeno) - t2) * costs$genoCost
+      sims[[1]]$genoRec$hasGeno <- t1$hasGeno
+      rm(t1, t2)
     }
     # This is too fast to parallelize
     if (!onlyCost){

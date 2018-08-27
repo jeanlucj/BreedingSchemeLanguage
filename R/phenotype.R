@@ -14,16 +14,13 @@
 #'@export
 # Locations and years get added when you phenotype in them for the first time
 phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locations=1, years=NULL){
-  if (exists("onlyCost", sEnv)) onlyCost <- sEnv$onlyCost
   phenotype.func <- function(bsl, plotType, nRep, popID, locations, years){
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     names(errorVar) <- NULL
     # When to phenotype
     if (is.null(years)) years=max(ncol(bsl$yearEffects), 1)
     # Who to phenotype
-    if(is.null(popID)){
-      popID <- max(bsl$genoRec$popID)
-    }
+    if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     tf <- bsl$genoRec$popID %in% popID
     nPhen <- sum(tf)
     nLoc <- length(locations)
@@ -109,11 +106,11 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
   with(sEnv, {
     if (exists("totalCost")){
       # Calculate cost
-      genoRec <- sims[[1]]$genoRec
-      nPhen <- sum(genoRec$popID %in% popID)
-      nLoc <- length(locations)
-      nYr <- length(years)
-      totalCost <- totalCost + nPhen * costs$phenoCost[plotType] * nLoc * nYr * nRep
+      t1 <- sims[[1]]$genoRec$popID
+      if (is.null(popID)) t2 <- max(t1)
+      t3 <- sum(t1 %in% t2)
+      totalCost <- totalCost + t3 * costs$phenoCost[plotType] * length(locations) * length(years) * nRep
+      rm(t1, t2, t3)
     }
     if (!onlyCost){
       if(nCore > 1){
