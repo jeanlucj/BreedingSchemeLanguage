@@ -58,12 +58,17 @@ initializePopulation <- function(sEnv=NULL, nInd=100, founderHapsInDiploids=F){
   } 
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if(nCore > 1){
-      snowfall::sfInit(parallel=T, cpus=nCore)
-      sims <- snowfall::sfLapply(sims, initializePopulation.func, nInd=nInd, founderHapsInDiploids=founderHapsInDiploids)
-      snowfall::sfStop()
-    }else{
-      sims <- lapply(sims, initializePopulation.func, nInd=nInd, founderHapsInDiploids=founderHapsInDiploids)
+    if (exists("totalCost")){
+      budgetRec <- data.frame(GID=1:nInd, popID=0, hasGeno=FALSE)
+    }
+    if (!onlyCost){
+      if(nCore > 1){
+        snowfall::sfInit(parallel=T, cpus=nCore)
+        sims <- snowfall::sfLapply(sims, initializePopulation.func, nInd=nInd, founderHapsInDiploids=founderHapsInDiploids)
+        snowfall::sfStop()
+      }else{
+        sims <- lapply(sims, initializePopulation.func, nInd=nInd, founderHapsInDiploids=founderHapsInDiploids)
+      }
     }
   })
 }

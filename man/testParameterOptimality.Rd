@@ -4,14 +4,17 @@
 \alias{testParameterOptimality}
 \title{Function to return the optimality of a parameter vector for a breeding scheme given a simulation environment}
 \usage{
-testParameterOptimality(sEnv = NULL, schemeFileName, parmVec, budget)
+testParameterOptimality(sEnv = NULL, schemeFileName, parmList,
+  objectiveFunc, budget = 1000)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. This environment should be fresh from defineSpecies, defineVariances, and defineCosts. If NULL, the default \code{simEnv} is attempted}
 
 \item{schemeFileName}{source file that holds the script of the breeding scheme. The scheme should return a value to be maximized in a variable called \code{objective}. If you want to use a non-default simulation environment, you need to plan for that in the schemeFile by giving sEnv as the first parameter in all of the BSL functions}
 
-\item{parmVec}{vector with values of parameters characterizing the breeding scheme}
+\item{parmList}{(preferably) named list with values of parameters characterizing the breeding scheme}
+
+\item{objectiveFunc}{a function that can be applied to a BSL simulation environment to return a value showing the realized performance of the breeding scheme}
 
 \item{budget}{the maximum budget that is allowed for the breeding scheme}
 }

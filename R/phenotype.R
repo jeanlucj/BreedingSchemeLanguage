@@ -18,7 +18,7 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     errorVar <- bsl$varParms$plotTypeErrVars[plotType] / nRep
     names(errorVar) <- NULL
     # When to phenotype
-    if (is.null(years)) years=max(ncol(bsl$yearEffects), 1)
+    if (is.null(years)) years <- max(ncol(bsl$yearEffects), 1)
     # Who to phenotype
     if (is.null(popID)) popID <- max(bsl$genoRec$popID)
     tf <- bsl$genoRec$popID %in% popID
@@ -99,9 +99,9 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
   parent.env(sEnv) <- environment()
   with(sEnv, {
     if (exists("totalCost")){
-      # Calculate cost
+      if (is.null(years)) years <- max(costs$nYear, 1)
       costs$popID <- ifelse(is.null(popID), max(budgetRec$popID), popID)
-      totalCost <- totalCost + sum(budgetPopID %in% costs$popID) * costs$phenoCost[plotType] * length(locations) * length(years) * nRep
+      totalCost <- totalCost + sum(budgetRec$popID %in% costs$popID) * costs$phenoCost[plotType] * length(locations) * length(years) * nRep
       if (max(years) > costs$nYear){
         totalCost <- totalCost + (max(years) - costs$nYear) * costs$yearCost
         costs$nYear <- max(years)
