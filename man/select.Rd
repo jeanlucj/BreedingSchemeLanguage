@@ -16,7 +16,7 @@ select(sEnv = NULL, nSelect = 40, popID = NULL, random = F,
 
 \item{random}{assuming random selection or selection according to estimated value (T: random selection, F: selection for high value)}
 
-\item{type}{"WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then selection within families is random.}
+\item{type}{"WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then mass or within-family selection is random.  NOTE: breeding scheme budget may not be correct for within-family selection because then nSelect is per-family but the number of families varies across simulations.}
 }
 \value{
 modifies the list sims in environment sEnv by selecting individuals of the specified popID with the default selection criterion and giving those individuals a new popID

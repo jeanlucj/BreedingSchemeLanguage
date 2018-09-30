@@ -443,7 +443,10 @@ predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NU
   } 
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if (exists("totalCost")) totalCost <- totalCost + costs$predCost
+    if (exists("totalCost")){
+      costs$popID <- ifelse(is.null(popID), max(budgetRec$popID), popID)
+      totalCost <- totalCost + costs$predCost
+    }
     
     if (!onlyCost){
       if(nCore > 1){

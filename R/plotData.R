@@ -86,7 +86,7 @@ plotData <- function(sEnv=NULL, ymax=NULL, add=FALSE, addDataFileName=NULL, popI
     plotData <- rbind(plotData, toAdd)
   }
   
-  totCost <- sEnv$sims[[1]]$totalCost
+  totCost <- sEnv$totalCost
   if (add){
     prevData <- try(suppressWarnings(readRDS(file=paste(addDataFileName, ".rds", sep=""))), silent=T)
     if (class(prevData) != "try-error"){

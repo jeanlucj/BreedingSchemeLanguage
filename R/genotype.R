@@ -29,16 +29,14 @@ genotype <- function(sEnv=NULL, popID=NULL){
   parent.env(sEnv) <- environment()
   with(sEnv, {
     if (exists("totalCost")){
-      t1 <- sims[[1]]$genoRec
-      t2 <- sum(t1$hasGeno)
+      hasGenoBefore <- sum(budgetRec$hasGeno)
       if (is.null(popID)){
-        t1$hasGeno <- TRUE
+        budgetRec$hasGeno <- TRUE
       } else{
-        t1$hasGeno <- t1$hasGeno | (t1$popID %in% popID)
+        budgetRec$hasGeno <- budgetRec$hasGeno | (budgetRec$popID %in% popID)
       }
-      totalCost <- totalCost + (sum(t1$hasGeno) - t2) * costs$genoCost
-      sims[[1]]$genoRec$hasGeno <- t1$hasGeno
-      rm(t1, t2)
+      totalCost <- totalCost + (sum(budgetRec$hasGeno) - hasGenoBefore) * costs$genoCost
+      rm(hasGenoBefore)
     }
     # This is too fast to parallelize
     if (!onlyCost){

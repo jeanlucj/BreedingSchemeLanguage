@@ -5,18 +5,23 @@
 #'@param parmVec vector with values of parameters characterizing the breeding scheme
 #'@param budget the maximum budget that is allowed for the breeding scheme
 #'
-#'@return Optimality of the breeding scheme given the simulation environment and the parameter vector. If parameter vector causes the scheme to exceed the budget, NA is returned
+#'@return Two-object list: \code{objective} is the objective function value of the breeding scheme given the simulation environment and the parameter vector and \code{totalCost} is the budget used by the breeding scheme. If the parameter vector causes the scheme to exceed the given budget, \code{objective}=NA
 #'
 #'@export
 testParameterOptimality <- function(sEnv=NULL, schemeFileName, parmVec, budget){
+  if(is.null(sEnv)){
+    if(exists("simEnv", .GlobalEnv)){
+      sEnv <- get("simEnv", .GlobalEnv)
+    } else{
+      stop("No simulation environment was passed")
+    }
+  } 
 
-  # Uh oh: I am going to have to completely revamp the computation for
-  # onlyCost because now it does not figure out, for example, 
-  # how many individuals would be genotyped and phenotyped
   sEnv$onlyCost <- TRUE
   source(schemeFileName)
-  if (sEnv$totalCost > budget) return(NA)
+  totalCost <- sEnv$totalCost
+  if (totalCost > budget) return(list(objective=NA, totalCost=totalCost))
   sEnv$onlyCost <- FALSE
   source(schemeFileName)
-  return(objective)
+  return(list(objective=objective, totalCost=totalCost))
 }

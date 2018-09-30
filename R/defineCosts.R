@@ -30,6 +30,8 @@ defineCosts <- function(sEnv=NULL, phenoCost=NULL, genoCost=0.25, crossCost=1, s
     phenoCost <- rep(1, length(bsl$varParms$plotTypeErrVars))
     names(phenoCost) <- names(bsl$varParms$plotTypeErrVars)
   }
-  sEnv$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost)
-  if (bsl$varParms$randLoc) sEnv$totalCost <- 0 else sEnv$totalCost <- locCost * ncol(bsl$varParms$locCov)
+  nLoc <- ifelse(bsl$varParms$randLoc, 0, ncol(bsl$varParms$locCov))
+  sEnv$costs <- list(phenoCost=phenoCost, genoCost=genoCost, crossCost=crossCost, selfCost=selfCost, doubHapCost=doubHapCost, predCost=predCost, selectCost=selectCost, locCost=locCost, yearCost=yearCost, nYear=0, nLoc=nLoc)
+  sEnv$budgetRec <- data.frame()
+  sEnv$totalCost <- locCost * nLoc
 }

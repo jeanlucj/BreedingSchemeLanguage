@@ -4,7 +4,7 @@
 #'@param nSelect the number of selected individuals (default: 40)
 #'@param popID population ID to be selected (default: When random=T, the last population. When random=F, it is the last evaluated population)
 #'@param random assuming random selection or selection according to estimated value (T: random selection, F: selection for high value)
-#'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then selection within families is random.
+#'@param type "WithinFamily" or "Mass" (default: Mass). If Mass, all individuals are ranked against each other and the highest nSelect are taken.  If WithinFamily, individuals are ranked within paternal half-sib (if population was randomly mated) or full-sib (if population from selfFertilize or doubledHaploid) families. If random=T, then mass or within-family selection is random.  NOTE: breeding scheme budget may not be correct for within-family selection because then nSelect is per-family but the number of families varies across simulations.
 #'
 #'@seealso \code{\link{defineSpecies}} for an example
 #'
@@ -60,8 +60,8 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
         selectedGID <- GIDcan[order(candValue, decreasing=T)[1:nSelect]]
       }
     }#END not random selection
-    popID.new <- max(bsl$genoRec$popID) + 1
-    bsl$genoRec$popID[bsl$genoRec$GID %in% selectedGID] <- popID.new
+    popID_new <- max(bsl$genoRec$popID) + 1
+    bsl$genoRec$popID[bsl$genoRec$GID %in% selectedGID] <- popID_new
     return(bsl)
   } #END select.func
   
@@ -74,7 +74,13 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
   } 
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if (exists("totalCost")) totalCost <- totalCost + costs$selectCost
+    if (exists("totalCost")){
+      costsPopID <- ifelse(is.null(popID), ifelse(is.null(costs$popID), 0, costs$popID), popID)
+      GIDsel <- sample(budgetRec$GID[budgetRec$popID %in% costsPopID], nSelect)
+      budgetRec$popID[budgetRec$GID %in% GIDsel] <- max(budgetRec$popID) + 1
+      totalCost <- totalCost + costs$selectCost
+      rm(costsPopID, GIDsel)
+    }
     
     if (!onlyCost){
       if(nCore > 1){

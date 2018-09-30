@@ -69,10 +69,14 @@ cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popI
     } else{
       stop("No simulation environment was passed")
     }
-  } 
+  }
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if (exists("totalCost")) totalCost <- totalCost + nProgeny * costs$crossCost
+    if (exists("totalCost")){
+      costs$popID <- max(budgetRec$popID) + 1
+      budgetRec <- rbind(budgetRec, data.frame(GID=max(budgetRec$GID) + 1:nProgeny, popID=rep(costs$popID, nProgeny), hasGeno=FALSE))
+      totalCost <- totalCost + nProgeny * costs$crossCost
+    }
     
     if (!onlyCost){
       if(nCore > 1){

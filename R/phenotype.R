@@ -55,9 +55,6 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
       vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$yearEffectsI <- cbind(bsl$yearEffectsI, toAdd)
-      if (exists("totalCost", bsl)){
-        bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$yearCost
-      }
     }
     nAdd <- max(locations) - ncol(bsl$locEffects)
     if (bsl$varParms$randLoc & nAdd > 0){
@@ -72,9 +69,6 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
       vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
       bsl$locEffectsI <- cbind(bsl$locEffectsI, toAdd)
-      if (exists("totalCost", bsl)){
-        bsl$totalCost <- bsl$totalCost + nAdd * bsl$costs$locCost
-      }
     }
     if (bsl$varParms$randLoc){
       pValue <- pValue + c(bsl$locEffects[tf, locations] + bsl$locEffectsI[tf, locations])
@@ -106,11 +100,16 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
   with(sEnv, {
     if (exists("totalCost")){
       # Calculate cost
-      t1 <- sims[[1]]$genoRec$popID
-      if (is.null(popID)) t2 <- max(t1)
-      t3 <- sum(t1 %in% t2)
-      totalCost <- totalCost + t3 * costs$phenoCost[plotType] * length(locations) * length(years) * nRep
-      rm(t1, t2, t3)
+      costs$popID <- ifelse(is.null(popID), max(budgetRec$popID), popID)
+      totalCost <- totalCost + sum(budgetPopID %in% costs$popID) * costs$phenoCost[plotType] * length(locations) * length(years) * nRep
+      if (max(years) > costs$nYear){
+        totalCost <- totalCost + (max(years) - costs$nYear) * costs$yearCost
+        costs$nYear <- max(years)
+      }
+      if (max(locations) > costs$nLoc){
+        totalCost <- totalCost + (max(locations) - costs$nLoc) * costs$locCost
+        costs$nLoc <- max(locations)
+      }
     }
     if (!onlyCost){
       if(nCore > 1){

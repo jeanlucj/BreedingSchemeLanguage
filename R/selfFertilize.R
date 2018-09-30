@@ -33,7 +33,10 @@ selfFertilize <- function(sEnv=NULL, nProgeny=100, popID=NULL){
   } 
   parent.env(sEnv) <- environment()
   with(sEnv, {
-    if (exists("totalCost")) totalCost <- totalCost + nProgeny * costs$selfCost
+    if (exists("totalCost")){
+      budgetRec <- rbind(budgetRec, data.frame(GID=max(budgetRec$GID) + 1:nProgeny, popID=rep(max(budgetRec$popID) + 1, nProgeny), hasGeno=FALSE))
+      totalCost <- totalCost + nProgeny * costs$selfCost 
+    }
     
     if (!onlyCost){
       if(nCore > 1){
