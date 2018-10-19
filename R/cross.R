@@ -1,5 +1,7 @@
 #' Cross with random mating, or equal contributions, or randomly between two populations
 #'
+#'@importFrom snowfall sfLapply sfInit sfStop
+#'
 #'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
 #'@param nProgeny the number of progenies. Default: 100
 #'@param equalContribution if T all individuals used the same number of times as parents, if F individuals chosen at random to be parents. Default: F

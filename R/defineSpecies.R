@@ -60,7 +60,7 @@ defineSpecies <- function(loadData=NULL, importFounderHap=NULL, saveDataFileName
     if (is.null(importFounderHap)){
     sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, domModel=domModel)
     } else{ # importFounderHap not NULL
-      foundHap <- utils::read.delim(file=importFounderHap, stringsAsFactors=F)
+      foundHap <- utils::read.table(file=importFounderHap, header=T, stringsAsFactors=F)
       foundHap <- phasedHapMap2mat(foundHap)
       nMarkers <- nrow(foundHap$map) - nQTL * (nEpiLoci + 1) * 2
       sims <- lapply(1:nSim, defineSpecies.func, nChr=nChr, lengthChr=lengthChr, effPopSize=effPopSize, nMarkers=nMarkers, nQTL=nQTL, propDomi=propDomi, nEpiLoci=nEpiLoci, founderHaps=foundHap, domModel=domModel)

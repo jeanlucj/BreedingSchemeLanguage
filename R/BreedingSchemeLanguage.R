@@ -5,4 +5,5 @@
 #' @name BreedingSchemeLanguage
 #' @docType package
 #' @useDynLib BreedingSchemeLanguage
-library(Rcpp)
+#' @importFrom Rcpp sourceCpp
+#' @importFrom snowfall sfLapply sfInit sfStop

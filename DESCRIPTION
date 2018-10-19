@@ -17,12 +17,12 @@ Description: Users can simulate their planned breeding schemes by using function
 License: GPL-3
 Depends:
   R (>= 3.0.0),
-  snowfall
+  snowfall,
+  Rcpp
 Imports:
   ggplot2,
   lme4,
   Matrix,
-  Rcpp,
   rrBLUP,
   stats
 LinkingTo: Rcpp

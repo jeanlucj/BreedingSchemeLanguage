@@ -2,6 +2,8 @@
 #'
 #'@useDynLib BreedingSchemeLanguage coalescentSim
 #'
+#'@importFrom Rcpp sourceCpp
+#'
 #'@param nPopsSamples -pop[2] (GENOME)
 #'@param effPopSize -N (GENOME)
 #'@param nChr -c (GENOME)
