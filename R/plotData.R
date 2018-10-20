@@ -42,7 +42,7 @@ plotData <- function(sEnv=NULL, ymax=NULL, add=FALSE, addDataFileName=NULL, popI
         if (length(cnames) == 0) stop("Plotting popIDs that are empty")
         apply(ms, 1, function(vec) stats::weighted.mean(vec[cnames], popSizes[cnames]))
       }
-      muSim$muSim <- sapply(popID, getMeanOfPops)
+      muSim$muSim <- matrix(sapply(popID, getMeanOfPops), ncol=length(popID))
       return(muSim)
     }
   } else{
@@ -116,7 +116,8 @@ plotData <- function(sEnv=NULL, ymax=NULL, add=FALSE, addDataFileName=NULL, popI
   else {
     p <- p + ggplot2::ylim(min(plotData$g), ymax)
   }
-  p <- p + ggplot2::labs(title="", x="Generation", y="Genetic improvement")
+  xLabel <- ifelse(plotBase, "Cycle", "Population")
+  p <- p + ggplot2::labs(title="", x=xLabel, y="Genetic improvement")
   
   if (length(unique(plotData$col)) > 1){
     cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")

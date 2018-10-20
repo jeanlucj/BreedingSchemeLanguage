@@ -13,3 +13,4 @@ src/genome.o
 src/init.o
 src/stochastic.o
 vignettes/.DS_Store
+inst/doc

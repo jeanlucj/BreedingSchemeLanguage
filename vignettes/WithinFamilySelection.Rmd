@@ -1,0 +1,74 @@
+---
+title: "Within Family Selection"
+author:
+  - Jean-Luc Jannink
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Perform within-family rather than mass selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Typically, the `select()` function of the BSL performs mass-selection: it ranks all individuals (in the most-recently created population by default) and selects the top individuals (top 40 by default).  If the option `type="WithinFamily"` is specified, however, then `select()` ranks families separately and picks the top `nSelect` individuals per family.  A "family" is defined by the first parent, i.e., all progeny of the same parent 1 are considered part of the same family.
+
+#### Load the BreedingSchemeLanguage.
+
+```{r loadBSL, message=FALSE}
+library(BreedingSchemeLanguage)
+```
+
+#### Avoid writing over a previously existing simulation environment
+
+```{r deletePriorSim}
+if (exists("simEnv")){
+  rm(list=names(simEnv), envir=simEnv)
+  rm(simEnv)
+}
+```
+
+#### Use data in an appropriately formatted HapMap file
+Some hapmap data comes with the package.  Find it.
+Load the historical haplotypes into the simulation environment
+Initialize the founder population with 20 individuals
+
+The vignette also illustrates the difference between "Cycle" and "Population" in the BSL.  The functions `cross()`, `selfFertilize()`, and `doubledHaploid()` increment the Cycle and the Population, while the function `select()` increments only the Population.  This is relevant for functions that require Population to be specified.  It is also relevant for `plotData()` which by default shows Cycles but can be parameterized to show Populations.
+
+```{r pathToHapMap}
+filePathName <- system.file("extdata", "exampleHapMapFile.hmp", package = "BreedingSchemeLanguage")
+simEnv <- defineSpecies(loadData=NULL, importFounderHap=filePathName, nMarkers=350)
+initializePopulation(nInd=20) # Create Population 0, Cycle 0
+```
+
+#### Make S1 families out of the founders
+The function `selfFertilize` creates nProgeny=100 by default.  So each of the 20 founders will generate 5 selfed progeny
+Phenotype and select on those phenotypes, 2 individuals per family
+Cross at random while imposing that individuals from the same family are not crossed. By default, `cross()` makes 100 S0 progeny.
+
+```{r make families}
+selfFertilize() # Create Population 1, Cycle 1
+phenotype()
+select(nSelect=2, type="WithinFamily") # Create Population 2, Cycle 1
+cross(notWithinFam=T) # Create Population 3, Cycle 2
+```
+
+#### Select among S0 then self and perform within-family selection again
+This chunk largely repeats the cycle of the previous chunk
+
+```{r Repeat within-family selection scheme}
+phenotype()
+select(nSelect=20) # Create Population 4, Cycle 2
+selfFertilize() # Create Population 5, Cycle 3
+phenotype()
+select(nSelect=2, type="WithinFamily") # Create Population 6, Cycle 3
+cross(notWithinFam=T) # Create Population 7, Cycle 4
+plotData()
+plotData(popID=list(0, 1, 2, 3, 4, 5, 6, 7))
+```
