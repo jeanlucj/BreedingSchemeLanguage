@@ -1,8 +1,8 @@
 Package: BreedingSchemeLanguage
 Type: Package
 Title: Describe and Simulate Breeding Schemes
-Version: 0.9.5
-Date: 2018-04-26
+Version: 0.9.6
+Date: 2018-10-21
 Authors@R: c(
   person("Shiori", "Yabe", email="syabe@affrc.go.jp", role="aut"),
   person("Jean-Luc", "Jannink", email="jeanluc.work@gmail.com", role=c("aut", "cre")),

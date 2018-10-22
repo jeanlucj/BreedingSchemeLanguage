@@ -1,3 +1,33 @@
+22 Oct 2018
+Version 0.9.6 submitted to CRAN
+
+21 Oct 2018
+Small bug fix to `select` if you are trying to select more individuals than there are in the population.  Added a vignette on `testParamterOptimality`.
+
+20 Oct 2018
+Small bug fix to `plotData`.  Added vignette on within-family selection.
+
+19 Oct 2018
+Changes to NAMESPACE and DESCRIPTION so snowfall and Rcpp will load properly.
+
+30 Sept 2018
+Added a function `testParameterOptimality` that takes a simulation environment, a path to a breeding scheme script, an objective function, and a budget.  It returns the objective for the scheme in the environment, unless the scheme goes over budget in which case it returns the budget but NA for the objective.
+
+16 August 2018
+Removed the `parts` parameter from all functions: it was not useful.
+
+21 July 2018
+Modifications to many functions so that the budget of a breeding scheme can be calculated without actually running the scheme.
+
+20 June 2018
+defineSpecies now sets the number of markers according to the number of loci loaded.  Output results now returns an object in addition to saving a file.
+
+9 June 2018
+Bug fix if you had founder haplotypes with no QTL information
+
+28 May 2018
+Bug fix to select() when there were predictions not from the last round of predictions
+
 26 Apr 2018
 Version 0.9.5 submitted to CRAN
 
