@@ -76,7 +76,8 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
   with(sEnv, {
     if (exists("totalCost")){
       costsPopID <- ifelse(is.null(popID), ifelse(is.null(costs$popID), 0, costs$popID), popID)
-      GIDsel <- sample(budgetRec$GID[budgetRec$popID %in% costsPopID], nSelect)
+      toSample <- budgetRec$GID[budgetRec$popID %in% costsPopID]
+      GIDsel <- sample(toSample, min(nSelect, length(toSample)))
       budgetRec$popID[budgetRec$GID %in% GIDsel] <- max(budgetRec$popID) + 1
       totalCost <- totalCost + costs$selectCost
       rm(costsPopID, GIDsel)
