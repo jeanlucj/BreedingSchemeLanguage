@@ -24,10 +24,10 @@ library(BreedingSchemeLanguage)
 ```
 
 #### Define the objective function that you will seek to maximize
-
+You have to know something about the breeding scheme being optimized. See below for the particular scheme for this vignette. Below is a generic function to get the mean of the progeny of the last selected set of parents.
 ```{r objective Function}
 objFunc <- function(sEnv){
-  cross(sEnv, nProgeny=200) # popID 4
+  cross(sEnv, nProgeny=200)
   scheme_out <- outputResults(sEnv)
   return(mean(scheme_out[nrow(scheme_out), 1:length(sEnv$sims)]))
 }
@@ -50,11 +50,11 @@ allParms <- NULL
 Notice that `sEnv` has to be used explicitly in the breeding scheme
 ```{r display scheme, echo=FALSE, include=TRUE}
 scheme <- readLines(con=schemeScriptPath)
-# for (i in 1:10) cat(scheme[i], "\n")
+for (i in 1:10) cat(scheme[i], "\n")
 ```
 
 #### Function to sample parmList at random
-
+This function samples the parameters at random from predefined prior distributions.
 ```{r function to sample parmList}
 sampleParmList <- function(){
   return(list(nRepC0=sample(2, 1), nRepC1=sample(2, 1), nFounder=sample(350, 1) + 50, nProg=sample(350, 1) + 50, yesGeno=runif(1) < 0.5))
@@ -63,7 +63,6 @@ sampleParmList <- function(){
 
 #### Sample possible parameter vectors and see how they do
 Note that this is a very suboptimal approach to optimization
-
 ```{r Sample nIter possible parameter vectors}
 nIter <- 10
 for (i in 1:nIter){
@@ -110,7 +109,7 @@ for (i in 1:nIter){
 ```{r print the objective and parameters}
 print(paste("Best Reponse", bestObjective))
 print("Parameter List")
-print(parmList)
+print(bestParms)
 print(head(allParms[order(allParms[,"objective"], decreasing=T),]))
 ```
 

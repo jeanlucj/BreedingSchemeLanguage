@@ -4,7 +4,7 @@
 #'@param summarize If TRUE a matrix with breeding cycles in rows and replications in columns, with the first set of columns being cycle means and the second set of columns cycle variances. If FALSE a list as long as the number of replications, with each list element containing a list of all simulation objects.
 #'@param saveDataFileName NULL or string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: NULL.
 #'
-#'@return If saveDataFileName is NULL, data is return as an object, else data is saved as a ".rds" file. To examine the data, use the readRDS function.
+#'@return If saveDataFileName is NULL, data is returned as an object, else data is saved as a ".rds" file. To examine the data, use the readRDS function.
 #'
 #'@export
 outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName=NULL){
