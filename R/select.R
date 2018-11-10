@@ -80,7 +80,7 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
       GIDsel <- sample(toSample, min(nSelect, length(toSample)))
       budgetRec$popID[budgetRec$GID %in% GIDsel] <- max(budgetRec$popID) + 1
       totalCost <- totalCost + costs$selectCost
-      rm(costsPopID, GIDsel)
+      rm(costsPopID, GIDsel, toSample)
     }
     
     if (!onlyCost){
