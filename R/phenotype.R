@@ -51,8 +51,8 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
       gByYqtl <- matrix(stats::rnorm(nEffLoc * nAdd), nEffLoc)
       toAdd <- M %*% gByYqtl
       sdFound <- sqrt(vp) / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd)
-      gByYqtl <- gByYqtl %*% diag(sdFound)
-      toAdd <- toAdd %*% diag(sdFound)
+      gByYqtl <- gByYqtl %*% diag(sdFound, length(sdFound))
+      toAdd <- toAdd %*% diag(sdFound, length(sdFound))
       bsl$gByYqtl <- cbind(bsl$gByYqtl, gByYqtl)
       bsl$yearEffects <- cbind(bsl$yearEffects, toAdd)
       vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
@@ -66,8 +66,8 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
       gByLqtl <- matrix(stats::rnorm(nEffLoc * nAdd), nEffLoc)
       toAdd <- M %*% gByLqtl
       sdFound <- sqrt(vp) / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd)
-      gByLqtl <- gByLqtl %*% diag(sdFound)
-      toAdd <- toAdd %*% diag(sdFound)
+      gByLqtl <- gByLqtl %*% diag(sdFound, length(sdFound))
+      toAdd <- toAdd %*% diag(sdFound, length(sdFound))
       bsl$gByLqtl <- cbind(bsl$gByLqtl, gByLqtl)
       bsl$locEffects <- cbind(bsl$locEffects, toAdd)
       vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)

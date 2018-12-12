@@ -14,7 +14,7 @@ outputResults(sEnv = NULL, summarize = T, saveDataFileName = NULL)
 \item{saveDataFileName}{NULL or string of the file name to save the simulated data, like "result1_1". A path can be specified, like "simDirectory/result1_1" (in which case "simDirectory" must exist). Default: NULL.}
 }
 \value{
-If saveDataFileName is NULL, data is return as an object, else data is saved as a ".rds" file. To examine the data, use the readRDS function.
+If saveDataFileName is NULL, data is returned as an object, else data is saved as a ".rds" file. To examine the data, use the readRDS function.
 }
 \description{
 Save the results

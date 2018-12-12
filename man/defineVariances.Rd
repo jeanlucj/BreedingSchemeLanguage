@@ -15,11 +15,11 @@ defineVariances(sEnv = NULL, gVariance = 1, locCorrelations = NULL,
 
 \item{locCorrelations}{matrix: genetic correlation in performance between locations default: If given, the genetic co-variance across locations is gVariance * locCorrelations. If NULL, deviations with variance gByLocVar will be added to the main genotypic effect to determine the genotypic value in each location. The expected genetic correlation between locations is then gVariance / (gVariance + gByLocVar). Default is NULL}
 
-\item{gByLocVar}{scalar: the genotype by location variance Default is 1, BUT if locCorrelations given, this parameter is not used)}
+\item{gByLocVar}{scalar: the genotype by location variance. Default is 1, BUT if locCorrelations given, this parameter is not used.}
 
-\item{gByYearVar}{scalar: the genotype by year variance Default is 1}
+\item{gByYearVar}{scalar: the genotype by year variance. Default is 1.}
 
-\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive Default is 1}
+\item{fracGxEAdd}{scalar: for GxL and GxY what fraction of the effect is additive versus non-additive. Default is 1. NOTE: the additive component of GxL and GxY is due to the QTL generating the main genotypic effect. Non-additive components of GxL and GxY are sampled at random, normally distributed, IID.}
 
 \item{plotTypeErrVars}{named vector: names are the plot types and contents are the error variances associated with them (default: Standard=1)}
 }

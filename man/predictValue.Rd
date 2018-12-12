@@ -12,7 +12,7 @@ predictValue(sEnv = NULL, popID = NULL, trainingPopID = NULL,
 
 \item{popID}{population ID to be predicted (default: the latest population)}
 
-\item{trainingPopID}{population ID to be used for training a prediction model (default: all populations with phenotype data). NOTE: if sharingInfo="none" this parameter has no effect.}
+\item{trainingPopID}{population ID to be used for training a prediction model (default: all populations with phenotype for "pedigree" plus genotype for "markers"). NOTE: if sharingInfo="none" this parameter has no effect.}
 
 \item{locations}{data from which locations should be used (default: all locations)}
 

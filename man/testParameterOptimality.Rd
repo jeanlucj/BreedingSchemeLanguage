@@ -5,7 +5,7 @@
 \title{Function to return the optimality of a parameter vector for a breeding scheme given a simulation environment}
 \usage{
 testParameterOptimality(sEnv = NULL, schemeFileName, parmList,
-  objectiveFunc, budget = 1000)
+  objectiveFunc, budget = 1000, runChecks = T)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. This environment should be fresh from defineSpecies, defineVariances, and defineCosts. If NULL, the default \code{simEnv} is attempted}
