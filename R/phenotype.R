@@ -26,6 +26,8 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     nLoc <- length(locations)
     nYr <- length(years)
     nTrial <- nYr
+    # Add error deviations to gValue
+    # pValue ordered by year then location within year
     if (bsl$varParms$randLoc){
       nTrial <- nTrial * nLoc
       pValue <- calcPhenotypicValue(gv=bsl$gValue[tf,,drop=F], nRep=nTrial, errorVar=errorVar)
@@ -59,6 +61,7 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     }
     nAdd <- max(locations) - ncol(bsl$locEffects)
     if (bsl$varParms$randLoc & nAdd > 0){
+      # Create GxL effects
       vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
       gByLqtl <- matrix(stats::rnorm(nEffLoc * nAdd), nEffLoc)
       toAdd <- M %*% gByLqtl
@@ -74,10 +77,10 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     if (bsl$varParms$randLoc){
       pValue <- pValue + c(bsl$locEffects[tf, locations] + bsl$locEffectsI[tf, locations])
     }
-    ye <- NULL
+    ye <- NULL # Main year effects
     for (i in years) ye <- c(ye, rep(bsl$yearEffects[tf,i], nLoc))
     pValue <- pValue + ye
-    ye <- NULL
+    ye <- NULL # Interaction year effects
     for (i in years) ye <- c(ye, rep(bsl$yearEffectsI[tf,i], nLoc))
     pValue <- pValue + ye
     loc <- rep(locations, each=nPhen)
