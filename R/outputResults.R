@@ -17,15 +17,20 @@ outputResults <- function(sEnv=NULL, summarize=T, saveDataFileName=NULL){
   } 
   if(summarize){
     getMean <- function(data){
-      tapply(data$gValue, data$genoRec$basePopID, mean)
+      apply(data$gValue, 2, function(vec) tapply(vec, data$genoRec$basePopID, mean))
     }
     getVar <- function(data){
-      tapply(data$gValue, data$genoRec$basePopID, stats::var)
+      apply(data$gValue, 2, function(vec) tapply(vec, data$genoRec$basePopID, stats::var))
     }
-    muSim <- matrix(sapply(sEnv$sims, getMean), ncol=sEnv$nSim)
-    varSim <- matrix(sapply(sEnv$sims, getVar), ncol=sEnv$nSim)
+    muSim <- NULL
+    dummy <- sapply(lapply(sEnv$sims, getMean), function(mat) muSim <<- cbind(muSim, mat))
+    varSim <- NULL
+    dummy <- sapply(lapply(sEnv$sims, getVar), function(mat) varSim <<- cbind(varSim, mat))
+    nLoc <- ncol(muSim) / sEnv$nSim
+    cn <- paste(rep(paste("Loc", 1:nLoc, sep=""), sEnv$nSim), rep(paste("Sim", 1:sEnv$nSim, sep=""), each=nLoc), sep="")
+    colnames(muSim) <- paste("mu", cn, sep="")
+    colnames(varSim) <- paste("var", cn, sep="")
     BSLoutput <- cbind(muSim, varSim)
-    colnames(BSLoutput) <- c(paste("mu", 1:sEnv$nSim, sep=""), paste("var", 1:sEnv$nSim, sep=""))
   }else{
     BSLoutput <- sEnv$sims
   }

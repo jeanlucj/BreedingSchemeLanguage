@@ -38,6 +38,7 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     # Year and location effects to add in
     nInd <- max(bsl$genoRec$GID)
     nAdd <- max(years) - ncol(bsl$yearEffects) # One col per year
+    # If needed, extract the QTL from the locus matrix
     if (nAdd > 0 | (bsl$varParms$randLoc & max(locations) > ncol(bsl$locEffects))){
       M <- bsl$geno[1:nInd * 2 - 1, bsl$mapData$effectivePos] + bsl$geno[1:nInd * 2, bsl$mapData$effectivePos]
       nEffLoc <- length(bsl$mapData$effectivePos)
@@ -45,12 +46,12 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     if (nAdd > 0){
       # Create GxY effects
       vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
-      gByYqtl <- matrix(stats::rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
-      bsl$gByYqtl <- cbind(bsl$gByYqtl, gByYqtl)
+      gByYqtl <- matrix(stats::rnorm(nEffLoc * nAdd), nEffLoc)
       toAdd <- M %*% gByYqtl
-      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd) * sqrt(vp)
-      toAdd <- sapply(1:length(sdFound), function(i) toAdd[,i] * sdFound[i])
-      bsl$yearScale <- c(bsl$yearScale, sdFound)
+      sdFound <- sqrt(vp) / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd)
+      gByYqtl <- gByYqtl %*% diag(sdFound)
+      toAdd <- toAdd %*% diag(sdFound)
+      bsl$gByYqtl <- cbind(bsl$gByYqtl, gByYqtl)
       bsl$yearEffects <- cbind(bsl$yearEffects, toAdd)
       vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)
@@ -59,12 +60,12 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
     nAdd <- max(locations) - ncol(bsl$locEffects)
     if (bsl$varParms$randLoc & nAdd > 0){
       vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
-      gByLqtl <- matrix(stats::rbinom(nEffLoc * nAdd, 1, 0.5), nEffLoc) * 2 - 1
-      bsl$gByLqtl <- cbind(bsl$gByLqtl, gByLqtl)
+      gByLqtl <- matrix(stats::rnorm(nEffLoc * nAdd), nEffLoc)
       toAdd <- M %*% gByLqtl
-      sdFound <- 1 / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd) * sqrt(vp)
-      toAdd <- sapply(1:length(sdFound), function(i) toAdd[,i] * sdFound[i])
-      bsl$locScale <- c(bsl$locScale, sdFound)
+      sdFound <- sqrt(vp) / apply(toAdd[1:bsl$nFounders, , drop=F], 2, stats::sd)
+      gByLqtl <- gByLqtl %*% diag(sdFound)
+      toAdd <- toAdd %*% diag(sdFound)
+      bsl$gByLqtl <- cbind(bsl$gByLqtl, gByLqtl)
       bsl$locEffects <- cbind(bsl$locEffects, toAdd)
       vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
       toAdd <- matrix(stats::rnorm(nInd * nAdd, sd=sqrt(vp)), nInd)

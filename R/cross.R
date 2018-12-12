@@ -114,9 +114,7 @@ addProgenyData <- function(bsl, geno, pedigree){
     bsl$yearEffects <- matrix(0, nrow=nrow(bsl$yearEffects) + nProgeny, ncol=0)
     bsl$yearEffectsI <- matrix(0, nrow=nrow(bsl$yearEffectsI) + nProgeny, ncol=0)
   } else{
-    vp <- bsl$varParms$gByYearVar * bsl$varParms$fracGxEAdd
     toAdd <- M %*% bsl$gByYqtl
-    toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$yearScale[i])
     bsl$yearEffects <- rbind(bsl$yearEffects, toAdd)
     vp <- bsl$varParms$gByYearVar * (1 - bsl$varParms$fracGxEAdd)
     toAdd <- matrix(stats::rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
@@ -124,9 +122,7 @@ addProgenyData <- function(bsl, geno, pedigree){
   }
   nAdd <- ncol(bsl$locEffects)
   if (bsl$varParms$randLoc & nAdd > 0){
-    vp <- bsl$varParms$gByLocVar * bsl$varParms$fracGxEAdd
     toAdd <- M %*% bsl$gByLqtl
-    toAdd <- sapply(1:nAdd, function(i) toAdd[,i] * bsl$locScale[i])
     bsl$locEffects <- rbind(bsl$locEffects, toAdd)
     vp <- bsl$varParms$gByLocVar * (1 - bsl$varParms$fracGxEAdd)
     toAdd <- matrix(stats::rnorm(nProgeny * nAdd, sd=sqrt(vp)), nProgeny)
