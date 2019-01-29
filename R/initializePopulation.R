@@ -3,25 +3,31 @@
 #'@param sEnv the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted
 #'@param nInd population size (default:100)
 #'@param founderHapsInDiploids set to TRUE if you have uploaded phased diploid data in defineSpecies
+#'@param foundersAreInitPop set to TRUE if you want uploaded data to be the breeding population rather than founder haplotypes. This assumes the founders are phased.
 #'
 #'@seealso \code{\link{defineSpecies}} for an example
 #'
 #'@return modifies the list sims in environment sEnv by creating a founder population
 #'
 #'@export
-initializePopulation <- function(sEnv=NULL, nInd=100, founderHapsInDiploids=F){
+initializePopulation <- function(sEnv=NULL, nInd=100, founderHapsInDiploids=F, foundersAreInitPop=F){
   initializePopulation.func <- function(data, nInd, founderHapsInDiploids){
     seed <- round(stats::runif(1, 0, 1e9))
     md <- data$mapData
     
     geno <- data$founderHaps * 2 - 1
     data$founderHaps <- NULL
-    if (!founderHapsInDiploids)
-      geno <- geno[sample(nrow(geno), nrow(geno), replace=T),]
-    geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
-    pedigree <- cbind(-geno$pedigree, 0) # For founders, parents will be negative
-    colnames(pedigree) <- 1:3
-    geno <- geno$progenies
+    if (foundersAreInitPop){
+      nInd <- nrow(geno) %/% 2
+      pedigree <- cbind(matrix(-(1:nrow(geno)), ncol=2), 0)
+    } else{
+      if (!founderHapsInDiploids)
+        geno <- geno[sample(nrow(geno), nrow(geno), replace=T),]
+      geno <- randomMate(popSize=nInd, geno=geno, pos=md$map$Pos)
+      pedigree <- cbind(-geno$pedigree, 0) # For founders, parents will be negative
+      colnames(pedigree) <- 1:3
+      geno <- geno$progenies
+    }
     
     # Genetic effects. This works even if locCov is scalar
     gValue <- calcGenotypicValue(geno=geno, mapData=md)

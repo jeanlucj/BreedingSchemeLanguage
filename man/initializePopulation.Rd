@@ -5,7 +5,7 @@
 \title{Create a founder population}
 \usage{
 initializePopulation(sEnv = NULL, nInd = 100,
-  founderHapsInDiploids = F)
+  founderHapsInDiploids = F, foundersAreInitPop = F)
 }
 \arguments{
 \item{sEnv}{the environment that BSL functions operate in. If NULL, the default \code{simEnv} is attempted}
@@ -13,6 +13,8 @@ initializePopulation(sEnv = NULL, nInd = 100,
 \item{nInd}{population size (default:100)}
 
 \item{founderHapsInDiploids}{set to TRUE if you have uploaded phased diploid data in defineSpecies}
+
+\item{foundersAreInitPop}{set to TRUE if you want uploaded data to be the breeding population rather than founder haplotypes. This assumes the founders are phased.}
 }
 \value{
 modifies the list sims in environment sEnv by creating a founder population
