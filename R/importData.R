@@ -8,48 +8,54 @@
 # Assume chromosome and position are in columns 3 and 4 of the hapmap
 # and that position is in cM: WARNING cM is probably not standard hapmap
 phasedHapMap2mat <- function(hm){
-  map <- data.frame(Chr=hm[[3]], Pos=hm[[4]])
-  # See if user specified QTL information, and if so pull it in
-  # That information would be coded in columns 7, 8, and 9
-  # col7 = effectID, col8 = actionType, col9 = effect
-  if (any(!is.na(c(hm[[7]], hm[[8]], hm[[9]])))){
-    qtl <- which(!is.na(hm[[8]]))
-    actionType <- hm[[8]][qtl]
-    effects <- hm[[9]][qtl]
-    effects <- matrix(effects[!is.na(effects)], ncol=1)
-    if (all(!is.na(hm[[7]][qtl]))){
-      effectID <- as.integer(hm[[7]][qtl])
-    } else {
-      effectID <- 1:length(qtl)
+  if (all(!is.na(hm[1,5:6]))){ # Signals a HAPS rather than a HapMap file
+    map <- data.frame(Chr=hm[[1]], Pos=hm[[3]])
+    qtlInfo <- NULL
+    res <- t(as.matrix(hm[,-(1:5)]))
+  } else{
+    map <- data.frame(Chr=hm[[3]], Pos=hm[[4]])
+    # See if user specified QTL information, and if so pull it in
+    # That information would be coded in columns 7, 8, and 9
+    # col7 = effectID, col8 = actionType, col9 = effect
+    if (any(!is.na(c(hm[[7]], hm[[8]], hm[[9]])))){
+      qtl <- which(!is.na(hm[[8]]))
+      actionType <- hm[[8]][qtl]
+      effects <- hm[[9]][qtl]
+      effects <- matrix(effects[!is.na(effects)], ncol=1)
+      if (all(!is.na(hm[[7]][qtl]))){
+        effectID <- as.integer(hm[[7]][qtl])
+      } else {
+        effectID <- 1:length(qtl)
+      }
+      qtlInfo <- list(effectID=effectID, effectivePos=qtl, actionType=actionType, effects=effects)
+    } else qtlInfo <- NULL
+    hm <- apply(hm[c(2, 12:ncol(hm))], 2, as.character)
+    # Different functions if hapmap with 1 or 2 character codes
+    if (nchar(hm[1, 2]) == 1){ 
+      hapMap2num <- function(vec){ # Convert to numeric if one character codes
+        nucleo <- c("A", "T", "C", "G") # NOTE: anything else is set to missing
+        missings <- c("-", "0","N")
+        alleles <- unlist(strsplit(vec[1], "/"))
+        vec <- vec[-1]
+        vec[!(vec %in% nucleo)] <- NA
+        vec[alleles[1]==vec] <- 1
+        vec[alleles[2]==vec] <- 0
+        return(suppressWarnings(as.numeric(vec)))
+      }
+    } else{ # Convert to numeric if two character codes
+      hapMap2num <- function(vec){
+        missings <- c("-", "0","N")
+        alleles <- unlist(strsplit(vec[1], "/"))
+        vec <- vec[-1]
+        codes <- c(alleles, missings)
+        numCodes <- c(1, 0, rep(NA, length(missings)))
+        gam1 <- sapply(substr(vec, 1, 1), function(code) numCodes[code == codes])
+        gam2 <- sapply(substr(vec, 2, 2), function(code) numCodes[code == codes])
+        return(c(rbind(gam1, gam2)))
+      }
     }
-    qtlInfo <- list(effectID=effectID, effectivePos=qtl, actionType=actionType, effects=effects)
-  } else qtlInfo <- NULL
-  hm <- apply(hm[c(2, 12:ncol(hm))], 2, as.character)
-  # Different functions if hapmap with 1 or 2 character codes
-  if (nchar(hm[1, 2]) == 1){ 
-    hapMap2num <- function(vec){ # Convert to numeric if one character codes
-      nucleo <- c("A", "T", "C", "G") # NOTE: anything else is set to missing
-      missings <- c("-", "0","N")
-      alleles <- unlist(strsplit(vec[1], "/"))
-      vec <- vec[-1]
-      vec[!(vec %in% nucleo)] <- NA
-      vec[alleles[1]==vec] <- 1
-      vec[alleles[2]==vec] <- 0
-      return(suppressWarnings(as.numeric(vec)))
-    }
-  } else{ # Convert to numeric if two character codes
-    hapMap2num <- function(vec){
-      missings <- c("-", "0","N")
-      alleles <- unlist(strsplit(vec[1], "/"))
-      vec <- vec[-1]
-      codes <- c(alleles, missings)
-      numCodes <- c(1, 0, rep(NA, length(missings)))
-      gam1 <- sapply(substr(vec, 1, 1), function(code) numCodes[code == codes])
-      gam2 <- sapply(substr(vec, 2, 2), function(code) numCodes[code == codes])
-      return(c(rbind(gam1, gam2)))
-    }
+    res <- apply(hm, 1, hapMap2num)
   }
-  res <- apply(hm, 1, hapMap2num) 
   return(list(markers=res, map=map, qtlInfo=qtlInfo))
 }
 

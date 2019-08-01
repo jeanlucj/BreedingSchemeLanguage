@@ -1,10 +1,10 @@
 #' Calculate an additive relationship matrix
 #'
-#' \code{pedigreeToAmatrix} returns an additive relationship matrix from a
+#' \code{calcAmatrix} returns an additive relationship matrix from a
 #'  pedigree specified in three columns. The first column has to be the row
 #'  number and sire and dam columns refer directly to rows of the pedigree.
 #'
-#' \code{pedigreeToAmatrix} has some functionality useful for plants.  It can
+#' \code{calcAmatrix} has some functionality useful for plants.  It can
 #'  handle a pedigree of doubled haploid lines. Individuals can be
 #'  self-pollinated for an arbitrary number of generations.
 #'
@@ -21,7 +21,6 @@
 #' @param aMatIn A square matrix that contains the additive relationship
 #'  matrix between individuals at the beginning of the pedigree. If given,
 #'  the function saves time by starting calculations after those individuals
-#'  This aMatIn functionality is NOT compatible with calculating A inverse
 #'
 #' @return A matrix, \code{aMat}, the additive relationship matrix 
 #'
