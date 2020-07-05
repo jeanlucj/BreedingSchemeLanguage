@@ -280,6 +280,7 @@ predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NU
       totalCost <- totalCost + costs$predCost
     }
     
+    if (!exists(onlyCost)) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         snowfall::sfInit(parallel=T, cpus=nCore)

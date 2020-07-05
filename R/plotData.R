@@ -31,7 +31,7 @@ plotData <- function(sEnv=NULL, ymax=NULL, add=FALSE, addDataFileName=NULL, popI
   }
   muSimByLoc <- lapply(1:nLoc, function(loc) list(muSim=t(sapply(sEnv$sims, getMeans, loc=loc)), loc=loc))
   
-  if (class(popID) == "list"){
+  if ("list" %in% class(popID)){
     pID <- sEnv$sims[[1]]$genoRec$popID
     popSizes <- tapply(pID, pID, length)
     modifyMSBL <- function(muSim){

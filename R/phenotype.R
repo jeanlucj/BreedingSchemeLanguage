@@ -115,6 +115,8 @@ phenotype <- function(sEnv=NULL, plotType="Standard", nRep=1, popID=NULL, locati
         costs$nLoc <- max(locations)
       }
     }
+    
+    if (!exists(onlyCost)) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         sfInit(parallel=T, cpus=nCore)

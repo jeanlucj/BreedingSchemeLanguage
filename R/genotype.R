@@ -39,6 +39,7 @@ genotype <- function(sEnv=NULL, popID=NULL){
       rm(hasGenoBefore)
     }
     # This is too fast to parallelize
+    if (!exists(onlyCost)) onlyCost <- FALSE
     if (!onlyCost){
       sims <- lapply(sims, genotype.func, popID=popID)
     }
