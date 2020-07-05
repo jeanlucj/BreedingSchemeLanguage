@@ -38,7 +38,7 @@ doubledHaploid <- function(sEnv=NULL, nProgeny=100, popID=NULL){
       totalCost <- totalCost + nProgeny * costs$doubHapCost 
     }
     
-    if (!exists(onlyCost)) onlyCost <- FALSE
+    if (!exists("onlyCost")) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         snowfall::sfInit(parallel=T, cpus=nCore)

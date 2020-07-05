@@ -80,7 +80,7 @@ cross <- function(sEnv=NULL, nProgeny=100, equalContribution=F, popID=NULL, popI
       totalCost <- totalCost + nProgeny * costs$crossCost
     }
     
-    if (!exists(onlyCost)) onlyCost <- FALSE
+    if (!exists("onlyCost")) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         snowfall::sfInit(parallel=T, cpus=nCore)

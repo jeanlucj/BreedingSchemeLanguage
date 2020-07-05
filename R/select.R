@@ -83,7 +83,7 @@ select <- function(sEnv=NULL, nSelect=40, popID=NULL, random=F, type="Mass"){
       rm(costsPopID, GIDsel, toSample)
     }
     
-    if (!exists(onlyCost)) onlyCost <- FALSE
+    if (!exists("onlyCost")) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         snowfall::sfInit(parallel=T, cpus=nCore)

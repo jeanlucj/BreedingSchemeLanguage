@@ -68,7 +68,7 @@ initializePopulation <- function(sEnv=NULL, nInd=100, founderHapsInDiploids=F, f
       budgetRec <- data.frame(GID=1:nInd, popID=0, hasGeno=FALSE)
     }
     
-    if (!exists(onlyCost)) onlyCost <- FALSE
+    if (!exists("onlyCost")) onlyCost <- FALSE
     if (!onlyCost){
       if(nCore > 1){
         snowfall::sfInit(parallel=T, cpus=nCore)
