@@ -87,7 +87,7 @@ predictValue <- function(sEnv=NULL, popID=NULL, trainingPopID=NULL, locations=NU
             }
         } else {
             
-            if (class(K)=="dist") {K <- as.matrix(K)}
+            if ("dist" %in% class(K)) {K <- as.matrix(K)}
             gid <- rownames(K)
             ix.pheno <- match(not.miss.gid,gid)
             miss.pheno.gid <- which(is.na(ix.pheno))
